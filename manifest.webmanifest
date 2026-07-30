@@ -1,0 +1,23 @@
+{
+  "name": "Planner Alessandro",
+  "short_name": "Planner",
+  "description": "Agenda personale sincronizzata e utilizzabile offline.",
+  "lang": "it-IT",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0B0B0D",
+  "theme_color": "#0B0B0D",
+  "icons": [
+    {
+      "src": "./planner-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./planner-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

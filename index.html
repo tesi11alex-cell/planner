@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B0B0D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Planner">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./planner-icon-192.png">
+<title>Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0D;
+    --panel:#17171A;
+    --panel-alt:#1E1E22;
+    --line:#2A2A2E;
+    --text:#F2F1ED;
+    --text-dim:#8B8B90;
+    --accent:#E3A83B;
+    --accent-dim:#5B4522;
+    --teal:#57C7B0;
+    --danger:#E2685A;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:1400px;margin:0 auto;padding:20px 20px 60px;}
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+    padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:22px;
+  }
+  .title-block{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .title-block h1{
+    font-family:'Fraunces',serif;font-weight:700;font-size:30px;margin:0;
+    letter-spacing:.2px;
+  }
+  .week-range{color:var(--text-dim);font-size:13px;font-family:'JetBrains Mono',monospace;}
+  .controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  button, select{
+    font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;
+    background:var(--panel-alt);color:var(--text);
+    border:1px solid var(--line);border-radius:8px;
+    padding:8px 14px;cursor:pointer;transition:background .15s,border-color .15s;
+  }
+  button:hover{background:#26262B;border-color:#3a3a40;}
+  button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--accent);outline-offset:1px;
+  }
+  .btn-today{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+  .btn-today:hover{background:#f0b750;}
+  .nav-arrow{padding:8px 12px;font-size:15px;line-height:1;}
+  select{-webkit-appearance:none;appearance:none;padding-right:26px;
+    background-image:linear-gradient(45deg,transparent 50%,var(--text-dim) 50%),linear-gradient(135deg,var(--text-dim) 50%,transparent 50%);
+    background-position:calc(100% - 14px) 55%,calc(100% - 9px) 55%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+  }
+
+  /* ---------- Week grid ---------- */
+  .week{
+    display:flex;flex-wrap:wrap;gap:14px;
+  }
+  .day{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px 12px 16px;position:relative;overflow:hidden;
+    animation:fadeIn .25s ease;
+    flex:1 1 380px;min-width:340px;max-width:480px;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:translateY(0);}}
+  .day::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line);
+  }
+  .day.today::before{background:var(--accent);}
+  .day-head{margin-bottom:10px;padding-left:6px;}
+  .day-name{font-family:'Fraunces',serif;font-weight:600;font-size:15.5px;}
+  .day.today .day-name{color:var(--accent);}
+  .day-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);}
+
+  .day-body{display:flex;gap:12px;align-items:flex-start;}
+  .hours{flex:1 1 60%;min-width:0;padding-left:6px;margin-bottom:0;}
+  .todo-box{flex:1 1 40%;min-width:0;max-width:230px;}
+  .hour-row{
+    display:flex;align-items:flex-start;gap:7px;
+    border-top:1px solid var(--line);padding:3px 0;
+  }
+  .hour-row:first-child{border-top:none;}
+  .hour-row.now{background:linear-gradient(90deg, var(--accent-dim), transparent 65%);
+    margin:0 -6px;padding-left:6px;padding-right:6px;border-radius:4px;}
+  .hour-check{
+    appearance:none;-webkit-appearance:none;width:14px;height:14px;flex-shrink:0;margin-top:3px;
+    border:1.5px solid var(--text-dim);border-radius:4px;background:transparent;cursor:pointer;position:relative;
+    display:none;
+  }
+  body.show-hour-flags .hour-check{display:inline-block;}
+  .hour-check:checked{background:var(--teal);border-color:var(--teal);}
+  .hour-check:checked::after{
+    content:"";position:absolute;left:3.5px;top:0.5px;width:3.5px;height:7px;
+    border:solid #0B0B0D;border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  .hour-label{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);
+    width:34px;flex-shrink:0;margin-top:3px;
+  }
+  .hour-input{
+    flex:1;background:transparent;border:none;color:var(--text);
+    font-family:'Inter',sans-serif;font-size:12.5px;padding:1px 4px;border-radius:4px;
+    min-width:0;resize:none;overflow:hidden;line-height:1.35;min-height:20px;
+    font-variant-ligatures:none;
+  }
+  .hour-input:hover{background:var(--panel-alt);}
+  .hour-input:focus{background:var(--panel-alt);outline:none;}
+  .hour-row.hour-done .hour-input{color:var(--text-dim);text-decoration:line-through;}
+
+  .todo-box{
+    background:var(--panel-alt);border:1px solid var(--line);border-radius:8px;padding:10px 10px 12px;
+  }
+  .todo-title{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);margin-bottom:8px;font-weight:600;}
+  .todo-item{display:flex;align-items:flex-start;gap:7px;margin-bottom:6px;}
+  .todo-item input[type=checkbox]{
+    appearance:none;-webkit-appearance:none;width:15px;height:15px;flex-shrink:0;margin-top:2px;
+    border:1.5px solid var(--text-dim);border-radius:4px;background:transparent;cursor:pointer;position:relative;
+  }
+  .todo-item input[type=checkbox]:checked{background:var(--teal);border-color:var(--teal);}
+  .todo-item input[type=checkbox]:checked::after{
+    content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;
+    border:solid #0B0B0D;border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  .todo-text{flex:1;font-size:12.5px;line-height:1.35;background:transparent;border:none;color:var(--text);
+    font-family:'Inter',sans-serif;padding:2px;min-width:0;word-break:break-word;
+    resize:none;overflow:hidden;min-height:18px;}
+  .todo-text:hover{background:var(--panel);border-radius:4px;}
+  .todo-text:focus{background:var(--panel);border-radius:4px;outline:none;}
+  .todo-item.done .todo-text{color:var(--text-dim);text-decoration:line-through;}
+  .todo-del{
+    background:none;border:none;color:var(--text-dim);font-size:14px;cursor:pointer;padding:0 2px;
+    flex-shrink:0;line-height:1;
+  }
+  .todo-del:hover{color:var(--danger);}
+  .todo-add{
+    display:flex;gap:6px;margin-top:8px;
+  }
+  .todo-add input{
+    flex:1;background:var(--panel);border:1px solid var(--line);border-radius:6px;
+    color:var(--text);font-size:12.5px;padding:6px 8px;font-family:'Inter',sans-serif;min-width:0;
+  }
+  .todo-add button{padding:6px 10px;font-size:13px;}
+
+  /* ---------- Mobile: one day at a time ---------- */
+  @media (max-width:820px){
+    .week{gap:0;}
+    .day{display:none;flex-basis:100%;max-width:100%;min-width:0;}
+    .day.mobile-active{display:block;}
+    .title-block h1{font-size:24px;}
+    .app{padding:16px 14px 50px;}
+  }
+  @media (max-width:480px){
+    .day-body{flex-direction:column;}
+    .todo-box{max-width:100%;}
+  }
+  .mobile-day-nav{display:none;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+  @media (max-width:820px){
+    .mobile-day-nav{display:flex;}
+  }
+  .mobile-day-nav .label{font-family:'Fraunces',serif;font-weight:600;font-size:16px;}
+  footer{margin-top:26px;color:var(--text-dim);font-size:11.5px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="title-block">
+      <h1 id="monthTitle">—</h1>
+      <span class="week-range" id="weekRange"></span>
+    </div>
+    <div class="controls">
+      <button id="authBtn" title="Accedi per sincronizzare l'agenda">Accedi con Google</button>
+      <button id="toggleFlagsBtn" title="Mostra/nascondi le spunte sulle ore">Flag ore: nascosti</button>
+      <select id="monthSelect" aria-label="Vai al mese"></select>
+      <button class="nav-arrow" id="prevBtn" aria-label="Settimana precedente" title="Settimana precedente">‹</button>
+      <button class="btn-today" id="todayBtn">OGGI</button>
+      <button class="nav-arrow" id="nextBtn" aria-label="Settimana successiva" title="Settimana successiva">›</button>
+    </div>
+  </header>
+
+  <div class="mobile-day-nav">
+    <button id="prevDayMobile" class="nav-arrow" title="Giorno precedente">‹</button>
+    <span class="label" id="mobileDayLabel">—</span>
+    <button id="nextDayMobile" class="nav-arrow" title="Giorno successivo">›</button>
+  </div>
+
+  <div class="week" id="weekGrid"></div>
+
+  <footer id="syncNotice">—</footer>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAI6gnwATgqoKWJBZ6gED8VhvyNBxV_xqk",
+  authDomain: "planner-alessandro.firebaseapp.com",
+  projectId: "planner-alessandro",
+  storageBucket: "planner-alessandro.firebasestorage.app",
+  messagingSenderId: "437936177868",
+  appId: "1:437936177868:web:4e57ce00b20e9234d7f869"
+};
+
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const auth = firebaseApp.auth();
+const db = firebaseApp.firestore();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: "select_account" });
+
+// Piccolo livello di compatibilità: mantiene invariata la logica del planner.
+const browserLocalPersistence = firebase.auth.Auth.Persistence.LOCAL;
+function setPersistence(authInstance, persistence){ return authInstance.setPersistence(persistence); }
+function signInWithPopup(authInstance, provider){ return authInstance.signInWithPopup(provider); }
+function signInWithRedirect(authInstance, provider){ return authInstance.signInWithRedirect(provider); }
+function getRedirectResult(authInstance){ return authInstance.getRedirectResult(); }
+function signOut(authInstance){ return authInstance.signOut(); }
+function onAuthStateChanged(authInstance, callback){ return authInstance.onAuthStateChanged(callback); }
+function serverTimestamp(){ return firebase.firestore.FieldValue.serverTimestamp(); }
+function doc(dbInstance, ...segments){
+  if(segments.length < 2 || segments.length % 2 !== 0){
+    throw new Error('Percorso Firestore non valido');
+  }
+  let ref = dbInstance.collection(segments[0]).doc(segments[1]);
+  for(let i=2; i<segments.length; i+=2){
+    ref = ref.collection(segments[i]).doc(segments[i+1]);
+  }
+  return ref;
+}
+function adaptSnapshot(snapshot){
+  return {
+    exists: ()=>snapshot.exists,
+    data: ()=>snapshot.data(),
+    metadata: snapshot.metadata
+  };
+}
+async function getDoc(ref){ return adaptSnapshot(await ref.get()); }
+function setDoc(ref, data, options){ return ref.set(data, options); }
+function onSnapshot(ref, optionsOrNext, nextOrError, maybeError){
+  if(typeof optionsOrNext === 'function'){
+    return ref.onSnapshot(
+      snapshot=>optionsOrNext(adaptSnapshot(snapshot)),
+      nextOrError
+    );
+  }
+  return ref.onSnapshot(
+    optionsOrNext,
+    snapshot=>nextOrError(adaptSnapshot(snapshot)),
+    maybeError
+  );
+}
+
+let offlinePersistenceEnabled = false;
+const firestoreReady = db.enablePersistence({synchronizeTabs:true})
+  .then(()=>{ offlinePersistenceEnabled = true; })
+  .catch((error)=>{
+    console.warn('Persistenza offline Firestore non disponibile', error);
+    offlinePersistenceEnabled = false;
+  });
+
+setPersistence(auth, browserLocalPersistence).catch((error)=>{
+  console.warn("Persistenza accesso non disponibile", error);
+});
+
+const HOURS = [];
+for(let h=8; h<=22; h++) HOURS.push(String(h).padStart(2,'0')+':00');
+
+const DAY_NAMES = ['Domenica','Lunedi','Martedi','Mercoledi','Giovedi','Venerdi','Sabato'];
+const MONTH_NAMES = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const YEARS = [2026, 2027, 2028, 2029, 2030];
+
+let currentDate = new Date();
+let currentUser = null;
+let renderVersion = 0;
+let hourFlagsVisible = false;
+const dataCache = {};
+let weekUnsubscribers = [];
+let settingsUnsubscriber = null;
+
+function pad(n){return String(n).padStart(2,'0');}
+function dateKey(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
+function sameDay(a,b){return dateKey(a)===dateKey(b);}
+function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
+
+function getMonday(d){
+  const day = d.getDay();
+  const diff = day===0 ? -6 : 1-day;
+  return addDays(d, diff);
+}
+
+function storageKey(d){return `day:${dateKey(d)}`;}
+function emptyDay(){return {hours:{}, tasks:[]};}
+
+function normalizeDay(value){
+  const val = value && typeof value === 'object' ? value : emptyDay();
+  if(!val.hours || typeof val.hours !== 'object') val.hours = {};
+  if(!Array.isArray(val.tasks)) val.tasks = [];
+  Object.keys(val.hours).forEach(h=>{
+    if(typeof val.hours[h] === 'string'){
+      val.hours[h] = {text: val.hours[h], done:false};
+    }else{
+      val.hours[h] = {
+        text: val.hours[h]?.text || '',
+        done: Boolean(val.hours[h]?.done)
+      };
+    }
+  });
+  val.tasks = val.tasks.map(t=>({
+    id: t.id ?? (Date.now()+Math.random().toString(16).slice(2)),
+    text: t.text || '',
+    done: Boolean(t.done)
+  }));
+  return {hours:val.hours, tasks:val.tasks};
+}
+
+function dayRefFromKey(key){
+  return doc(db, 'users', currentUser.uid, 'days', key);
+}
+
+function settingsRef(){
+  return doc(db, 'users', currentUser.uid, 'settings', 'preferences');
+}
+
+function setSyncNotice(message){
+  document.getElementById('syncNotice').textContent = message;
+}
+
+function offlineMessage(){
+  return 'Offline: modifiche salvate su questo dispositivo; saranno sincronizzate appena torna Internet.';
+}
+
+function updateConnectionNotice(){
+  if(!navigator.onLine){
+    setSyncNotice(offlineMessage());
+  }else if(currentUser){
+    setSyncNotice(`Agenda sincronizzata con ${currentUser.email || 'il tuo account Google'}.`);
+  }else{
+    setSyncNotice('Dati salvati solo su questo dispositivo. Accedi con Google per sincronizzarli.');
+  }
+}
+
+async function storageGetSafe(key){
+  if(currentUser){
+    if(key.startsWith('day:')){
+      const snap = await getDoc(dayRefFromKey(key.slice(4)));
+      return snap.exists()
+        ? {key, value:JSON.stringify(normalizeDay(snap.data()))}
+        : null;
+    }
+    if(key === 'settings:hourFlagsVisible'){
+      const snap = await getDoc(settingsRef());
+      return snap.exists()
+        ? {key, value:String(Boolean(snap.data().hourFlagsVisible))}
+        : null;
+    }
+    return null;
+  }
+  const raw = localStorage.getItem(key);
+  return raw ? {key, value:raw} : null;
+}
+
+async function storageSetSafe(key, value){
+  if(currentUser){
+    if(key.startsWith('day:')){
+      const parsed = normalizeDay(JSON.parse(value));
+      await setDoc(dayRefFromKey(key.slice(4)), {
+        hours: parsed.hours,
+        tasks: parsed.tasks,
+        updatedAt: serverTimestamp()
+      });
+      return {key, value};
+    }
+    if(key === 'settings:hourFlagsVisible'){
+      await setDoc(settingsRef(), {
+        hourFlagsVisible: value === 'true',
+        updatedAt: serverTimestamp()
+      }, {merge:true});
+      return {key, value};
+    }
+    return {key, value};
+  }
+  localStorage.setItem(key, value);
+  return {key, value};
+}
+
+async function migrateLocalDataToCloud(){
+  if(!currentUser) return;
+  const marker = `planner:migrated:${currentUser.uid}`;
+  if(localStorage.getItem(marker) === 'true') return;
+
+  const keys = [];
+  for(let i=0; i<localStorage.length; i++){
+    const key = localStorage.key(i);
+    if(key && (key.startsWith('day:') || key === 'settings:hourFlagsVisible')){
+      keys.push(key);
+    }
+  }
+
+  if(keys.length === 0){
+    localStorage.setItem(marker, 'true');
+    return;
+  }
+
+  setSyncNotice('Trasferimento dei dati locali su Firebase…');
+
+  for(const key of keys){
+    if(key.startsWith('day:')){
+      const remoteRef = dayRefFromKey(key.slice(4));
+      const remote = await getDoc(remoteRef);
+      if(!remote.exists()){
+        const raw = localStorage.getItem(key);
+        if(raw){
+          const parsed = normalizeDay(JSON.parse(raw));
+          await setDoc(remoteRef, {
+            hours: parsed.hours,
+            tasks: parsed.tasks,
+            updatedAt: serverTimestamp()
+          });
+        }
+      }
+    }else if(key === 'settings:hourFlagsVisible'){
+      const remoteRef = settingsRef();
+      const remote = await getDoc(remoteRef);
+      if(!remote.exists()){
+        await setDoc(remoteRef, {
+          hourFlagsVisible: localStorage.getItem(key) === 'true',
+          updatedAt: serverTimestamp()
+        });
+      }
+    }
+  }
+
+  keys.forEach(key=>localStorage.removeItem(key));
+  localStorage.setItem(marker, 'true');
+}
+
+async function warmOfflineCache(){
+  if(!currentUser || !navigator.onLine || !offlinePersistenceEnabled) return;
+  const marker = `planner:offline-cache:${currentUser.uid}`;
+  const lastRun = Number(localStorage.getItem(marker) || 0);
+  const twelveHours = 12 * 60 * 60 * 1000;
+  if(Date.now() - lastRun < twelveHours) return;
+
+  try{
+    setSyncNotice('Preparazione dell’agenda per l’uso offline…');
+    const snapshot = await db
+      .collection('users')
+      .doc(currentUser.uid)
+      .collection('days')
+      .get();
+    snapshot.forEach(dayDoc=>{
+      dataCache[dayDoc.id] = normalizeDay(dayDoc.data());
+    });
+    localStorage.setItem(marker, String(Date.now()));
+  }catch(error){
+    console.warn('Preparazione cache offline non riuscita', error);
+  }
+}
+
+async function loadDay(d){
+  const key = dateKey(d);
+  if(dataCache[key]) return dataCache[key];
+
+  let val = emptyDay();
+  try{
+    const res = await storageGetSafe(storageKey(d));
+    if(res && res.value) val = normalizeDay(JSON.parse(res.value));
+  }catch(error){
+    console.error('Errore caricamento', error);
+    if(currentUser && !navigator.onLine){
+      setSyncNotice(offlineMessage());
+    }else{
+      setSyncNotice(currentUser
+        ? 'Errore nel caricamento da Firebase. Controlla la connessione.'
+        : 'Dati locali non disponibili.');
+    }
+  }
+  dataCache[key] = val;
+  return val;
+}
+
+async function saveDay(d){
+  const key = dateKey(d);
+  const val = dataCache[key];
+  if(!val) return;
+
+  try{
+    if(currentUser) setSyncNotice('Salvataggio in corso…');
+    await storageSetSafe(storageKey(d), JSON.stringify(val));
+    if(currentUser && !navigator.onLine){
+      setSyncNotice(offlineMessage());
+    }else{
+      updateConnectionNotice();
+    }
+  }catch(error){
+    console.error('Errore salvataggio', error);
+    setSyncNotice(navigator.onLine
+      ? 'Salvataggio non riuscito. Riprova.'
+      : 'Il browser non ha potuto conservare la modifica offline. Non chiudere la pagina e riprova quando torna Internet.');
+  }
+}
+
+function currentWeekDates(){
+  const monday = getMonday(currentDate);
+  const arr = [];
+  for(let i=0;i<7;i++) arr.push(addDays(monday,i));
+  return arr;
+}
+
+function updateHeaderTitle(weekDates){
+  const first = weekDates[0], last = weekDates[6];
+  let title;
+  if(first.getMonth() === last.getMonth()){
+    title = `${MONTH_NAMES[first.getMonth()]} ${first.getFullYear()}`;
+  }else{
+    title = `${MONTH_NAMES[first.getMonth()]} / ${MONTH_NAMES[last.getMonth()]} ${last.getFullYear()}`;
+  }
+  document.getElementById('monthTitle').textContent = title;
+  document.getElementById('weekRange').textContent =
+    `${pad(first.getDate())}/${pad(first.getMonth()+1)} - ${pad(last.getDate())}/${pad(last.getMonth()+1)}/${last.getFullYear()}`;
+}
+
+function populateMonthSelect(){
+  const sel = document.getElementById('monthSelect');
+  sel.innerHTML = '';
+  YEARS.forEach(y=>{
+    MONTH_NAMES.forEach((name, i)=>{
+      const opt = document.createElement('option');
+      opt.value = `${y}-${i}`;
+      opt.textContent = `${name} ${y}`;
+      sel.appendChild(opt);
+    });
+  });
+  sel.value = `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
+  sel.addEventListener('change', ()=>{
+    const [y, m] = sel.value.split('-').map(Number);
+    currentDate = new Date(y, m, 1);
+    render();
+  });
+}
+
+function dayCardHTML(d, todayFlag){
+  const key = dateKey(d);
+  return `
+  <div class="day ${todayFlag?'today':''}" data-key="${key}">
+    <div class="day-head">
+      <div class="day-name">${DAY_NAMES[d.getDay()]}</div>
+      <div class="day-date">${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${MONTH_NAMES[d.getMonth()]}</div>
+    </div>
+    <div class="day-body">
+      <div class="hours" data-hours="${key}"></div>
+      <div class="todo-box" data-todo="${key}">
+        <div class="todo-title">Cose da fare</div>
+        <div class="todo-list" data-list="${key}"></div>
+        <div class="todo-add">
+          <input type="text" placeholder="Aggiungi..." data-add-input="${key}">
+          <button data-add-btn="${key}">+</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function escapeHTML(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function renderHours(container, d, val){
+  const now = new Date();
+  const nowHour = now.getHours();
+  const isToday = sameDay(d, now);
+  container.innerHTML = HOURS.map(h=>{
+    const hh = parseInt(h.slice(0,2),10);
+    const isNow = isToday && hh === nowHour;
+    const entry = val.hours[h] || {text:'', done:false};
+    return `<div class="hour-row ${isNow?'now':''} ${entry.done?'hour-done':''}">
+      <input type="checkbox" class="hour-check" data-hour-check="${h}" ${entry.done?'checked':''}>
+      <span class="hour-label">${h}</span>
+      <textarea class="hour-input" rows="1" data-hour-input="${h}" placeholder="">${escapeHTML(entry.text)}</textarea>
+    </div>`;
+  }).join('');
+  container.querySelectorAll('.hour-input').forEach(ta=>autoGrow(ta));
+}
+
+function autoGrow(ta, minH){
+  minH = minH || 20;
+  ta.style.height = 'auto';
+  ta.style.height = Math.max(ta.scrollHeight, minH) + 'px';
+}
+
+function renderTodos(container, val){
+  container.innerHTML = val.tasks.map(t=>`
+    <div class="todo-item ${t.done?'done':''}" data-task-id="${escapeHTML(t.id)}">
+      <input type="checkbox" ${t.done?'checked':''} data-task-check="${escapeHTML(t.id)}">
+      <textarea class="todo-text" rows="1" data-task-text="${escapeHTML(t.id)}">${escapeHTML(t.text)}</textarea>
+      <button class="todo-del" data-task-del="${escapeHTML(t.id)}" aria-label="Elimina">×</button>
+    </div>
+  `).join('');
+  container.querySelectorAll('.todo-text').forEach(ta=>autoGrow(ta,18));
+}
+
+function refreshDayUI(d){
+  const key = dateKey(d);
+  const card = document.querySelector(`.day[data-key="${key}"]`);
+  const val = dataCache[key] || emptyDay();
+  if(!card) return;
+
+  const active = document.activeElement;
+  if(active && card.contains(active) && (active.matches('textarea') || active.matches('input[type="text"]'))){
+    return;
+  }
+
+  const hoursEl = card.querySelector(`[data-hours="${key}"]`);
+  const listEl = card.querySelector(`[data-list="${key}"]`);
+  if(hoursEl) renderHours(hoursEl, d, val);
+  if(listEl) renderTodos(listEl, val);
+}
+
+function attachDayEvents(d){
+  const key = dateKey(d);
+  const card = document.querySelector(`.day[data-key="${key}"]`);
+  if(!card || card.dataset.eventsBound === 'true') return;
+  card.dataset.eventsBound = 'true';
+
+  card.addEventListener('input', (event)=>{
+    const target = event.target;
+    if(target.matches('.hour-input')) autoGrow(target);
+    if(target.matches('.todo-text')) autoGrow(target,18);
+  });
+
+  card.addEventListener('change', async (event)=>{
+    const target = event.target;
+    const val = await loadDay(d);
+
+    if(target.matches('[data-hour-input]')){
+      const h = target.dataset.hourInput;
+      if(!val.hours[h]) val.hours[h] = {text:'', done:false};
+      val.hours[h].text = target.value;
+      await saveDay(d);
+      return;
+    }
+
+    if(target.matches('[data-hour-check]')){
+      const h = target.dataset.hourCheck;
+      if(!val.hours[h]) val.hours[h] = {text:'', done:false};
+      val.hours[h].done = target.checked;
+      target.closest('.hour-row')?.classList.toggle('hour-done', target.checked);
+      await saveDay(d);
+      return;
+    }
+
+    if(target.matches('[data-task-check]')){
+      const task = val.tasks.find(x=>String(x.id)===target.dataset.taskCheck);
+      if(task) task.done = target.checked;
+      target.closest('.todo-item')?.classList.toggle('done', target.checked);
+      await saveDay(d);
+      return;
+    }
+
+    if(target.matches('[data-task-text]')){
+      const task = val.tasks.find(x=>String(x.id)===target.dataset.taskText);
+      if(task) task.text = target.value;
+      await saveDay(d);
+    }
+  });
+
+  card.addEventListener('click', async (event)=>{
+    const target = event.target;
+
+    if(target.matches('[data-task-del]')){
+      const val = await loadDay(d);
+      val.tasks = val.tasks.filter(x=>String(x.id)!==target.dataset.taskDel);
+      const listEl = card.querySelector(`[data-list="${key}"]`);
+      if(listEl) renderTodos(listEl, val);
+      await saveDay(d);
+      return;
+    }
+
+    if(target.matches(`[data-add-btn="${key}"]`)){
+      await addTask(d, card);
+    }
+  });
+
+  card.addEventListener('keydown', async (event)=>{
+    const target = event.target;
+    if(target.matches(`[data-add-input="${key}"]`) && event.key === 'Enter'){
+      event.preventDefault();
+      await addTask(d, card);
+    }
+  });
+}
+
+async function addTask(d, card){
+  const key = dateKey(d);
+  const input = card.querySelector(`[data-add-input="${key}"]`);
+  const text = input.value.trim();
+  if(!text) return;
+
+  const val = await loadDay(d);
+  val.tasks.push({
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    text,
+    done:false
+  });
+  input.value = '';
+  const listEl = card.querySelector(`[data-list="${key}"]`);
+  if(listEl) renderTodos(listEl, val);
+  await saveDay(d);
+}
+
+function stopRealtimeListeners(){
+  weekUnsubscribers.forEach(unsub=>unsub());
+  weekUnsubscribers = [];
+  if(settingsUnsubscriber){
+    settingsUnsubscriber();
+    settingsUnsubscriber = null;
+  }
+}
+
+function subscribeToWeek(weekDates){
+  weekUnsubscribers.forEach(unsub=>unsub());
+  weekUnsubscribers = [];
+  if(!currentUser) return;
+
+  weekDates.forEach(d=>{
+    const key = dateKey(d);
+    const unsub = onSnapshot(
+      dayRefFromKey(key),
+      {includeMetadataChanges:true},
+      (snapshot)=>{
+        dataCache[key] = snapshot.exists()
+          ? normalizeDay(snapshot.data())
+          : emptyDay();
+        refreshDayUI(d);
+        if(snapshot.metadata.hasPendingWrites){
+          setSyncNotice(navigator.onLine
+            ? 'Modifica salvata sul dispositivo; sincronizzazione in corso…'
+            : offlineMessage());
+        }else if(snapshot.metadata.fromCache){
+          setSyncNotice(navigator.onLine
+            ? 'Dati caricati dalla cache; verifica aggiornamenti in corso…'
+            : offlineMessage());
+        }else{
+          updateConnectionNotice();
+        }
+      },
+      (error)=>{
+        console.error('Errore sincronizzazione', error);
+        setSyncNotice('Sincronizzazione non disponibile. Controlla le regole Firestore e la connessione.');
+      }
+    );
+    weekUnsubscribers.push(unsub);
+  });
+}
+
+function subscribeToSettings(){
+  if(settingsUnsubscriber){
+    settingsUnsubscriber();
+    settingsUnsubscriber = null;
+  }
+  if(!currentUser) return;
+
+  settingsUnsubscriber = onSnapshot(
+    settingsRef(),
+    (snapshot)=>{
+      if(snapshot.exists()){
+        hourFlagsVisible = Boolean(snapshot.data().hourFlagsVisible);
+        applyHourFlagsVisibility(hourFlagsVisible);
+      }
+    },
+    (error)=>console.error('Errore impostazioni', error)
+  );
+}
+
+async function render(){
+  const version = ++renderVersion;
+  const weekDates = currentWeekDates();
+  updateHeaderTitle(weekDates);
+  document.getElementById('monthSelect').value =
+    `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
+
+  const grid = document.getElementById('weekGrid');
+  const now = new Date();
+  grid.innerHTML = weekDates.map(d=>dayCardHTML(d, sameDay(d,now))).join('');
+
+  for(const d of weekDates){
+    const val = await loadDay(d);
+    if(version !== renderVersion) return;
+    const key = dateKey(d);
+    const hoursEl = document.querySelector(`[data-hours="${key}"]`);
+    const listEl = document.querySelector(`[data-list="${key}"]`);
+    if(hoursEl) renderHours(hoursEl,d,val);
+    if(listEl) renderTodos(listEl,val);
+    attachDayEvents(d);
+  }
+
+  applyMobileVisibility(weekDates);
+  subscribeToWeek(weekDates);
+}
+
+function applyMobileVisibility(weekDates){
+  if(!weekDates) weekDates = currentWeekDates();
+  const cards = document.querySelectorAll('.day');
+  let activeIdx = weekDates.findIndex(d=>sameDay(d,currentDate));
+  if(activeIdx < 0) activeIdx = 0;
+
+  cards.forEach((card,index)=>{
+    card.classList.toggle('mobile-active', index===activeIdx);
+  });
+
+  const activeDate = weekDates[activeIdx] || currentDate;
+  document.getElementById('mobileDayLabel').textContent =
+    `${DAY_NAMES[activeDate.getDay()]} ${pad(activeDate.getDate())}/${pad(activeDate.getMonth()+1)}`;
+}
+
+function clearDataCache(){
+  Object.keys(dataCache).forEach(key=>delete dataCache[key]);
+}
+
+async function loadHourFlagsSetting(){
+  try{
+    const res = await storageGetSafe('settings:hourFlagsVisible');
+    hourFlagsVisible = Boolean(res && res.value === 'true');
+  }catch(error){
+    hourFlagsVisible = false;
+  }
+  applyHourFlagsVisibility(hourFlagsVisible);
+}
+
+function applyHourFlagsVisibility(visible){
+  document.body.classList.toggle('show-hour-flags', visible);
+  document.getElementById('toggleFlagsBtn').textContent =
+    visible ? 'Flag ore: visibili' : 'Flag ore: nascosti';
+}
+
+async function handleAuthClick(){
+  const btn = document.getElementById('authBtn');
+  btn.disabled = true;
+  try{
+    if(currentUser){
+      await signOut(auth);
+      return;
+    }
+
+    try{
+      await signInWithPopup(auth, googleProvider);
+    }catch(error){
+      const redirectCodes = [
+        'auth/popup-blocked',
+        'auth/cancelled-popup-request',
+        'auth/operation-not-supported-in-this-environment'
+      ];
+      if(redirectCodes.includes(error.code)){
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      }
+      if(error.code !== 'auth/popup-closed-by-user'){
+        throw error;
+      }
+    }
+  }catch(error){
+    console.error('Errore accesso', error);
+    setSyncNotice(`Accesso non riuscito: ${error.message || error.code}`);
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  currentDate = addDays(currentDate,-7);
+  render();
+});
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  currentDate = addDays(currentDate,7);
+  render();
+});
+document.getElementById('prevDayMobile').addEventListener('click', ()=>{
+  currentDate = addDays(currentDate,-1);
+  render();
+});
+document.getElementById('nextDayMobile').addEventListener('click', ()=>{
+  currentDate = addDays(currentDate,1);
+  render();
+});
+document.getElementById('todayBtn').addEventListener('click', ()=>{
+  currentDate = new Date();
+  render();
+});
+document.getElementById('authBtn').addEventListener('click', handleAuthClick);
+document.getElementById('toggleFlagsBtn').addEventListener('click', async ()=>{
+  hourFlagsVisible = !hourFlagsVisible;
+  applyHourFlagsVisibility(hourFlagsVisible);
+  try{
+    await storageSetSafe('settings:hourFlagsVisible', String(hourFlagsVisible));
+  }catch(error){
+    console.error('Errore salvataggio impostazioni', error);
+    setSyncNotice('Non è stato possibile salvare l’impostazione delle spunte.');
+  }
+});
+window.addEventListener('resize', ()=>applyMobileVisibility());
+window.addEventListener('offline', ()=>setSyncNotice(offlineMessage()));
+window.addEventListener('online', async ()=>{
+  setSyncNotice('Connessione ripristinata; sincronizzazione in corso…');
+  await warmOfflineCache();
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', async ()=>{
+    try{
+      const registration = await navigator.serviceWorker.register('./service-worker.js', {
+        scope:'./',
+        updateViaCache:'none'
+      });
+      registration.update();
+    }catch(error){
+      console.warn('Service worker non disponibile', error);
+    }
+  });
+}
+
+populateMonthSelect();
+
+getRedirectResult(auth).catch((error)=>{
+  console.error('Errore rientro accesso Google', error);
+  setSyncNotice(`Accesso non riuscito: ${error.message || error.code}`);
+});
+
+onAuthStateChanged(auth, async (user)=>{
+  await firestoreReady;
+  stopRealtimeListeners();
+  currentUser = user;
+  clearDataCache();
+
+  const authBtn = document.getElementById('authBtn');
+  if(user){
+    authBtn.textContent = 'Esci';
+    authBtn.title = `Connesso come ${user.email || user.displayName || 'utente Google'}`;
+    setSyncNotice('Connessione a Firebase…');
+    try{
+      await migrateLocalDataToCloud();
+      await warmOfflineCache();
+    }catch(error){
+      console.error('Errore preparazione dati', error);
+      setSyncNotice('Accesso effettuato, ma la preparazione dei dati offline non è riuscita.');
+    }
+  }else{
+    authBtn.textContent = 'Accedi con Google';
+    authBtn.title = 'Accedi per sincronizzare l’agenda';
+  }
+
+  await loadHourFlagsSetting();
+  await render();
+
+  if(user){
+    subscribeToSettings();
+  }
+  updateConnectionNotice();
+});
+</script>
+</body>
+</html>
