@@ -202,9 +202,18 @@
 
   <div class="week" id="weekGrid"></div>
 
-  <footer id="syncNotice">—</footer>
+  <footer id="syncNotice">Avvio del planner…</footer>
 </div>
 
+<script>
+window.addEventListener('error', function(event){
+  const notice = document.getElementById('syncNotice');
+  if(notice){
+    notice.textContent = 'Errore di avvio del planner. Ricarica la pagina con Internet attivo.';
+  }
+  console.error('Errore globale planner', event.error || event.message);
+});
+</script>
 <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore-compat.js"></script>

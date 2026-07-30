@@ -1,21 +1,10 @@
-FILE DA CARICARE NEL REPOSITORY GITHUB "planner"
+PLANNER OFFLINE - VERSIONE CORRETTA
 
-Carica tutti questi file nella cartella principale del repository:
-- index.html
-- Agenda.html
-- manifest.webmanifest
-- service-worker.js
-- planner-icon-192.png
-- planner-icon-512.png
+Carica TUTTI i file presenti in questa cartella nella radice del repository GitHub planner.
+Sostituisci i file esistenti quando GitHub lo segnala.
 
-Dopo il caricamento usa questo indirizzo:
-https://tesi11alex-cell.github.io/planner/
+Dopo il commit apri:
+https://tesi11alex-cell.github.io/planner/?v=offline2
 
-Per preparare l'uso offline:
-1. apri il planner una volta con Internet;
-2. accedi con Google;
-3. attendi il messaggio di sincronizzazione;
-4. chiudi e riapri il planner ancora una volta mentre sei online.
-
-Da quel momento la pagina e i dati gia sincronizzati saranno disponibili offline.
-Le modifiche offline verranno inviate a Firebase appena torna Internet.
+Sia index.html sia Agenda.html contengono ora l'agenda completa.
+Il service worker usa una nuova cache v2 per eliminare la vecchia versione.
