@@ -1,18 +1,24 @@
-AGGIORNAMENTO PLANNER
+PLANNER AGGIORNATO V5
 
-Caricare nel repository GitHub planner questi due file:
-1. planner-patch-v3.js
-2. service-worker.js
-
-Il nuovo service-worker.js deve sostituire quello esistente.
+Caricare nel repository GitHub "planner" questi tre file, sostituendo quelli esistenti:
+- index.html
+- Agenda.html
+- service-worker.js
 
 Modifiche:
-- I minuti di ogni ora sono modificabili da 00 a 59.
-- Il flag cambia il colore ma non barra più il testo.
-- Ctrl + 1 attiva/disattiva il flag della riga in cui si trova il cursore.
-- Compatibilità con sincronizzazione Firebase e uso offline.
+- Ctrl + 1 attiva/disattiva il flag sia nelle righe orarie sia nelle "Cose da fare".
+- Il testo completato cambia colore, ma non viene barrato.
+- Rimosso il pulsante "Flag ore: nascosti".
+- Su PC il flag orario compare quando viene selezionato con Ctrl + 1.
+- Su iPhone/iPad i flag restano accessibili al tocco.
+- Nelle righe orarie:
+  * Invio crea una nuova riga con la stessa ora e gli stessi minuti iniziali.
+  * Alt + Invio va a capo dentro la stessa attività.
+  * I minuti restano modificabili da 00 a 59.
+  * Le righe aggiunte possono essere eliminate con la ×.
+- Compatibilità con i dati esistenti, Firebase e modalità offline.
 
 Dopo il caricamento aprire:
-https://tesi11alex-cell.github.io/planner/?v=3
+https://tesi11alex-cell.github.io/planner/?v=5
 
-Attendere alcuni secondi, chiudere e riaprire il Planner.
+Attendere qualche secondo, chiudere completamente il Planner e riaprirlo dall'icona.

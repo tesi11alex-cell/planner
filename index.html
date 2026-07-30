@@ -101,9 +101,14 @@
   .hour-check{
     appearance:none;-webkit-appearance:none;width:14px;height:14px;flex-shrink:0;margin-top:3px;
     border:1.5px solid var(--text-dim);border-radius:4px;background:transparent;cursor:pointer;position:relative;
-    display:none;
+    opacity:0;pointer-events:none;transition:opacity .12s ease, background .12s ease;
   }
-  body.show-hour-flags .hour-check{display:inline-block;}
+  .hour-row:hover .hour-check,
+  .hour-row:focus-within .hour-check,
+  .hour-check:checked{opacity:1;pointer-events:auto;}
+  @media (hover:none){
+    .hour-check{opacity:1;pointer-events:auto;}
+  }
   .hour-check:checked{background:var(--teal);border-color:var(--teal);}
   .hour-check:checked::after{
     content:"";position:absolute;left:3.5px;top:0.5px;width:3.5px;height:7px;
@@ -111,8 +116,18 @@
   }
   .hour-label{
     font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);
-    width:34px;flex-shrink:0;margin-top:3px;
+    width:42px;flex-shrink:0;margin-top:3px;
+    display:flex;align-items:center;gap:0;
   }
+  .hour-fixed{color:var(--text-dim);}
+  .hour-minute{
+    width:18px;min-width:18px;margin:0;padding:0;
+    border:none;border-bottom:1px solid transparent;border-radius:0;
+    background:transparent;color:var(--text-dim);
+    font:inherit;line-height:inherit;text-align:left;outline:none;
+  }
+  .hour-minute:hover{color:var(--text);border-bottom-color:var(--line);}
+  .hour-minute:focus{color:var(--text);border-bottom-color:var(--accent);outline:none;}
   .hour-input{
     flex:1;background:transparent;border:none;color:var(--text);
     font-family:'Inter',sans-serif;font-size:12.5px;padding:1px 4px;border-radius:4px;
@@ -121,7 +136,15 @@
   }
   .hour-input:hover{background:var(--panel-alt);}
   .hour-input:focus{background:var(--panel-alt);outline:none;}
-  .hour-row.hour-done .hour-input{color:var(--text-dim);text-decoration:line-through;}
+  .hour-row.hour-done .hour-input{color:var(--text-dim);text-decoration:none;}
+  .extra-hour-row{border-top-style:dashed;}
+  .extra-hour-del{
+    background:none;border:none;color:var(--text-dim);font-size:14px;cursor:pointer;
+    padding:0 2px;margin-top:1px;line-height:1;opacity:0;transition:opacity .12s ease;
+  }
+  .extra-hour-row:hover .extra-hour-del,
+  .extra-hour-row:focus-within .extra-hour-del{opacity:1;}
+  .extra-hour-del:hover{color:var(--danger);}
 
   .todo-box{
     background:var(--panel-alt);border:1px solid var(--line);border-radius:8px;padding:10px 10px 12px;
@@ -142,7 +165,7 @@
     resize:none;overflow:hidden;min-height:18px;}
   .todo-text:hover{background:var(--panel);border-radius:4px;}
   .todo-text:focus{background:var(--panel);border-radius:4px;outline:none;}
-  .todo-item.done .todo-text{color:var(--text-dim);text-decoration:line-through;}
+  .todo-item.done .todo-text{color:var(--text-dim);text-decoration:none;}
   .todo-del{
     background:none;border:none;color:var(--text-dim);font-size:14px;cursor:pointer;padding:0 2px;
     flex-shrink:0;line-height:1;
@@ -186,7 +209,6 @@
     </div>
     <div class="controls">
       <button id="authBtn" title="Accedi per sincronizzare l'agenda">Accedi con Google</button>
-      <button id="toggleFlagsBtn" title="Mostra/nascondi le spunte sulle ore">Flag ore: nascosti</button>
       <select id="monthSelect" aria-label="Vai al mese"></select>
       <button class="nav-arrow" id="prevBtn" aria-label="Settimana precedente" title="Settimana precedente">‹</button>
       <button class="btn-today" id="todayBtn">OGGI</button>
@@ -314,28 +336,50 @@ function getMonday(d){
 }
 
 function storageKey(d){return `day:${dateKey(d)}`;}
-function emptyDay(){return {hours:{}, tasks:[]};}
+function emptyDay(){return {hours:{}, extraHours:[], tasks:[]};}
+
+function normalizeMinutes(value){
+  const digits = String(value ?? '00').replace(/\D/g,'').slice(0,2);
+  if(!digits) return '00';
+  const number = Math.max(0, Math.min(59, Number(digits)));
+  return String(number).padStart(2,'0');
+}
 
 function normalizeDay(value){
   const val = value && typeof value === 'object' ? value : emptyDay();
   if(!val.hours || typeof val.hours !== 'object') val.hours = {};
+  if(!Array.isArray(val.extraHours)) val.extraHours = [];
   if(!Array.isArray(val.tasks)) val.tasks = [];
+
   Object.keys(val.hours).forEach(h=>{
     if(typeof val.hours[h] === 'string'){
-      val.hours[h] = {text: val.hours[h], done:false};
+      val.hours[h] = {text: val.hours[h], done:false, minutes:'00'};
     }else{
       val.hours[h] = {
         text: val.hours[h]?.text || '',
-        done: Boolean(val.hours[h]?.done)
+        done: Boolean(val.hours[h]?.done),
+        minutes: normalizeMinutes(val.hours[h]?.minutes)
       };
     }
   });
+
+  val.extraHours = val.extraHours
+    .filter(row=>row && HOURS.includes(row.baseHour))
+    .map(row=>({
+      id: String(row.id ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`),
+      baseHour: row.baseHour,
+      text: row.text || '',
+      done: Boolean(row.done),
+      minutes: normalizeMinutes(row.minutes)
+    }));
+
   val.tasks = val.tasks.map(t=>({
     id: t.id ?? (Date.now()+Math.random().toString(16).slice(2)),
     text: t.text || '',
     done: Boolean(t.done)
   }));
-  return {hours:val.hours, tasks:val.tasks};
+
+  return {hours:val.hours, extraHours:val.extraHours, tasks:val.tasks};
 }
 
 function dayRefFromKey(key){
@@ -390,6 +434,7 @@ async function storageSetSafe(key, value){
       const parsed = normalizeDay(JSON.parse(value));
       await setDoc(dayRefFromKey(key.slice(4)), {
         hours: parsed.hours,
+        extraHours: parsed.extraHours,
         tasks: parsed.tasks,
         updatedAt: serverTimestamp()
       });
@@ -438,6 +483,7 @@ async function migrateLocalDataToCloud(){
           const parsed = normalizeDay(JSON.parse(raw));
           await setDoc(remoteRef, {
             hours: parsed.hours,
+            extraHours: parsed.extraHours,
             tasks: parsed.tasks,
             updatedAt: serverTimestamp()
           });
@@ -594,20 +640,47 @@ function escapeHTML(value){
     .replace(/"/g,'&quot;');
 }
 
+function hourRowHTML(baseHour, entry, isNow, extraId){
+  const minutes = normalizeMinutes(entry.minutes);
+  const extraAttr = extraId ? ` data-extra-id="${escapeHTML(extraId)}"` : '';
+  const extraClass = extraId ? ' extra-hour-row' : '';
+  const deleteButton = extraId
+    ? `<button class="extra-hour-del" data-extra-hour-del="${escapeHTML(extraId)}" aria-label="Elimina riga oraria" title="Elimina riga">×</button>`
+    : '';
+
+  return `<div class="hour-row${extraClass} ${isNow?'now':''} ${entry.done?'hour-done':''}" data-base-hour="${baseHour}"${extraAttr}>
+    <input type="checkbox" class="hour-check" data-hour-check ${entry.done?'checked':''}
+      title="Attiva o disattiva il flag">
+    <span class="hour-label">
+      <span class="hour-fixed">${baseHour.slice(0,2)}:</span><input type="text" class="hour-minute"
+        inputmode="numeric" maxlength="2" autocomplete="off" spellcheck="false"
+        value="${minutes}" data-hour-minute aria-label="Minuti delle ${baseHour.slice(0,2)}"
+        title="Modifica i minuti da 00 a 59">
+    </span>
+    <textarea class="hour-input" rows="1" data-hour-input placeholder=""
+      title="Invio: nuova riga · Alt + Invio: vai a capo · Ctrl + 1: flag">${escapeHTML(entry.text)}</textarea>
+    ${deleteButton}
+  </div>`;
+}
+
 function renderHours(container, d, val){
   const now = new Date();
   const nowHour = now.getHours();
   const isToday = sameDay(d, now);
-  container.innerHTML = HOURS.map(h=>{
+  const html = [];
+
+  HOURS.forEach(h=>{
     const hh = parseInt(h.slice(0,2),10);
     const isNow = isToday && hh === nowHour;
-    const entry = val.hours[h] || {text:'', done:false};
-    return `<div class="hour-row ${isNow?'now':''} ${entry.done?'hour-done':''}">
-      <input type="checkbox" class="hour-check" data-hour-check="${h}" ${entry.done?'checked':''}>
-      <span class="hour-label">${h}</span>
-      <textarea class="hour-input" rows="1" data-hour-input="${h}" placeholder="">${escapeHTML(entry.text)}</textarea>
-    </div>`;
-  }).join('');
+    const entry = val.hours[h] || {text:'', done:false, minutes:'00'};
+    html.push(hourRowHTML(h, entry, isNow, null));
+
+    val.extraHours
+      .filter(row=>row.baseHour === h)
+      .forEach(row=>html.push(hourRowHTML(h, row, false, row.id)));
+  });
+
+  container.innerHTML = html.join('');
   container.querySelectorAll('.hour-input').forEach(ta=>autoGrow(ta));
 }
 
@@ -621,7 +694,7 @@ function renderTodos(container, val){
   container.innerHTML = val.tasks.map(t=>`
     <div class="todo-item ${t.done?'done':''}" data-task-id="${escapeHTML(t.id)}">
       <input type="checkbox" ${t.done?'checked':''} data-task-check="${escapeHTML(t.id)}">
-      <textarea class="todo-text" rows="1" data-task-text="${escapeHTML(t.id)}">${escapeHTML(t.text)}</textarea>
+      <textarea class="todo-text" rows="1" data-task-text="${escapeHTML(t.id)}" title="Ctrl + 1 per attivare o disattivare il flag">${escapeHTML(t.text)}</textarea>
       <button class="todo-del" data-task-del="${escapeHTML(t.id)}" aria-label="Elimina">×</button>
     </div>
   `).join('');
@@ -645,6 +718,47 @@ function refreshDayUI(d){
   if(listEl) renderTodos(listEl, val);
 }
 
+function getHourEntry(val, row){
+  const baseHour = row?.dataset.baseHour;
+  if(!baseHour) return null;
+
+  const extraId = row.dataset.extraId;
+  if(extraId){
+    return val.extraHours.find(item=>String(item.id) === String(extraId)) || null;
+  }
+
+  if(!val.hours[baseHour]){
+    val.hours[baseHour] = {text:'', done:false, minutes:'00'};
+  }
+  return val.hours[baseHour];
+}
+
+function insertExtraHourRow(val, row, entry){
+  const baseHour = row.dataset.baseHour;
+  const id = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const newRow = {
+    id,
+    baseHour,
+    text:'',
+    done:false,
+    minutes:normalizeMinutes(entry?.minutes)
+  };
+
+  const currentExtraId = row.dataset.extraId;
+  if(currentExtraId){
+    const currentIndex = val.extraHours.findIndex(item=>String(item.id) === String(currentExtraId));
+    val.extraHours.splice(currentIndex >= 0 ? currentIndex + 1 : val.extraHours.length, 0, newRow);
+  }else{
+    const firstSameHour = val.extraHours.findIndex(item=>item.baseHour === baseHour);
+    if(firstSameHour >= 0){
+      val.extraHours.splice(firstSameHour, 0, newRow);
+    }else{
+      val.extraHours.push(newRow);
+    }
+  }
+  return id;
+}
+
 function attachDayEvents(d){
   const key = dateKey(d);
   const card = document.querySelector(`.day[data-key="${key}"]`);
@@ -655,25 +769,36 @@ function attachDayEvents(d){
     const target = event.target;
     if(target.matches('.hour-input')) autoGrow(target);
     if(target.matches('.todo-text')) autoGrow(target,18);
+    if(target.matches('[data-hour-minute]')){
+      target.value = target.value.replace(/\D/g,'').slice(0,2);
+    }
+  });
+
+  card.addEventListener('focusin', (event)=>{
+    const target = event.target;
+    if(target.matches('[data-hour-minute]')) target.select();
   });
 
   card.addEventListener('change', async (event)=>{
     const target = event.target;
     const val = await loadDay(d);
 
-    if(target.matches('[data-hour-input]')){
-      const h = target.dataset.hourInput;
-      if(!val.hours[h]) val.hours[h] = {text:'', done:false};
-      val.hours[h].text = target.value;
-      await saveDay(d);
-      return;
-    }
+    if(target.matches('[data-hour-minute], [data-hour-input], [data-hour-check]')){
+      const row = target.closest('.hour-row');
+      const entry = getHourEntry(val, row);
+      if(!entry) return;
 
-    if(target.matches('[data-hour-check]')){
-      const h = target.dataset.hourCheck;
-      if(!val.hours[h]) val.hours[h] = {text:'', done:false};
-      val.hours[h].done = target.checked;
-      target.closest('.hour-row')?.classList.toggle('hour-done', target.checked);
+      if(target.matches('[data-hour-minute]')){
+        const minutes = normalizeMinutes(target.value);
+        target.value = minutes;
+        entry.minutes = minutes;
+      }else if(target.matches('[data-hour-input]')){
+        entry.text = target.value;
+      }else{
+        entry.done = target.checked;
+        row.classList.toggle('hour-done', target.checked);
+      }
+
       await saveDay(d);
       return;
     }
@@ -696,6 +821,17 @@ function attachDayEvents(d){
   card.addEventListener('click', async (event)=>{
     const target = event.target;
 
+    if(target.matches('[data-extra-hour-del]')){
+      const val = await loadDay(d);
+      val.extraHours = val.extraHours.filter(
+        row=>String(row.id) !== String(target.dataset.extraHourDel)
+      );
+      const hoursEl = card.querySelector(`[data-hours="${key}"]`);
+      if(hoursEl) renderHours(hoursEl, d, val);
+      await saveDay(d);
+      return;
+    }
+
     if(target.matches('[data-task-del]')){
       const val = await loadDay(d);
       val.tasks = val.tasks.filter(x=>String(x.id)!==target.dataset.taskDel);
@@ -712,6 +848,49 @@ function attachDayEvents(d){
 
   card.addEventListener('keydown', async (event)=>{
     const target = event.target;
+
+    const ctrlOne = event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey &&
+      (event.key === '1' || event.code === 'Digit1');
+
+    if(ctrlOne){
+      const container = target.closest('.hour-row, .todo-item');
+      const checkbox = container?.querySelector('input[type="checkbox"]');
+      if(checkbox){
+        event.preventDefault();
+        event.stopPropagation();
+        checkbox.checked = !checkbox.checked;
+        checkbox.dispatchEvent(new Event('change', {bubbles:true}));
+        return;
+      }
+    }
+
+    if(target.matches('.hour-input') && event.key === 'Enter'){
+      if(event.altKey){
+        return;
+      }
+
+      if(!event.ctrlKey && !event.shiftKey && !event.metaKey){
+        event.preventDefault();
+        const val = await loadDay(d);
+        const row = target.closest('.hour-row');
+        const entry = getHourEntry(val, row);
+        if(!entry) return;
+
+        entry.text = target.value;
+        const newId = insertExtraHourRow(val, row, entry);
+        const hoursEl = card.querySelector(`[data-hours="${key}"]`);
+        if(hoursEl) renderHours(hoursEl, d, val);
+        await saveDay(d);
+
+        requestAnimationFrame(()=>{
+          const newRow = Array.from(card.querySelectorAll('.hour-row[data-extra-id]'))
+            .find(item=>item.dataset.extraId === newId);
+          newRow?.querySelector('.hour-input')?.focus();
+        });
+        return;
+      }
+    }
+
     if(target.matches(`[data-add-input="${key}"]`) && event.key === 'Enter'){
       event.preventDefault();
       await addTask(d, card);
@@ -847,19 +1026,11 @@ function clearDataCache(){
 }
 
 async function loadHourFlagsSetting(){
-  try{
-    const res = await storageGetSafe('settings:hourFlagsVisible');
-    hourFlagsVisible = Boolean(res && res.value === 'true');
-  }catch(error){
-    hourFlagsVisible = false;
-  }
-  applyHourFlagsVisibility(hourFlagsVisible);
+  hourFlagsVisible = false;
 }
 
-function applyHourFlagsVisibility(visible){
-  document.body.classList.toggle('show-hour-flags', visible);
-  document.getElementById('toggleFlagsBtn').textContent =
-    visible ? 'Flag ore: visibili' : 'Flag ore: nascosti';
+function applyHourFlagsVisibility(){
+  // I flag si mostrano automaticamente sulla riga attiva e restano visibili quando selezionati.
 }
 
 async function handleAuthClick(){
@@ -916,16 +1087,6 @@ document.getElementById('todayBtn').addEventListener('click', ()=>{
   render();
 });
 document.getElementById('authBtn').addEventListener('click', handleAuthClick);
-document.getElementById('toggleFlagsBtn').addEventListener('click', async ()=>{
-  hourFlagsVisible = !hourFlagsVisible;
-  applyHourFlagsVisibility(hourFlagsVisible);
-  try{
-    await storageSetSafe('settings:hourFlagsVisible', String(hourFlagsVisible));
-  }catch(error){
-    console.error('Errore salvataggio impostazioni', error);
-    setSyncNotice('Non è stato possibile salvare l’impostazione delle spunte.');
-  }
-});
 window.addEventListener('resize', ()=>applyMobileVisibility());
 window.addEventListener('offline', ()=>setSyncNotice(offlineMessage()));
 window.addEventListener('online', async ()=>{
