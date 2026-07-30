@@ -179,6 +179,7 @@
       <span class="week-range" id="weekRange"></span>
     </div>
     <div class="controls">
+      <button id="authBtn" title="Accedi per sincronizzare l'agenda">Accedi con Google</button>
       <button id="toggleFlagsBtn" title="Mostra/nascondi le spunte sulle ore">Flag ore: nascosti</button>
       <select id="monthSelect" aria-label="Vai al mese"></select>
       <button class="nav-arrow" id="prevBtn" aria-label="Settimana precedente" title="Settimana precedente">‹</button>
@@ -198,7 +199,47 @@
   <footer id="syncNotice">—</footer>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  signOut,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAI6gnwATgqoKWJBZ6gED8VhvyNBxV_xqk",
+  authDomain: "planner-alessandro.firebaseapp.com",
+  projectId: "planner-alessandro",
+  storageBucket: "planner-alessandro.firebasestorage.app",
+  messagingSenderId: "437936177868",
+  appId: "1:437936177868:web:4e57ce00b20e9234d7f869"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: "select_account" });
+
+setPersistence(auth, browserLocalPersistence).catch((error)=>{
+  console.warn("Persistenza accesso non disponibile", error);
+});
+
 const HOURS = [];
 for(let h=8; h<=22; h++) HOURS.push(String(h).padStart(2,'0')+':00');
 
@@ -206,9 +247,13 @@ const DAY_NAMES = ['Domenica','Lunedi','Martedi','Mercoledi','Giovedi','Venerdi'
 const MONTH_NAMES = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 const YEARS = [2026, 2027, 2028, 2029, 2030];
 
-let currentDate = new Date(); // giorno "a fuoco" (guida sia la settimana desktop che il giorno mobile)
-let mobileIndex = 0; // 0..6, quale giorno della settimana e' mostrato su mobile
-const dataCache = {}; // dateKey -> {hours:{}, tasks:[]}
+let currentDate = new Date();
+let currentUser = null;
+let renderVersion = 0;
+let hourFlagsVisible = false;
+const dataCache = {};
+let weekUnsubscribers = [];
+let settingsUnsubscriber = null;
 
 function pad(n){return String(n).padStart(2,'0');}
 function dateKey(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
@@ -216,49 +261,157 @@ function sameDay(a,b){return dateKey(a)===dateKey(b);}
 function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
 
 function getMonday(d){
-  const day = d.getDay(); // 0=Dom
+  const day = d.getDay();
   const diff = day===0 ? -6 : 1-day;
   return addDays(d, diff);
 }
 
 function storageKey(d){return `day:${dateKey(d)}`;}
+function emptyDay(){return {hours:{}, tasks:[]};}
 
-// Fallback: se l'app viene aperta come file scaricato fuori da Claude,
-// window.storage potrebbe non esistere. In quel caso i dati restano solo
-// su quel dispositivo/browser (nessuna sincronizzazione tra dispositivi).
-const hasCloudStorage = typeof window.storage !== 'undefined' && window.storage;
+function normalizeDay(value){
+  const val = value && typeof value === 'object' ? value : emptyDay();
+  if(!val.hours || typeof val.hours !== 'object') val.hours = {};
+  if(!Array.isArray(val.tasks)) val.tasks = [];
+  Object.keys(val.hours).forEach(h=>{
+    if(typeof val.hours[h] === 'string'){
+      val.hours[h] = {text: val.hours[h], done:false};
+    }else{
+      val.hours[h] = {
+        text: val.hours[h]?.text || '',
+        done: Boolean(val.hours[h]?.done)
+      };
+    }
+  });
+  val.tasks = val.tasks.map(t=>({
+    id: t.id ?? (Date.now()+Math.random().toString(16).slice(2)),
+    text: t.text || '',
+    done: Boolean(t.done)
+  }));
+  return {hours:val.hours, tasks:val.tasks};
+}
+
+function dayRefFromKey(key){
+  return doc(db, 'users', currentUser.uid, 'days', key);
+}
+
+function settingsRef(){
+  return doc(db, 'users', currentUser.uid, 'settings', 'preferences');
+}
+
+function setSyncNotice(message){
+  document.getElementById('syncNotice').textContent = message;
+}
 
 async function storageGetSafe(key){
-  if(hasCloudStorage){
-    return await window.storage.get(key);
+  if(currentUser){
+    if(key.startsWith('day:')){
+      const snap = await getDoc(dayRefFromKey(key.slice(4)));
+      return snap.exists()
+        ? {key, value:JSON.stringify(normalizeDay(snap.data()))}
+        : null;
+    }
+    if(key === 'settings:hourFlagsVisible'){
+      const snap = await getDoc(settingsRef());
+      return snap.exists()
+        ? {key, value:String(Boolean(snap.data().hourFlagsVisible))}
+        : null;
+    }
+    return null;
   }
   const raw = localStorage.getItem(key);
-  return raw ? {key, value: raw} : null;
+  return raw ? {key, value:raw} : null;
 }
+
 async function storageSetSafe(key, value){
-  if(hasCloudStorage){
-    return await window.storage.set(key, value);
+  if(currentUser){
+    if(key.startsWith('day:')){
+      const parsed = normalizeDay(JSON.parse(value));
+      await setDoc(dayRefFromKey(key.slice(4)), {
+        hours: parsed.hours,
+        tasks: parsed.tasks,
+        updatedAt: serverTimestamp()
+      });
+      return {key, value};
+    }
+    if(key === 'settings:hourFlagsVisible'){
+      await setDoc(settingsRef(), {
+        hourFlagsVisible: value === 'true',
+        updatedAt: serverTimestamp()
+      }, {merge:true});
+      return {key, value};
+    }
+    return {key, value};
   }
   localStorage.setItem(key, value);
   return {key, value};
 }
 
+async function migrateLocalDataToCloud(){
+  if(!currentUser) return;
+  const marker = `planner:migrated:${currentUser.uid}`;
+  if(localStorage.getItem(marker) === 'true') return;
+
+  const keys = [];
+  for(let i=0; i<localStorage.length; i++){
+    const key = localStorage.key(i);
+    if(key && (key.startsWith('day:') || key === 'settings:hourFlagsVisible')){
+      keys.push(key);
+    }
+  }
+
+  if(keys.length === 0){
+    localStorage.setItem(marker, 'true');
+    return;
+  }
+
+  setSyncNotice('Trasferimento dei dati locali su Firebase…');
+
+  for(const key of keys){
+    if(key.startsWith('day:')){
+      const remoteRef = dayRefFromKey(key.slice(4));
+      const remote = await getDoc(remoteRef);
+      if(!remote.exists()){
+        const raw = localStorage.getItem(key);
+        if(raw){
+          const parsed = normalizeDay(JSON.parse(raw));
+          await setDoc(remoteRef, {
+            hours: parsed.hours,
+            tasks: parsed.tasks,
+            updatedAt: serverTimestamp()
+          });
+        }
+      }
+    }else if(key === 'settings:hourFlagsVisible'){
+      const remoteRef = settingsRef();
+      const remote = await getDoc(remoteRef);
+      if(!remote.exists()){
+        await setDoc(remoteRef, {
+          hourFlagsVisible: localStorage.getItem(key) === 'true',
+          updatedAt: serverTimestamp()
+        });
+      }
+    }
+  }
+
+  keys.forEach(key=>localStorage.removeItem(key));
+  localStorage.setItem(marker, 'true');
+}
+
 async function loadDay(d){
   const key = dateKey(d);
   if(dataCache[key]) return dataCache[key];
-  let val = {hours:{}, tasks:[]};
+
+  let val = emptyDay();
   try{
     const res = await storageGetSafe(storageKey(d));
-    if(res && res.value){ val = JSON.parse(res.value); }
-  }catch(e){ /* nessun dato salvato ancora */ }
-  if(!val.hours) val.hours = {};
-  if(!val.tasks) val.tasks = [];
-  // migrazione: vecchie voci orarie salvate come semplice testo
-  Object.keys(val.hours).forEach(h=>{
-    if(typeof val.hours[h] === 'string'){
-      val.hours[h] = {text: val.hours[h], done:false};
-    }
-  });
+    if(res && res.value) val = normalizeDay(JSON.parse(res.value));
+  }catch(error){
+    console.error('Errore caricamento', error);
+    setSyncNotice(currentUser
+      ? 'Errore nel caricamento da Firebase. Controlla la connessione.'
+      : 'Dati locali non disponibili.');
+  }
   dataCache[key] = val;
   return val;
 }
@@ -267,12 +420,18 @@ async function saveDay(d){
   const key = dateKey(d);
   const val = dataCache[key];
   if(!val) return;
-  try{
-    await storageSetSafe(storageKey(d), JSON.stringify(val));
-  }catch(e){ console.error('Errore salvataggio', e); }
-}
 
-function isMobile(){ return window.innerWidth <= 820; }
+  try{
+    if(currentUser) setSyncNotice('Salvataggio in corso…');
+    await storageSetSafe(storageKey(d), JSON.stringify(val));
+    setSyncNotice(currentUser
+      ? `Agenda sincronizzata con ${currentUser.email || 'il tuo account Google'}.`
+      : 'Dati salvati solo su questo dispositivo. Accedi con Google per sincronizzarli.');
+  }catch(error){
+    console.error('Errore salvataggio', error);
+    setSyncNotice('Salvataggio non riuscito. Controlla la connessione e riprova.');
+  }
+}
 
 function currentWeekDates(){
   const monday = getMonday(currentDate);
@@ -286,7 +445,7 @@ function updateHeaderTitle(weekDates){
   let title;
   if(first.getMonth() === last.getMonth()){
     title = `${MONTH_NAMES[first.getMonth()]} ${first.getFullYear()}`;
-  } else {
+  }else{
     title = `${MONTH_NAMES[first.getMonth()]} / ${MONTH_NAMES[last.getMonth()]} ${last.getFullYear()}`;
   }
   document.getElementById('monthTitle').textContent = title;
@@ -301,7 +460,7 @@ function populateMonthSelect(){
     MONTH_NAMES.forEach((name, i)=>{
       const opt = document.createElement('option');
       opt.value = `${y}-${i}`;
-      opt.textContent = name + ' ' + y;
+      opt.textContent = `${name} ${y}`;
       sel.appendChild(opt);
     });
   });
@@ -335,6 +494,14 @@ function dayCardHTML(d, todayFlag){
   </div>`;
 }
 
+function escapeHTML(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
 function renderHours(container, d, val){
   const now = new Date();
   const nowHour = now.getHours();
@@ -343,11 +510,10 @@ function renderHours(container, d, val){
     const hh = parseInt(h.slice(0,2),10);
     const isNow = isToday && hh === nowHour;
     const entry = val.hours[h] || {text:'', done:false};
-    const text = entry.text || '';
     return `<div class="hour-row ${isNow?'now':''} ${entry.done?'hour-done':''}">
       <input type="checkbox" class="hour-check" data-hour-check="${h}" ${entry.done?'checked':''}>
       <span class="hour-label">${h}</span>
-      <textarea class="hour-input" rows="1" data-hour-input="${h}" placeholder="">${text.replace(/</g,'&lt;')}</textarea>
+      <textarea class="hour-input" rows="1" data-hour-input="${h}" placeholder="">${escapeHTML(entry.text)}</textarea>
     </div>`;
   }).join('');
   container.querySelectorAll('.hour-input').forEach(ta=>autoGrow(ta));
@@ -359,176 +525,346 @@ function autoGrow(ta, minH){
   ta.style.height = Math.max(ta.scrollHeight, minH) + 'px';
 }
 
-function renderTodos(container, d, val){
+function renderTodos(container, val){
   container.innerHTML = val.tasks.map(t=>`
-    <div class="todo-item ${t.done?'done':''}" data-task-id="${t.id}">
-      <input type="checkbox" ${t.done?'checked':''} data-task-check="${t.id}">
-      <textarea class="todo-text" rows="1" data-task-text="${t.id}">${(t.text||'').replace(/</g,'&lt;')}</textarea>
-      <button class="todo-del" data-task-del="${t.id}" aria-label="Elimina">×</button>
+    <div class="todo-item ${t.done?'done':''}" data-task-id="${escapeHTML(t.id)}">
+      <input type="checkbox" ${t.done?'checked':''} data-task-check="${escapeHTML(t.id)}">
+      <textarea class="todo-text" rows="1" data-task-text="${escapeHTML(t.id)}">${escapeHTML(t.text)}</textarea>
+      <button class="todo-del" data-task-del="${escapeHTML(t.id)}" aria-label="Elimina">×</button>
     </div>
   `).join('');
-  container.querySelectorAll('.todo-text').forEach(ta=>autoGrow(ta, 18));
+  container.querySelectorAll('.todo-text').forEach(ta=>autoGrow(ta,18));
 }
 
-async function hydrateDay(d){
+function refreshDayUI(d){
   const key = dateKey(d);
-  const val = await loadDay(d);
-  const hoursEl = document.querySelector(`[data-hours="${key}"]`);
-  const listEl = document.querySelector(`[data-list="${key}"]`);
+  const card = document.querySelector(`.day[data-key="${key}"]`);
+  const val = dataCache[key] || emptyDay();
+  if(!card) return;
+
+  const active = document.activeElement;
+  if(active && card.contains(active) && (active.matches('textarea') || active.matches('input[type="text"]'))){
+    return;
+  }
+
+  const hoursEl = card.querySelector(`[data-hours="${key}"]`);
+  const listEl = card.querySelector(`[data-list="${key}"]`);
   if(hoursEl) renderHours(hoursEl, d, val);
-  if(listEl) renderTodos(listEl, d, val);
+  if(listEl) renderTodos(listEl, val);
 }
 
 function attachDayEvents(d){
   const key = dateKey(d);
   const card = document.querySelector(`.day[data-key="${key}"]`);
-  if(!card) return;
+  if(!card || card.dataset.eventsBound === 'true') return;
+  card.dataset.eventsBound = 'true';
 
-  card.querySelectorAll('[data-hour-input]').forEach(ta=>{
-    ta.addEventListener('input', ()=>autoGrow(ta));
-    ta.addEventListener('change', async ()=>{
-      const val = await loadDay(d);
-      const h = ta.dataset.hourInput;
-      if(!val.hours[h]) val.hours[h] = {text:'', done:false};
-      val.hours[h].text = ta.value;
-      saveDay(d);
-    });
+  card.addEventListener('input', (event)=>{
+    const target = event.target;
+    if(target.matches('.hour-input')) autoGrow(target);
+    if(target.matches('.todo-text')) autoGrow(target,18);
   });
 
-  card.querySelectorAll('[data-hour-check]').forEach(cb=>{
-    cb.addEventListener('change', async ()=>{
-      const val = await loadDay(d);
-      const h = cb.dataset.hourCheck;
-      if(!val.hours[h]) val.hours[h] = {text:'', done:false};
-      val.hours[h].done = cb.checked;
-      saveDay(d);
-      const row = cb.closest('.hour-row');
-      if(row) row.classList.toggle('hour-done', cb.checked);
-    });
-  });
-
-  card.querySelectorAll('[data-task-check]').forEach(cb=>{
-    cb.addEventListener('change', async ()=>{
-      const val = await loadDay(d);
-      const t = val.tasks.find(x=>String(x.id)===cb.dataset.taskCheck);
-      if(t){ t.done = cb.checked; saveDay(d); }
-      const item = cb.closest('.todo-item');
-      if(item) item.classList.toggle('done', cb.checked);
-    });
-  });
-
-  card.querySelectorAll('[data-task-text]').forEach(inp=>{
-    inp.addEventListener('input', ()=>autoGrow(inp, 18));
-    inp.addEventListener('change', async ()=>{
-      const val = await loadDay(d);
-      const t = val.tasks.find(x=>String(x.id)===inp.dataset.taskText);
-      if(t){ t.text = inp.value; saveDay(d); }
-    });
-  });
-
-  card.querySelectorAll('[data-task-del]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      const val = await loadDay(d);
-      val.tasks = val.tasks.filter(x=>String(x.id)!==btn.dataset.taskDel);
-      saveDay(d);
-      hydrateDay(d).then(()=>attachDayEvents(d));
-    });
-  });
-
-  const addInput = card.querySelector(`[data-add-input="${key}"]`);
-  const addBtn = card.querySelector(`[data-add-btn="${key}"]`);
-  async function addTask(){
-    const text = addInput.value.trim();
-    if(!text) return;
+  card.addEventListener('change', async (event)=>{
+    const target = event.target;
     const val = await loadDay(d);
-    val.tasks.push({id: Date.now()+Math.random().toString(16).slice(2), text, done:false});
-    addInput.value = '';
-    saveDay(d);
-    hydrateDay(d).then(()=>attachDayEvents(d));
+
+    if(target.matches('[data-hour-input]')){
+      const h = target.dataset.hourInput;
+      if(!val.hours[h]) val.hours[h] = {text:'', done:false};
+      val.hours[h].text = target.value;
+      await saveDay(d);
+      return;
+    }
+
+    if(target.matches('[data-hour-check]')){
+      const h = target.dataset.hourCheck;
+      if(!val.hours[h]) val.hours[h] = {text:'', done:false};
+      val.hours[h].done = target.checked;
+      target.closest('.hour-row')?.classList.toggle('hour-done', target.checked);
+      await saveDay(d);
+      return;
+    }
+
+    if(target.matches('[data-task-check]')){
+      const task = val.tasks.find(x=>String(x.id)===target.dataset.taskCheck);
+      if(task) task.done = target.checked;
+      target.closest('.todo-item')?.classList.toggle('done', target.checked);
+      await saveDay(d);
+      return;
+    }
+
+    if(target.matches('[data-task-text]')){
+      const task = val.tasks.find(x=>String(x.id)===target.dataset.taskText);
+      if(task) task.text = target.value;
+      await saveDay(d);
+    }
+  });
+
+  card.addEventListener('click', async (event)=>{
+    const target = event.target;
+
+    if(target.matches('[data-task-del]')){
+      const val = await loadDay(d);
+      val.tasks = val.tasks.filter(x=>String(x.id)!==target.dataset.taskDel);
+      const listEl = card.querySelector(`[data-list="${key}"]`);
+      if(listEl) renderTodos(listEl, val);
+      await saveDay(d);
+      return;
+    }
+
+    if(target.matches(`[data-add-btn="${key}"]`)){
+      await addTask(d, card);
+    }
+  });
+
+  card.addEventListener('keydown', async (event)=>{
+    const target = event.target;
+    if(target.matches(`[data-add-input="${key}"]`) && event.key === 'Enter'){
+      event.preventDefault();
+      await addTask(d, card);
+    }
+  });
+}
+
+async function addTask(d, card){
+  const key = dateKey(d);
+  const input = card.querySelector(`[data-add-input="${key}"]`);
+  const text = input.value.trim();
+  if(!text) return;
+
+  const val = await loadDay(d);
+  val.tasks.push({
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    text,
+    done:false
+  });
+  input.value = '';
+  const listEl = card.querySelector(`[data-list="${key}"]`);
+  if(listEl) renderTodos(listEl, val);
+  await saveDay(d);
+}
+
+function stopRealtimeListeners(){
+  weekUnsubscribers.forEach(unsub=>unsub());
+  weekUnsubscribers = [];
+  if(settingsUnsubscriber){
+    settingsUnsubscriber();
+    settingsUnsubscriber = null;
   }
-  addBtn.addEventListener('click', addTask);
-  addInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); addTask(); } });
+}
+
+function subscribeToWeek(weekDates){
+  weekUnsubscribers.forEach(unsub=>unsub());
+  weekUnsubscribers = [];
+  if(!currentUser) return;
+
+  weekDates.forEach(d=>{
+    const key = dateKey(d);
+    const unsub = onSnapshot(
+      dayRefFromKey(key),
+      (snapshot)=>{
+        dataCache[key] = snapshot.exists()
+          ? normalizeDay(snapshot.data())
+          : emptyDay();
+        refreshDayUI(d);
+        if(!snapshot.metadata.hasPendingWrites){
+          setSyncNotice(`Agenda sincronizzata con ${currentUser.email || 'il tuo account Google'}.`);
+        }
+      },
+      (error)=>{
+        console.error('Errore sincronizzazione', error);
+        setSyncNotice('Sincronizzazione non disponibile. Controlla le regole Firestore e la connessione.');
+      }
+    );
+    weekUnsubscribers.push(unsub);
+  });
+}
+
+function subscribeToSettings(){
+  if(settingsUnsubscriber){
+    settingsUnsubscriber();
+    settingsUnsubscriber = null;
+  }
+  if(!currentUser) return;
+
+  settingsUnsubscriber = onSnapshot(
+    settingsRef(),
+    (snapshot)=>{
+      if(snapshot.exists()){
+        hourFlagsVisible = Boolean(snapshot.data().hourFlagsVisible);
+        applyHourFlagsVisibility(hourFlagsVisible);
+      }
+    },
+    (error)=>console.error('Errore impostazioni', error)
+  );
 }
 
 async function render(){
+  const version = ++renderVersion;
   const weekDates = currentWeekDates();
   updateHeaderTitle(weekDates);
-  document.getElementById('monthSelect').value = `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
+  document.getElementById('monthSelect').value =
+    `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
 
   const grid = document.getElementById('weekGrid');
   const now = new Date();
-  grid.innerHTML = weekDates.map(d=>dayCardHTML(d, sameDay(d, now))).join('');
+  grid.innerHTML = weekDates.map(d=>dayCardHTML(d, sameDay(d,now))).join('');
 
   for(const d of weekDates){
-    await hydrateDay(d);
+    const val = await loadDay(d);
+    if(version !== renderVersion) return;
+    const key = dateKey(d);
+    const hoursEl = document.querySelector(`[data-hours="${key}"]`);
+    const listEl = document.querySelector(`[data-list="${key}"]`);
+    if(hoursEl) renderHours(hoursEl,d,val);
+    if(listEl) renderTodos(listEl,val);
     attachDayEvents(d);
   }
 
   applyMobileVisibility(weekDates);
+  subscribeToWeek(weekDates);
 }
 
 function applyMobileVisibility(weekDates){
   if(!weekDates) weekDates = currentWeekDates();
   const cards = document.querySelectorAll('.day');
-  const activeIdx = weekDates.findIndex(d=>sameDay(d, currentDate));
-  cards.forEach((c,i)=>{
-    c.classList.toggle('mobile-active', i===activeIdx);
+  let activeIdx = weekDates.findIndex(d=>sameDay(d,currentDate));
+  if(activeIdx < 0) activeIdx = 0;
+
+  cards.forEach((card,index)=>{
+    card.classList.toggle('mobile-active', index===activeIdx);
   });
+
   const activeDate = weekDates[activeIdx] || currentDate;
   document.getElementById('mobileDayLabel').textContent =
     `${DAY_NAMES[activeDate.getDay()]} ${pad(activeDate.getDate())}/${pad(activeDate.getMonth()+1)}`;
 }
 
+function clearDataCache(){
+  Object.keys(dataCache).forEach(key=>delete dataCache[key]);
+}
+
+async function loadHourFlagsSetting(){
+  try{
+    const res = await storageGetSafe('settings:hourFlagsVisible');
+    hourFlagsVisible = Boolean(res && res.value === 'true');
+  }catch(error){
+    hourFlagsVisible = false;
+  }
+  applyHourFlagsVisibility(hourFlagsVisible);
+}
+
+function applyHourFlagsVisibility(visible){
+  document.body.classList.toggle('show-hour-flags', visible);
+  document.getElementById('toggleFlagsBtn').textContent =
+    visible ? 'Flag ore: visibili' : 'Flag ore: nascosti';
+}
+
+async function handleAuthClick(){
+  const btn = document.getElementById('authBtn');
+  btn.disabled = true;
+  try{
+    if(currentUser){
+      await signOut(auth);
+      return;
+    }
+
+    try{
+      await signInWithPopup(auth, googleProvider);
+    }catch(error){
+      const redirectCodes = [
+        'auth/popup-blocked',
+        'auth/cancelled-popup-request',
+        'auth/operation-not-supported-in-this-environment'
+      ];
+      if(redirectCodes.includes(error.code)){
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      }
+      if(error.code !== 'auth/popup-closed-by-user'){
+        throw error;
+      }
+    }
+  }catch(error){
+    console.error('Errore accesso', error);
+    setSyncNotice(`Accesso non riuscito: ${error.message || error.code}`);
+  }finally{
+    btn.disabled = false;
+  }
+}
+
 document.getElementById('prevBtn').addEventListener('click', ()=>{
-  currentDate = addDays(currentDate, -7);
+  currentDate = addDays(currentDate,-7);
   render();
 });
 document.getElementById('nextBtn').addEventListener('click', ()=>{
-  currentDate = addDays(currentDate, 7);
+  currentDate = addDays(currentDate,7);
   render();
 });
 document.getElementById('prevDayMobile').addEventListener('click', ()=>{
-  currentDate = addDays(currentDate, -1);
+  currentDate = addDays(currentDate,-1);
   render();
 });
 document.getElementById('nextDayMobile').addEventListener('click', ()=>{
-  currentDate = addDays(currentDate, 1);
+  currentDate = addDays(currentDate,1);
   render();
 });
 document.getElementById('todayBtn').addEventListener('click', ()=>{
   currentDate = new Date();
   render();
 });
-
+document.getElementById('authBtn').addEventListener('click', handleAuthClick);
+document.getElementById('toggleFlagsBtn').addEventListener('click', async ()=>{
+  hourFlagsVisible = !hourFlagsVisible;
+  applyHourFlagsVisibility(hourFlagsVisible);
+  try{
+    await storageSetSafe('settings:hourFlagsVisible', String(hourFlagsVisible));
+  }catch(error){
+    console.error('Errore salvataggio impostazioni', error);
+    setSyncNotice('Non è stato possibile salvare l’impostazione delle spunte.');
+  }
+});
 window.addEventListener('resize', ()=>applyMobileVisibility());
 
 populateMonthSelect();
-render();
-initHourFlagsToggle();
 
-document.getElementById('syncNotice').textContent = hasCloudStorage
-  ? 'I dati si salvano e si sincronizzano automaticamente sul tuo account Claude, su ogni dispositivo dove apri questo planner da Claude.'
-  : 'Attenzione: questo file e\' aperto fuori da Claude, quindi i dati restano salvati solo su questo dispositivo/browser e non si sincronizzano con altri.';
+getRedirectResult(auth).catch((error)=>{
+  console.error('Errore rientro accesso Google', error);
+  setSyncNotice(`Accesso non riuscito: ${error.message || error.code}`);
+});
 
-async function initHourFlagsToggle(){
-  const btn = document.getElementById('toggleFlagsBtn');
-  let visible = false;
-  try{
-    const res = await storageGetSafe('settings:hourFlagsVisible');
-    if(res && res.value === 'true') visible = true;
-  }catch(e){}
-  applyHourFlagsVisibility(visible);
-  btn.addEventListener('click', async ()=>{
-    visible = !visible;
-    applyHourFlagsVisibility(visible);
-    try{ await storageSetSafe('settings:hourFlagsVisible', String(visible)); }catch(e){}
-  });
-}
+onAuthStateChanged(auth, async (user)=>{
+  stopRealtimeListeners();
+  currentUser = user;
+  clearDataCache();
 
-function applyHourFlagsVisibility(visible){
-  document.body.classList.toggle('show-hour-flags', visible);
-  document.getElementById('toggleFlagsBtn').textContent = visible ? 'Flag ore: visibili' : 'Flag ore: nascosti';
-}
+  const authBtn = document.getElementById('authBtn');
+  if(user){
+    authBtn.textContent = 'Esci';
+    authBtn.title = `Connesso come ${user.email || user.displayName || 'utente Google'}`;
+    setSyncNotice('Connessione a Firebase…');
+    try{
+      await migrateLocalDataToCloud();
+    }catch(error){
+      console.error('Errore migrazione dati', error);
+      setSyncNotice('Accesso effettuato, ma il trasferimento dei vecchi dati locali non è riuscito.');
+    }
+  }else{
+    authBtn.textContent = 'Accedi con Google';
+    authBtn.title = 'Accedi per sincronizzare l’agenda';
+  }
+
+  await loadHourFlagsSetting();
+  await render();
+
+  if(user){
+    subscribeToSettings();
+    setSyncNotice(`Agenda sincronizzata con ${user.email || 'il tuo account Google'}.`);
+  }else{
+    setSyncNotice('Dati salvati solo su questo dispositivo. Accedi con Google per sincronizzarli.');
+  }
+});
 </script>
 </body>
 </html>
