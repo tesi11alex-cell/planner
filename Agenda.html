@@ -87,7 +87,7 @@
   .todo-box{flex:1 1 40%;min-width:0;max-width:230px;}
   .hour-row{
     display:flex;align-items:flex-start;gap:7px;
-    border-top:1px solid var(--line);padding:7px 0;
+    border-top:1px solid var(--line);padding:3px 0;
   }
   .hour-row:first-child{border-top:none;}
   .hour-row.now{background:linear-gradient(90deg, var(--accent-dim), transparent 65%);
@@ -109,8 +109,8 @@
   }
   .hour-input{
     flex:1;background:transparent;border:none;color:var(--text);
-    font-family:'Inter',sans-serif;font-size:12.5px;padding:3px 4px;border-radius:4px;
-    min-width:0;resize:none;overflow:hidden;line-height:1.4;min-height:34px;
+    font-family:'Inter',sans-serif;font-size:12.5px;padding:1px 4px;border-radius:4px;
+    min-width:0;resize:none;overflow:hidden;line-height:1.35;min-height:20px;
     font-variant-ligatures:none;
   }
   .hour-input:hover{background:var(--panel-alt);}
@@ -200,11 +200,11 @@
 
 <script>
 const HOURS = [];
-for(let h=7; h<=22; h++) HOURS.push(String(h).padStart(2,'0')+':00');
+for(let h=8; h<=22; h++) HOURS.push(String(h).padStart(2,'0')+':00');
 
 const DAY_NAMES = ['Domenica','Lunedi','Martedi','Mercoledi','Giovedi','Venerdi','Sabato'];
 const MONTH_NAMES = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
-const YEARS = [2026, 2027];
+const YEARS = [2026, 2027, 2028, 2029, 2030];
 
 let currentDate = new Date(); // giorno "a fuoco" (guida sia la settimana desktop che il giorno mobile)
 let mobileIndex = 0; // 0..6, quale giorno della settimana e' mostrato su mobile
@@ -319,7 +319,7 @@ function dayCardHTML(d, todayFlag){
   <div class="day ${todayFlag?'today':''}" data-key="${key}">
     <div class="day-head">
       <div class="day-name">${DAY_NAMES[d.getDay()]}</div>
-      <div class="day-date">${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}</div>
+      <div class="day-date">${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${MONTH_NAMES[d.getMonth()]}</div>
     </div>
     <div class="day-body">
       <div class="hours" data-hours="${key}"></div>
@@ -354,7 +354,7 @@ function renderHours(container, d, val){
 }
 
 function autoGrow(ta, minH){
-  minH = minH || 34;
+  minH = minH || 20;
   ta.style.height = 'auto';
   ta.style.height = Math.max(ta.scrollHeight, minH) + 'px';
 }
