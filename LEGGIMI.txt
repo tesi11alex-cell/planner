@@ -1,10 +1,18 @@
-PLANNER OFFLINE - VERSIONE CORRETTA
+AGGIORNAMENTO PLANNER
 
-Carica TUTTI i file presenti in questa cartella nella radice del repository GitHub planner.
-Sostituisci i file esistenti quando GitHub lo segnala.
+Caricare nel repository GitHub planner questi due file:
+1. planner-patch-v3.js
+2. service-worker.js
 
-Dopo il commit apri:
-https://tesi11alex-cell.github.io/planner/?v=offline2
+Il nuovo service-worker.js deve sostituire quello esistente.
 
-Sia index.html sia Agenda.html contengono ora l'agenda completa.
-Il service worker usa una nuova cache v2 per eliminare la vecchia versione.
+Modifiche:
+- I minuti di ogni ora sono modificabili da 00 a 59.
+- Il flag cambia il colore ma non barra più il testo.
+- Ctrl + 1 attiva/disattiva il flag della riga in cui si trova il cursore.
+- Compatibilità con sincronizzazione Firebase e uso offline.
+
+Dopo il caricamento aprire:
+https://tesi11alex-cell.github.io/planner/?v=3
+
+Attendere alcuni secondi, chiudere e riaprire il Planner.
