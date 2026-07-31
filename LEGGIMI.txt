@@ -1,21 +1,20 @@
-PLANNER AGGIORNATO V6
+PLANNER AGGIORNATO V7
 
 Caricare nel repository GitHub "planner" questi tre file, sostituendo quelli esistenti:
 - index.html
 - Agenda.html
 - service-worker.js
 
-Modifica:
-- Nell'elenco dei mesi compare anche il numero del mese:
-  01 Gennaio 2026
-  02 Febbraio 2026
-  ...
-  07 Luglio 2026
-  08 Agosto 2026
-  ...
-  12 Dicembre 2030
+Nuovo formato nella lista dei mesi:
+- Gennaio 01-2026
+- Febbraio 02-2026
+- ...
+- Luglio 07-2026
+- Agosto 08-2026
+- ...
+- Dicembre 12-2030
 
-Tutte le funzioni precedenti restano invariate.
+Tutte le altre funzioni restano invariate.
 
 Dopo il caricamento aprire:
-https://tesi11alex-cell.github.io/planner/?v=6
+https://tesi11alex-cell.github.io/planner/?v=7

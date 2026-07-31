@@ -598,7 +598,7 @@ function populateMonthSelect(){
     MONTH_NAMES.forEach((name, i)=>{
       const opt = document.createElement('option');
       opt.value = `${y}-${i}`;
-      opt.textContent = `${String(i+1).padStart(2,'0')} ${name} ${y}`;
+      opt.textContent = `${name} ${String(i+1).padStart(2,'0')}-${y}`;
       sel.appendChild(opt);
     });
   });

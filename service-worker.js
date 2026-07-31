@@ -1,4 +1,4 @@
-const CACHE_NAME = 'planner-offline-v6';
+const CACHE_NAME = 'planner-offline-v7';
 const APP_SHELL = [
   './',
   './index.html',
