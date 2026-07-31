@@ -1,24 +1,21 @@
-PLANNER AGGIORNATO V5
+PLANNER AGGIORNATO V6
 
 Caricare nel repository GitHub "planner" questi tre file, sostituendo quelli esistenti:
 - index.html
 - Agenda.html
 - service-worker.js
 
-Modifiche:
-- Ctrl + 1 attiva/disattiva il flag sia nelle righe orarie sia nelle "Cose da fare".
-- Il testo completato cambia colore, ma non viene barrato.
-- Rimosso il pulsante "Flag ore: nascosti".
-- Su PC il flag orario compare quando viene selezionato con Ctrl + 1.
-- Su iPhone/iPad i flag restano accessibili al tocco.
-- Nelle righe orarie:
-  * Invio crea una nuova riga con la stessa ora e gli stessi minuti iniziali.
-  * Alt + Invio va a capo dentro la stessa attività.
-  * I minuti restano modificabili da 00 a 59.
-  * Le righe aggiunte possono essere eliminate con la ×.
-- Compatibilità con i dati esistenti, Firebase e modalità offline.
+Modifica:
+- Nell'elenco dei mesi compare anche il numero del mese:
+  01 Gennaio 2026
+  02 Febbraio 2026
+  ...
+  07 Luglio 2026
+  08 Agosto 2026
+  ...
+  12 Dicembre 2030
+
+Tutte le funzioni precedenti restano invariate.
 
 Dopo il caricamento aprire:
-https://tesi11alex-cell.github.io/planner/?v=5
-
-Attendere qualche secondo, chiudere completamente il Planner e riaprirlo dall'icona.
+https://tesi11alex-cell.github.io/planner/?v=6
