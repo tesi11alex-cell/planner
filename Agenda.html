@@ -180,6 +180,41 @@
   }
   .todo-add button{padding:6px 10px;font-size:13px;}
 
+
+  /* ---------- Mini calendario ---------- */
+  .month-picker{position:relative;display:inline-flex;}
+  .month-picker select{min-width:172px;}
+  .mini-calendar{
+    position:absolute;z-index:50;top:calc(100% + 8px);right:0;
+    width:276px;padding:12px;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 14px 35px rgba(0,0,0,.38);
+  }
+  .mini-calendar[hidden]{display:none;}
+  .mini-calendar-title{
+    font-family:'Fraunces',serif;font-size:15px;font-weight:600;
+    margin:0 0 10px;text-align:center;color:var(--text);
+  }
+  .mini-calendar-grid{
+    display:grid;grid-template-columns:repeat(7,1fr);gap:4px;
+  }
+  .mini-weekday{
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    color:var(--text-dim);text-align:center;padding:2px 0 5px;
+  }
+  .mini-day{
+    width:32px;height:30px;padding:0;border-radius:6px;
+    background:transparent;border:1px solid transparent;
+    color:var(--text);font-size:12px;font-weight:500;
+  }
+  .mini-day:hover{background:var(--panel-alt);border-color:var(--line);}
+  .mini-day.today{border-color:var(--accent);color:var(--accent);}
+  .mini-day.selected{background:var(--teal);border-color:var(--teal);color:#0B0B0D;}
+  .mini-day-empty{width:32px;height:30px;}
+  @media (max-width:520px){
+    .mini-calendar{position:fixed;top:78px;left:50%;right:auto;transform:translateX(-50%);width:min(300px,calc(100vw - 28px));}
+  }
+
   /* ---------- Mobile: one day at a time ---------- */
   @media (max-width:820px){
     .week{gap:0;}
@@ -209,7 +244,10 @@
     </div>
     <div class="controls">
       <button id="authBtn" title="Accedi per sincronizzare l'agenda">Accedi con Google</button>
-      <select id="monthSelect" aria-label="Vai al mese"></select>
+      <div class="month-picker" id="monthPicker">
+        <select id="monthSelect" aria-label="Scegli mese e giorno"></select>
+        <div class="mini-calendar" id="miniCalendar" hidden aria-label="Calendario del mese"></div>
+      </div>
       <button class="nav-arrow" id="prevBtn" aria-label="Settimana precedente" title="Settimana precedente">‹</button>
       <button class="btn-today" id="todayBtn">OGGI</button>
       <button class="nav-arrow" id="nextBtn" aria-label="Settimana successiva" title="Settimana successiva">›</button>
@@ -591,9 +629,57 @@ function updateHeaderTitle(weekDates){
     `${pad(first.getDate())}/${pad(first.getMonth()+1)} - ${pad(last.getDate())}/${pad(last.getMonth()+1)}/${last.getFullYear()}`;
 }
 
+function miniCalendarSelection(){
+  const sel = document.getElementById('monthSelect');
+  const [year, month] = sel.value.split('-').map(Number);
+  return {year, month};
+}
+
+function renderMiniCalendar(){
+  const calendar = document.getElementById('miniCalendar');
+  const {year, month} = miniCalendarSelection();
+  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+  const weekDays = ['L','M','M','G','V','S','D'];
+
+  let html = `<div class="mini-calendar-title">${MONTH_NAMES[month]} ${year}</div>`;
+  html += '<div class="mini-calendar-grid">';
+  html += weekDays.map(day=>`<div class="mini-weekday">${day}</div>`).join('');
+  html += Array.from({length:firstWeekday}, ()=>'<div class="mini-day-empty"></div>').join('');
+
+  for(let day=1; day<=daysInMonth; day++){
+    const isToday =
+      today.getFullYear() === year &&
+      today.getMonth() === month &&
+      today.getDate() === day;
+    const isSelected =
+      currentDate.getFullYear() === year &&
+      currentDate.getMonth() === month &&
+      currentDate.getDate() === day;
+
+    html += `<button type="button" class="mini-day ${isToday?'today':''} ${isSelected?'selected':''}"
+      data-calendar-day="${day}" aria-label="${day} ${MONTH_NAMES[month]} ${year}">${day}</button>`;
+  }
+
+  html += '</div>';
+  calendar.innerHTML = html;
+}
+
+function showMiniCalendar(){
+  renderMiniCalendar();
+  document.getElementById('miniCalendar').hidden = false;
+}
+
+function hideMiniCalendar(){
+  document.getElementById('miniCalendar').hidden = true;
+}
+
 function populateMonthSelect(){
   const sel = document.getElementById('monthSelect');
+  const calendar = document.getElementById('miniCalendar');
   sel.innerHTML = '';
+
   YEARS.forEach(y=>{
     MONTH_NAMES.forEach((name, i)=>{
       const opt = document.createElement('option');
@@ -602,11 +688,28 @@ function populateMonthSelect(){
       sel.appendChild(opt);
     });
   });
+
   sel.value = `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
-  sel.addEventListener('change', ()=>{
-    const [y, m] = sel.value.split('-').map(Number);
-    currentDate = new Date(y, m, 1);
-    render();
+
+  sel.addEventListener('click', showMiniCalendar);
+  sel.addEventListener('change', showMiniCalendar);
+
+  calendar.addEventListener('click', async event=>{
+    const button = event.target.closest('[data-calendar-day]');
+    if(!button) return;
+
+    const {year, month} = miniCalendarSelection();
+    currentDate = new Date(year, month, Number(button.dataset.calendarDay));
+    hideMiniCalendar();
+    await render();
+  });
+
+  document.addEventListener('click', event=>{
+    if(!event.target.closest('#monthPicker')) hideMiniCalendar();
+  });
+
+  document.addEventListener('keydown', event=>{
+    if(event.key === 'Escape') hideMiniCalendar();
   });
 }
 
@@ -1067,10 +1170,12 @@ async function handleAuthClick(){
 }
 
 document.getElementById('prevBtn').addEventListener('click', ()=>{
+  hideMiniCalendar();
   currentDate = addDays(currentDate,-7);
   render();
 });
 document.getElementById('nextBtn').addEventListener('click', ()=>{
+  hideMiniCalendar();
   currentDate = addDays(currentDate,7);
   render();
 });
@@ -1083,6 +1188,7 @@ document.getElementById('nextDayMobile').addEventListener('click', ()=>{
   render();
 });
 document.getElementById('todayBtn').addEventListener('click', ()=>{
+  hideMiniCalendar();
   currentDate = new Date();
   render();
 });

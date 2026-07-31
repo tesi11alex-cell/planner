@@ -1,20 +1,24 @@
-PLANNER AGGIORNATO V7
+PLANNER AGGIORNATO V8
 
 Caricare nel repository GitHub "planner" questi tre file, sostituendo quelli esistenti:
 - index.html
 - Agenda.html
 - service-worker.js
 
-Nuovo formato nella lista dei mesi:
-- Gennaio 01-2026
-- Febbraio 02-2026
-- ...
-- Luglio 07-2026
-- Agosto 08-2026
-- ...
-- Dicembre 12-2030
+Nuova funzione:
+1. Apri la lista dei mesi.
+2. Scegli un mese, per esempio "Agosto 08-2026".
+3. Compare un piccolo calendario con tutti i giorni del mese.
+4. Clicca sul giorno desiderato.
+5. Il Planner apre direttamente quella data e la relativa settimana.
 
-Tutte le altre funzioni restano invariate.
+Tutte le funzioni precedenti restano invariate:
+- sincronizzazione Google/Firebase;
+- modalità offline;
+- minuti modificabili;
+- Ctrl + 1 per i flag;
+- Invio per creare una nuova riga oraria;
+- Alt + Invio per andare a capo.
 
 Dopo il caricamento aprire:
-https://tesi11alex-cell.github.io/planner/?v=7
+https://tesi11alex-cell.github.io/planner/?v=8
