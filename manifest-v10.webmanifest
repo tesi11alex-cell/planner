@@ -1,9 +1,9 @@
 {
-  "id": "./",
+  "id": "/planner/",
   "name": "Planner Alessandro",
   "short_name": "Planner",
-  "start_url": "./?v=10",
-  "scope": "./",
+  "start_url": "/planner/?v=11",
+  "scope": "/planner/",
   "display": "standalone",
   "background_color": "#0B0B0D",
   "theme_color": "#0B0B0D",
