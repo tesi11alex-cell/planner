@@ -1,24 +1,22 @@
-PLANNER AGGIORNATO V8
+AGENDA — SOLO CAMBIO ICONA
 
-Caricare nel repository GitHub "planner" questi tre file, sostituendo quelli esistenti:
-- index.html
-- Agenda.html
-- service-worker.js
+Non cambia nulla nel Planner:
+- stesso HTML
+- stesso Firebase
+- stesso login Google
+- stessi dati
 
-Nuova funzione:
-1. Apri la lista dei mesi.
-2. Scegli un mese, per esempio "Agosto 08-2026".
-3. Compare un piccolo calendario con tutti i giorni del mese.
-4. Clicca sul giorno desiderato.
-5. Il Planner apre direttamente quella data e la relativa settimana.
+Sostituisci nel repository GitHub planner:
+1. planner-icon-192.png
+2. planner-icon-512.png
+3. service-worker.js
 
-Tutte le funzioni precedenti restano invariate:
-- sincronizzazione Google/Firebase;
-- modalità offline;
-- minuti modificabili;
-- Ctrl + 1 per i flag;
-- Invio per creare una nuova riga oraria;
-- Alt + Invio per andare a capo.
+Poi apri:
+https://tesi11alex-cell.github.io/planner/?v=9
 
-Dopo il caricamento aprire:
-https://tesi11alex-cell.github.io/planner/?v=8
+Su iPhone/iPad:
+- dopo aver verificato che il Planner si apre correttamente da Safari,
+  elimina SOLO la vecchia icona dalla schermata Home
+- Safari > Condividi > Aggiungi alla schermata Home
+
+Se la vecchia icona resta in cache, chiudi Safari completamente e riaprilo prima di aggiungerla.
