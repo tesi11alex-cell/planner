@@ -1,11 +1,12 @@
-const CACHE_NAME = 'planner-offline-v9-icon';
+const CACHE_NAME = 'planner-offline-v10-icon';
 const APP_SHELL = [
   './',
   './index.html',
   './Agenda.html',
-  './manifest.webmanifest',
-  './planner-icon-192.png',
-  './planner-icon-512.png'
+  './manifest-v10.webmanifest',
+  './agenda-icon-180-v10.png',
+  './agenda-icon-192-v10.png',
+  './agenda-icon-512-v10.png'
 ];
 const FIREBASE_SDK = [
   'https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js',

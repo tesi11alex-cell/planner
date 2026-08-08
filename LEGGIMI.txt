@@ -1,22 +1,35 @@
-AGENDA — SOLO CAMBIO ICONA
+AGENDA — ICONA V10 (FIX CHROME/PC)
 
-Non cambia nulla nel Planner:
-- stesso HTML
-- stesso Firebase
-- stesso login Google
-- stessi dati
+Questa versione NON cambia:
+- dati
+- Firebase
+- login Google
+- funzioni Agenda
 
-Sostituisci nel repository GitHub planner:
-1. planner-icon-192.png
-2. planner-icon-512.png
+Cambia soltanto:
+- nomi delle icone
+- nome del manifest
+- versione cache del service worker
+
+CARICA SU GITHUB, nel repository planner:
+1. index.html
+2. Agenda.html
 3. service-worker.js
+4. manifest-v10.webmanifest
+5. agenda-icon-180-v10.png
+6. agenda-icon-192-v10.png
+7. agenda-icon-512-v10.png
 
-Poi apri:
-https://tesi11alex-cell.github.io/planner/?v=9
+NON serve cancellare i vecchi file.
 
-Su iPhone/iPad:
-- dopo aver verificato che il Planner si apre correttamente da Safari,
-  elimina SOLO la vecchia icona dalla schermata Home
-- Safari > Condividi > Aggiungi alla schermata Home
+DOPO IL CARICAMENTO:
+1. Apri Chrome.
+2. Vai su https://tesi11alex-cell.github.io/planner/?v=10
+3. Premi Ctrl+F5.
+4. Controlla che Agenda e dati siano corretti.
+5. Disinstalla SOLO la PWA Planner dal PC, se è ancora installata.
+6. Chiudi completamente Chrome.
+7. Riapri Chrome e torna all'indirizzo ?v=10.
+8. Installa nuovamente il Planner come app.
 
-Se la vecchia icona resta in cache, chiudi Safari completamente e riaprilo prima di aggiungerla.
+Il nuovo manifest usa file con nomi mai utilizzati prima, quindi Chrome non può riutilizzare la vecchia icona dalla cache.
