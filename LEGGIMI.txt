@@ -1,35 +1,24 @@
-AGENDA — ICONA V10 (FIX CHROME/PC)
+PLANNER ALESSANDRO — V12 SCADENZE
 
-Questa versione NON cambia:
-- dati
-- Firebase
-- login Google
-- funzioni Agenda
+MODIFICHE:
+- PC: riquadro laterale "Invia a una data".
+- PC: riquadro "Scadenze imminenti" con le Cose da fare dei prossimi 7 giorni.
+- Il flag nelle Scadenze imminenti è collegato allo stesso task del giorno originale.
+- Quando metti il flag viene salvata la data in cui lo hai completato.
+- Telefono: barra in basso Agenda / Nuova / Scadenze / Altro.
+- Firebase, login Google e struttura dei dati esistenti restano compatibili.
+- Manifest mantiene l'identità /planner/ separata dal Registro Fatture.
+- Service worker usa cache isolata planner-offline-v12-scadenze.
 
-Cambia soltanto:
-- nomi delle icone
-- nome del manifest
-- versione cache del service worker
+CARICAMENTO SU GITHUB:
+1. Estrai questo ZIP.
+2. Vai nel repository "planner".
+3. Add file > Upload files.
+4. Trascina TUTTI i file contenuti nella cartella.
+5. Conferma "Commit changes".
+6. Attendi circa 1 minuto.
+7. Apri: https://tesi11alex-cell.github.io/planner/?v=12
+8. Su PC fai Ctrl+F5.
+9. Su iPhone/iPad apri Safari e ricarica la pagina; se l'app era già aggiunta alla Home, chiudila e riaprila.
 
-CARICA SU GITHUB, nel repository planner:
-1. index.html
-2. Agenda.html
-3. service-worker.js
-4. manifest-v10.webmanifest
-5. agenda-icon-180-v10.png
-6. agenda-icon-192-v10.png
-7. agenda-icon-512-v10.png
-
-NON serve cancellare i vecchi file.
-
-DOPO IL CARICAMENTO:
-1. Apri Chrome.
-2. Vai su https://tesi11alex-cell.github.io/planner/?v=10
-3. Premi Ctrl+F5.
-4. Controlla che Agenda e dati siano corretti.
-5. Disinstalla SOLO la PWA Planner dal PC, se è ancora installata.
-6. Chiudi completamente Chrome.
-7. Riapri Chrome e torna all'indirizzo ?v=10.
-8. Installa nuovamente il Planner come app.
-
-Il nuovo manifest usa file con nomi mai utilizzati prima, quindi Chrome non può riutilizzare la vecchia icona dalla cache.
+NON cancellare dati Firebase e NON usare il vecchio service-worker.js.

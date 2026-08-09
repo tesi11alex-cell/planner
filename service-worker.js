@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v11-isolata';
+const CACHE_NAME = 'planner-offline-v12-scadenze';
 
 const APP_SHELL = [
   './',
@@ -20,15 +20,12 @@ const FIREBASE_SDK = [
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-
     await cache.addAll(APP_SHELL);
-
     await Promise.allSettled(
       FIREBASE_SDK.map(url =>
         cache.add(new Request(url, { mode: 'no-cors' }))
       )
     );
-
     await self.skipWaiting();
   })());
 });
@@ -36,75 +33,50 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-
-    // Elimina SOLO le vecchie cache del Planner.
-    // Non tocca Registro Fatture o altre app.
     await Promise.all(
       names
-        .filter(name =>
-          name.startsWith(CACHE_PREFIX) &&
-          name !== CACHE_NAME
-        )
+        .filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE_NAME)
         .map(name => caches.delete(name))
     );
-
     await self.clients.claim();
   })());
 });
 
 async function networkFirstNavigation(request) {
   const cache = await caches.open(CACHE_NAME);
-
   try {
-    const response = await fetch(request, {
-      cache: 'no-store'
-    });
-
+    const response = await fetch(request, { cache: 'no-store' });
     if (response && response.ok) {
       await cache.put(request, response.clone());
     }
-
     return response;
-
   } catch (error) {
-
     return (
       await cache.match(request, { ignoreSearch: true })
-    ) ||
-    (
+    ) || (
       await cache.match('./index.html')
-    ) ||
-    (
+    ) || (
       await cache.match('./Agenda.html')
-    ) ||
-    (
+    ) || (
       await cache.match('./')
     );
   }
 }
 
 async function cacheFirst(request) {
-  // Cerca esclusivamente nella cache del Planner
   const cache = await caches.open(CACHE_NAME);
-
-  const cached = await cache.match(request, {
-    ignoreSearch: true
-  });
-
+  const cached = await cache.match(request, { ignoreSearch: true });
   if (cached) return cached;
 
   const response = await fetch(request);
-
   if (response) {
     await cache.put(request, response.clone());
   }
-
   return response;
 }
 
 self.addEventListener('fetch', event => {
   const request = event.request;
-
   if (request.method !== 'GET') return;
 
   if (request.mode === 'navigate') {
@@ -113,10 +85,7 @@ self.addEventListener('fetch', event => {
   }
 
   const url = new URL(request.url);
-
-  const isAppAsset =
-    url.origin === self.location.origin;
-
+  const isAppAsset = url.origin === self.location.origin;
   const isStaticRemote =
     url.hostname === 'www.gstatic.com' ||
     url.hostname === 'fonts.googleapis.com' ||

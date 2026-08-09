@@ -235,9 +235,277 @@
   }
   .mobile-day-nav .label{font-family:'Fraunces',serif;font-weight:600;font-size:16px;}
   footer{margin-top:26px;color:var(--text-dim);font-size:11.5px;text-align:center;}
+
+  /* ===== Planner V12: inserimento rapido, scadenze imminenti e mobile tabs ===== */
+  .app{max-width:1660px}
+  .planner-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 330px;
+    gap:16px;
+    align-items:start;
+  }
+  .agenda-main{min-width:0}
+  .desktop-sidebar{
+    display:grid;
+    gap:12px;
+    position:sticky;
+    top:14px;
+    align-self:start;
+  }
+  .side-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px;
+  }
+  .side-title{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:11px;
+  }
+  .side-title h2{
+    margin:0;
+    font-family:'Fraunces',serif;
+    font-size:16px;
+    font-weight:600;
+  }
+  .side-title span{
+    color:var(--text-dim);
+    font-size:10px;
+    line-height:1.35;
+    text-align:right;
+  }
+  .quick-task-form{display:grid;gap:8px}
+  .quick-task-form label{
+    display:block;
+    color:var(--text-dim);
+    font-size:10px;
+    margin-bottom:4px;
+  }
+  .quick-task-form input{
+    width:100%;
+    background:var(--panel-alt);
+    color:var(--text);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:9px 10px;
+    font:inherit;
+  }
+  .quick-task-form input[type=date]{color-scheme:dark}
+  .quick-task-form .quick-send{
+    width:100%;
+    background:var(--accent);
+    color:#1a1200;
+    border-color:var(--accent);
+    padding:10px 12px;
+  }
+  .quick-help{
+    margin-top:8px;
+    color:var(--text-dim);
+    font-size:10px;
+    line-height:1.4;
+  }
+
+  .upcoming-list{display:grid;gap:7px}
+  .desktop-sidebar .upcoming-list{
+    max-height:58vh;
+    overflow:auto;
+    padding-right:2px;
+  }
+  .upcoming-empty{
+    color:var(--text-dim);
+    font-size:11px;
+    line-height:1.45;
+    padding:8px 2px;
+  }
+  .upcoming-item{
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    gap:9px;
+    align-items:start;
+    background:var(--panel-alt);
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:9px;
+  }
+  .upcoming-item.done{opacity:.6}
+  .upcoming-check{
+    appearance:none;
+    -webkit-appearance:none;
+    width:17px;height:17px;
+    margin:1px 0 0;
+    border:1.5px solid var(--text-dim);
+    border-radius:5px;
+    background:transparent;
+    position:relative;
+    cursor:pointer;
+  }
+  .upcoming-check:checked{background:var(--teal);border-color:var(--teal)}
+  .upcoming-check:checked::after{
+    content:"";
+    position:absolute;
+    left:4px;top:1px;
+    width:4px;height:8px;
+    border:solid #0B0B0D;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  .upcoming-copy{min-width:0}
+  .upcoming-date{
+    color:var(--accent);
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    margin-bottom:3px;
+  }
+  .upcoming-text{
+    font-size:11.5px;
+    line-height:1.35;
+    word-break:break-word;
+  }
+  .upcoming-item.done .upcoming-text{text-decoration:line-through}
+  .completion-stamp{
+    display:block;
+    color:var(--teal);
+    font-size:9.5px;
+    margin-top:4px;
+    line-height:1.3;
+  }
+  .upcoming-open{
+    border:0;
+    background:transparent;
+    color:var(--text-dim);
+    font-size:10px;
+    padding:2px 3px;
+  }
+  .upcoming-open:hover{color:var(--accent);background:transparent}
+
+  .todo-main{flex:1;min-width:0}
+  .todo-main .todo-text{display:block;width:100%}
+  .todo-completed{
+    color:var(--teal);
+    font-size:9px;
+    line-height:1.25;
+    padding:1px 2px 0;
+  }
+
+  .mobile-panel,.mobile-bottom-nav{display:none}
+
+  @media(max-width:1100px){
+    .planner-layout{grid-template-columns:1fr}
+    .desktop-sidebar{display:none}
+  }
+
+  @media(max-width:820px){
+    body{padding-bottom:72px}
+    .app{padding-bottom:20px}
+    header{padding-bottom:12px;margin-bottom:12px}
+    .controls{display:none}
+    .planner-layout{display:block}
+    .desktop-sidebar{display:none}
+
+    .mobile-panel{
+      display:none;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      margin-bottom:14px;
+    }
+    .mobile-panel h2{
+      font-family:'Fraunces',serif;
+      font-size:20px;
+      margin:0 0 4px;
+    }
+    .mobile-panel .panel-sub{
+      color:var(--text-dim);
+      font-size:10.5px;
+      line-height:1.4;
+      margin-bottom:12px;
+    }
+
+    body.mobile-view-agenda .week{display:flex}
+    body.mobile-view-agenda .mobile-day-nav{display:flex}
+    body.mobile-view-nuova #mobileQuickPanel{display:block}
+    body.mobile-view-scadenze #mobileUpcomingPanel{display:block}
+    body.mobile-view-altro #mobileMorePanel{display:block}
+
+    body:not(.mobile-view-agenda) .week{display:none!important}
+    body:not(.mobile-view-agenda) .mobile-day-nav{display:none!important}
+
+    .mobile-bottom-nav{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      z-index:1000;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:3px;
+      padding:7px 7px calc(7px + env(safe-area-inset-bottom));
+      background:rgba(11,11,13,.96);
+      border-top:1px solid var(--line);
+      backdrop-filter:blur(14px);
+    }
+    .mobile-bottom-nav button{
+      border:0;
+      background:transparent;
+      color:var(--text-dim);
+      padding:7px 3px 5px;
+      border-radius:9px;
+      font-size:10.5px;
+    }
+    .mobile-bottom-nav button.active{
+      background:var(--panel-alt);
+      color:var(--accent);
+    }
+    .mobile-nav-icon{
+      display:block;
+      font-size:17px;
+      line-height:1;
+      margin-bottom:4px;
+    }
+
+    #mobileUpcomingList{display:grid;gap:8px}
+    #mobileUpcomingList .upcoming-item{
+      grid-template-columns:auto minmax(0,1fr) auto;
+      padding:11px;
+    }
+    #mobileUpcomingList .upcoming-text{font-size:13px}
+    #mobileUpcomingList .upcoming-date{font-size:10.5px}
+    #mobileUpcomingList .upcoming-check{width:20px;height:20px}
+    #mobileUpcomingList .upcoming-check:checked::after{left:5px;top:2px}
+    #mobileUpcomingList .upcoming-open{font-size:11px;padding:4px}
+
+    .mobile-more-grid{display:grid;gap:10px}
+    .mobile-more-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .mobile-more-actions button{width:100%}
+    .mobile-jump{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:8px;
+      align-items:end;
+    }
+    .mobile-jump label{
+      display:block;
+      color:var(--text-dim);
+      font-size:10px;
+      margin-bottom:4px;
+    }
+    .mobile-jump input{
+      width:100%;
+      background:var(--panel-alt);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:9px 10px;
+      font:inherit;
+      color-scheme:dark;
+    }
+  }
+
 </style>
 </head>
-<body>
+<body class="mobile-view-agenda">
 <div class="app">
   <header>
     <div class="title-block">
@@ -262,7 +530,87 @@
     <button id="nextDayMobile" class="nav-arrow" title="Giorno successivo">›</button>
   </div>
 
-  <div class="week" id="weekGrid"></div>
+  <div class="planner-layout">
+    <main class="agenda-main">
+      <div class="week" id="weekGrid"></div>
+
+      <section class="mobile-panel" id="mobileQuickPanel">
+        <h2>Nuova cosa da fare</h2>
+        <div class="panel-sub">Scrivi l'attività e scegli il giorno: viene inserita direttamente nelle “Cose da fare” di quella data.</div>
+        <div class="quick-task-form">
+          <div>
+            <label for="mobileQuickTaskText">Cosa devi fare</label>
+            <input id="mobileQuickTaskText" type="text" placeholder="es. Pagare rata Cassa Geometri">
+          </div>
+          <div>
+            <label for="mobileQuickTaskDate">Data</label>
+            <input id="mobileQuickTaskDate" type="date">
+          </div>
+          <button class="quick-send" id="mobileQuickTaskBtn" type="button">Invia alla data</button>
+        </div>
+      </section>
+
+      <section class="mobile-panel" id="mobileUpcomingPanel">
+        <h2>Scadenze imminenti</h2>
+        <div class="panel-sub">Cose da fare nei prossimi 7 giorni. Il flag è lo stesso della giornata originale.</div>
+        <div class="upcoming-list" id="mobileUpcomingList"></div>
+      </section>
+
+      <section class="mobile-panel" id="mobileMorePanel">
+        <h2>Altro</h2>
+        <div class="panel-sub">Vai rapidamente a una data oppure gestisci l'account Google.</div>
+        <div class="mobile-more-grid">
+          <div class="mobile-jump">
+            <div>
+              <label for="mobileJumpDate">Vai alla data</label>
+              <input id="mobileJumpDate" type="date">
+            </div>
+            <button id="mobileJumpBtn" type="button">Vai</button>
+          </div>
+          <div class="mobile-more-actions">
+            <button id="mobileTodayBtn" type="button">Oggi</button>
+            <button id="mobileAuthBtn" type="button">Account Google</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="desktop-sidebar">
+      <section class="side-card">
+        <div class="side-title">
+          <h2>Invia a una data</h2>
+          <span>Cose da fare</span>
+        </div>
+        <div class="quick-task-form">
+          <div>
+            <label for="quickTaskText">Cosa devi fare</label>
+            <input id="quickTaskText" type="text" placeholder="es. Pagare rata Cassa Geometri">
+          </div>
+          <div>
+            <label for="quickTaskDate">Data</label>
+            <input id="quickTaskDate" type="date">
+          </div>
+          <button class="quick-send" id="quickTaskBtn" type="button">Invia alla data</button>
+        </div>
+        <div class="quick-help">Non devi più cercare manualmente il giorno: l'attività viene salvata direttamente nella data scelta.</div>
+      </section>
+
+      <section class="side-card">
+        <div class="side-title">
+          <h2>Scadenze imminenti</h2>
+          <span>Prossimi 7 giorni</span>
+        </div>
+        <div class="upcoming-list" id="desktopUpcomingList"></div>
+      </section>
+    </aside>
+  </div>
+
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navigazione Planner">
+    <button type="button" data-mobile-view="agenda"><span class="mobile-nav-icon">▣</span>Agenda</button>
+    <button type="button" data-mobile-view="nuova"><span class="mobile-nav-icon">＋</span>Nuova</button>
+    <button type="button" data-mobile-view="scadenze"><span class="mobile-nav-icon">✓</span>Scadenze</button>
+    <button type="button" data-mobile-view="altro"><span class="mobile-nav-icon">•••</span>Altro</button>
+  </nav>
 
   <footer id="syncNotice">Avvio del planner…</footer>
 </div>
@@ -362,12 +710,26 @@ let renderVersion = 0;
 let hourFlagsVisible = false;
 const dataCache = {};
 let weekUnsubscribers = [];
+let upcomingUnsubscribers = [];
 let settingsUnsubscriber = null;
+let upcomingRenderTimer = null;
 
 function pad(n){return String(n).padStart(2,'0');}
 function dateKey(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
 function sameDay(a,b){return dateKey(a)===dateKey(b);}
 function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
+function dateFromKey(key){
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(key||''));
+  return m ? new Date(Number(m[1]),Number(m[2])-1,Number(m[3])) : null;
+}
+function italianDateFromKey(key){
+  const d=dateFromKey(key);
+  return d ? `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}` : '';
+}
+function shortDateLabel(d){
+  return `${DAY_NAMES[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
+}
+function todayKey(){return dateKey(new Date());}
 
 function getMonday(d){
   const day = d.getDay();
@@ -416,7 +778,8 @@ function normalizeDay(value){
   val.tasks = val.tasks.map(t=>({
     id: t.id ?? (Date.now()+Math.random().toString(16).slice(2)),
     text: t.text || '',
-    done: Boolean(t.done)
+    done: Boolean(t.done),
+    completedAt: typeof t.completedAt === 'string' ? t.completedAt : ''
   }));
 
   return {hours:val.hours, extraHours:val.extraHours, tasks:val.tasks};
@@ -611,6 +974,171 @@ async function saveDay(d){
   }
 }
 
+
+function upcomingDates(){
+  const start=new Date();
+  start.setHours(12,0,0,0);
+  return Array.from({length:7},(_,i)=>addDays(start,i));
+}
+
+async function collectUpcomingTasks(){
+  const dates=upcomingDates();
+  const values=await Promise.all(dates.map(d=>loadDay(d)));
+  const rows=[];
+  dates.forEach((d,index)=>{
+    const val=values[index];
+    val.tasks.forEach(task=>{
+      if(String(task.text||'').trim()){
+        rows.push({date:d,key:dateKey(d),task});
+      }
+    });
+  });
+  return rows;
+}
+
+function upcomingRowsHTML(rows){
+  if(!rows.length){
+    return '<div class="upcoming-empty">Nessuna cosa da fare nei prossimi 7 giorni.</div>';
+  }
+  return rows.map(({date,key,task})=>`
+    <div class="upcoming-item ${task.done?'done':''}" data-upcoming-date="${escapeHTML(key)}" data-upcoming-task="${escapeHTML(task.id)}">
+      <input class="upcoming-check" type="checkbox" ${task.done?'checked':''} aria-label="Completa attività">
+      <div class="upcoming-copy">
+        <div class="upcoming-date">${escapeHTML(shortDateLabel(date))}</div>
+        <div class="upcoming-text">${escapeHTML(task.text)}</div>
+        ${task.done ? `<span class="completion-stamp">${task.completedAt ? `Flag messo il ${escapeHTML(italianDateFromKey(task.completedAt))}` : 'Completata'}</span>` : ''}
+      </div>
+      <button class="upcoming-open" type="button" title="Apri il giorno" aria-label="Apri il giorno">Apri</button>
+    </div>
+  `).join('');
+}
+
+async function renderUpcomingPanels(){
+  try{
+    const rows=await collectUpcomingTasks();
+    const markup=upcomingRowsHTML(rows);
+    const desktop=document.getElementById('desktopUpcomingList');
+    const mobile=document.getElementById('mobileUpcomingList');
+    if(desktop) desktop.innerHTML=markup;
+    if(mobile) mobile.innerHTML=markup;
+  }catch(error){
+    console.warn('Scadenze imminenti non disponibili',error);
+  }
+}
+
+function scheduleUpcomingRender(){
+  clearTimeout(upcomingRenderTimer);
+  upcomingRenderTimer=setTimeout(()=>renderUpcomingPanels(),70);
+}
+
+function dateIsInCurrentWeek(d){
+  return currentWeekDates().some(day=>sameDay(day,d));
+}
+
+async function addTaskDirectlyToDate(textInput,dateInput){
+  const text=String(textInput?.value||'').trim();
+  const key=String(dateInput?.value||'');
+  const d=dateFromKey(key);
+  if(!text){
+    textInput?.focus();
+    return;
+  }
+  if(!d){
+    dateInput?.focus();
+    return;
+  }
+
+  const val=await loadDay(d);
+  val.tasks.push({
+    id:`${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    text,
+    done:false,
+    completedAt:''
+  });
+  await saveDay(d);
+  textInput.value='';
+
+  if(dateIsInCurrentWeek(d)){
+    refreshDayUI(d);
+  }
+  await renderUpcomingPanels();
+  setSyncNotice(`Aggiunto a Cose da fare del ${italianDateFromKey(key)}.`);
+}
+
+async function setUpcomingTaskDone(row,checked){
+  const key=row?.dataset.upcomingDate;
+  const taskId=row?.dataset.upcomingTask;
+  const d=dateFromKey(key);
+  if(!d) return;
+  const val=await loadDay(d);
+  const task=val.tasks.find(t=>String(t.id)===String(taskId));
+  if(!task) return;
+
+  task.done=checked;
+  task.completedAt=checked ? todayKey() : '';
+  await saveDay(d);
+
+  if(dateIsInCurrentWeek(d)){
+    refreshDayUI(d);
+  }
+  await renderUpcomingPanels();
+}
+
+function openUpcomingDate(row){
+  const d=dateFromKey(row?.dataset.upcomingDate);
+  if(!d) return;
+  currentDate=d;
+  setMobileView('agenda');
+  render();
+}
+
+function attachUpcomingEvents(container){
+  if(!container) return;
+  container.addEventListener('change',async event=>{
+    const checkbox=event.target.closest('.upcoming-check');
+    if(!checkbox) return;
+    const row=checkbox.closest('[data-upcoming-date]');
+    await setUpcomingTaskDone(row,checkbox.checked);
+  });
+  container.addEventListener('click',event=>{
+    const button=event.target.closest('.upcoming-open');
+    if(!button) return;
+    openUpcomingDate(button.closest('[data-upcoming-date]'));
+  });
+}
+
+function setMobileView(view){
+  const allowed=['agenda','nuova','scadenze','altro'];
+  if(!allowed.includes(view)) view='agenda';
+  document.body.classList.remove('mobile-view-agenda','mobile-view-nuova','mobile-view-scadenze','mobile-view-altro');
+  document.body.classList.add(`mobile-view-${view}`);
+  document.querySelectorAll('#mobileBottomNav [data-mobile-view]').forEach(button=>{
+    button.classList.toggle('active',button.dataset.mobileView===view);
+  });
+  try{localStorage.setItem('planner:mobile-view',view);}catch(error){}
+  window.scrollTo(0,0);
+}
+
+function subscribeToUpcoming(){
+  upcomingUnsubscribers.forEach(unsub=>unsub());
+  upcomingUnsubscribers=[];
+  if(!currentUser) return;
+
+  upcomingDates().forEach(d=>{
+    const key=dateKey(d);
+    const unsub=onSnapshot(
+      dayRefFromKey(key),
+      {includeMetadataChanges:true},
+      snapshot=>{
+        dataCache[key]=snapshot.exists() ? normalizeDay(snapshot.data()) : emptyDay();
+        scheduleUpcomingRender();
+      },
+      error=>console.warn('Aggiornamento scadenze imminenti non disponibile',error)
+    );
+    upcomingUnsubscribers.push(unsub);
+  });
+}
+
 function currentWeekDates(){
   const monday = getMonday(currentDate);
   const arr = [];
@@ -799,7 +1327,10 @@ function renderTodos(container, val){
   container.innerHTML = val.tasks.map(t=>`
     <div class="todo-item ${t.done?'done':''}" data-task-id="${escapeHTML(t.id)}">
       <input type="checkbox" ${t.done?'checked':''} data-task-check="${escapeHTML(t.id)}">
-      <textarea class="todo-text" rows="1" data-task-text="${escapeHTML(t.id)}" title="Ctrl + 1 per attivare o disattivare il flag">${escapeHTML(t.text)}</textarea>
+      <div class="todo-main">
+        <textarea class="todo-text" rows="1" data-task-text="${escapeHTML(t.id)}" title="Ctrl + 1 per attivare o disattivare il flag">${escapeHTML(t.text)}</textarea>
+        ${t.done ? `<div class="todo-completed">${t.completedAt ? `✓ Flag messo il ${escapeHTML(italianDateFromKey(t.completedAt))}` : '✓ Completata'}</div>` : ''}
+      </div>
       <button class="todo-del" data-task-del="${escapeHTML(t.id)}" aria-label="Elimina">×</button>
     </div>
   `).join('');
@@ -910,9 +1441,14 @@ function attachDayEvents(d){
 
     if(target.matches('[data-task-check]')){
       const task = val.tasks.find(x=>String(x.id)===target.dataset.taskCheck);
-      if(task) task.done = target.checked;
-      target.closest('.todo-item')?.classList.toggle('done', target.checked);
+      if(task){
+        task.done = target.checked;
+        task.completedAt = target.checked ? todayKey() : '';
+      }
+      const listEl = card.querySelector(`[data-list="${key}"]`);
+      if(listEl) renderTodos(listEl, val);
       await saveDay(d);
+      await renderUpcomingPanels();
       return;
     }
 
@@ -920,6 +1456,7 @@ function attachDayEvents(d){
       const task = val.tasks.find(x=>String(x.id)===target.dataset.taskText);
       if(task) task.text = target.value;
       await saveDay(d);
+      await renderUpcomingPanels();
     }
   });
 
@@ -943,6 +1480,7 @@ function attachDayEvents(d){
       const listEl = card.querySelector(`[data-list="${key}"]`);
       if(listEl) renderTodos(listEl, val);
       await saveDay(d);
+      await renderUpcomingPanels();
       return;
     }
 
@@ -1013,17 +1551,21 @@ async function addTask(d, card){
   val.tasks.push({
     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
     text,
-    done:false
+    done:false,
+    completedAt:''
   });
   input.value = '';
   const listEl = card.querySelector(`[data-list="${key}"]`);
   if(listEl) renderTodos(listEl, val);
   await saveDay(d);
+  await renderUpcomingPanels();
 }
 
 function stopRealtimeListeners(){
   weekUnsubscribers.forEach(unsub=>unsub());
   weekUnsubscribers = [];
+  upcomingUnsubscribers.forEach(unsub=>unsub());
+  upcomingUnsubscribers = [];
   if(settingsUnsubscriber){
     settingsUnsubscriber();
     settingsUnsubscriber = null;
@@ -1045,6 +1587,7 @@ function subscribeToWeek(weekDates){
           ? normalizeDay(snapshot.data())
           : emptyDay();
         refreshDayUI(d);
+        scheduleUpcomingRender();
         if(snapshot.metadata.hasPendingWrites){
           setSyncNotice(navigator.onLine
             ? 'Modifica salvata sul dispositivo; sincronizzazione in corso…'
@@ -1109,6 +1652,7 @@ async function render(){
 
   applyMobileVisibility(weekDates);
   subscribeToWeek(weekDates);
+  await renderUpcomingPanels();
 }
 
 function applyMobileVisibility(weekDates){
@@ -1171,6 +1715,61 @@ async function handleAuthClick(){
   }
 }
 
+
+const quickTaskDate=document.getElementById('quickTaskDate');
+const mobileQuickTaskDate=document.getElementById('mobileQuickTaskDate');
+const mobileJumpDate=document.getElementById('mobileJumpDate');
+const initialToday=todayKey();
+if(quickTaskDate) quickTaskDate.value=initialToday;
+if(mobileQuickTaskDate) mobileQuickTaskDate.value=initialToday;
+if(mobileJumpDate) mobileJumpDate.value=initialToday;
+
+document.getElementById('quickTaskBtn')?.addEventListener('click',()=>addTaskDirectlyToDate(
+  document.getElementById('quickTaskText'),
+  document.getElementById('quickTaskDate')
+));
+document.getElementById('mobileQuickTaskBtn')?.addEventListener('click',async()=>{
+  await addTaskDirectlyToDate(
+    document.getElementById('mobileQuickTaskText'),
+    document.getElementById('mobileQuickTaskDate')
+  );
+  setMobileView('scadenze');
+});
+['quickTaskText','mobileQuickTaskText'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('keydown',event=>{
+    if(event.key!=='Enter') return;
+    event.preventDefault();
+    if(id==='quickTaskText') document.getElementById('quickTaskBtn')?.click();
+    else document.getElementById('mobileQuickTaskBtn')?.click();
+  });
+});
+
+attachUpcomingEvents(document.getElementById('desktopUpcomingList'));
+attachUpcomingEvents(document.getElementById('mobileUpcomingList'));
+
+document.getElementById('mobileBottomNav')?.addEventListener('click',event=>{
+  const button=event.target.closest('[data-mobile-view]');
+  if(button) setMobileView(button.dataset.mobileView);
+});
+
+document.getElementById('mobileJumpBtn')?.addEventListener('click',()=>{
+  const d=dateFromKey(document.getElementById('mobileJumpDate')?.value);
+  if(!d) return;
+  currentDate=d;
+  setMobileView('agenda');
+  render();
+});
+document.getElementById('mobileTodayBtn')?.addEventListener('click',()=>{
+  currentDate=new Date();
+  setMobileView('agenda');
+  render();
+});
+document.getElementById('mobileAuthBtn')?.addEventListener('click',handleAuthClick);
+
+let initialMobileView='agenda';
+try{initialMobileView=localStorage.getItem('planner:mobile-view')||'agenda';}catch(error){}
+setMobileView(initialMobileView);
+
 document.getElementById('prevBtn').addEventListener('click', ()=>{
   hideMiniCalendar();
   currentDate = addDays(currentDate,-7);
@@ -1230,9 +1829,11 @@ onAuthStateChanged(auth, async (user)=>{
   clearDataCache();
 
   const authBtn = document.getElementById('authBtn');
+  const mobileAuthBtn = document.getElementById('mobileAuthBtn');
   if(user){
     authBtn.textContent = 'Esci';
     authBtn.title = `Connesso come ${user.email || user.displayName || 'utente Google'}`;
+    if(mobileAuthBtn) mobileAuthBtn.textContent = 'Esci da Google';
     setSyncNotice('Connessione a Firebase…');
     try{
       await migrateLocalDataToCloud();
@@ -1244,6 +1845,7 @@ onAuthStateChanged(auth, async (user)=>{
   }else{
     authBtn.textContent = 'Accedi con Google';
     authBtn.title = 'Accedi per sincronizzare l’agenda';
+    if(mobileAuthBtn) mobileAuthBtn.textContent = 'Accedi con Google';
   }
 
   await loadHourFlagsSetting();
@@ -1251,6 +1853,7 @@ onAuthStateChanged(auth, async (user)=>{
 
   if(user){
     subscribeToSettings();
+    subscribeToUpcoming();
   }
   updateConnectionNotice();
 });
