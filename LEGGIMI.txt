@@ -1,24 +1,19 @@
-PLANNER ALESSANDRO — V12 SCADENZE
+PLANNER ALESSANDRO — V13 SCADENZE DIVISE
 
-MODIFICHE:
-- PC: riquadro laterale "Invia a una data".
-- PC: riquadro "Scadenze imminenti" con le Cose da fare dei prossimi 7 giorni.
-- Il flag nelle Scadenze imminenti è collegato allo stesso task del giorno originale.
-- Quando metti il flag viene salvata la data in cui lo hai completato.
-- Telefono: barra in basso Agenda / Nuova / Scadenze / Altro.
-- Firebase, login Google e struttura dei dati esistenti restano compatibili.
-- Manifest mantiene l'identità /planner/ separata dal Registro Fatture.
-- Service worker usa cache isolata planner-offline-v12-scadenze.
+MODIFICA:
+- "Scadenze imminenti" è ora divisa in due sezioni:
+  1. Oggi · giorno e data (es. Oggi · Domenica 09/08)
+  2. Scadenze prossimi 7 giorni, dal giorno successivo a oggi fino a 7 giorni dopo.
+- I flag restano collegati alle Cose da fare della giornata originale.
+- La data in cui metti il flag continua a essere registrata.
+- PC e telefono mantengono tutte le funzioni V12.
 
 CARICAMENTO SU GITHUB:
 1. Estrai questo ZIP.
 2. Vai nel repository "planner".
 3. Add file > Upload files.
-4. Trascina TUTTI i file contenuti nella cartella.
-5. Conferma "Commit changes".
+4. Trascina TUTTI i file insieme.
+5. Commit changes.
 6. Attendi circa 1 minuto.
-7. Apri: https://tesi11alex-cell.github.io/planner/?v=12
+7. Apri: https://tesi11alex-cell.github.io/planner/?v=13
 8. Su PC fai Ctrl+F5.
-9. Su iPhone/iPad apri Safari e ricarica la pagina; se l'app era già aggiunta alla Home, chiudila e riaprila.
-
-NON cancellare dati Firebase e NON usare il vecchio service-worker.js.

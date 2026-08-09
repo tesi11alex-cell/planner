@@ -503,6 +503,25 @@
     }
   }
 
+
+  .upcoming-section{display:grid;gap:7px}
+  .upcoming-section + .upcoming-section{margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+  .upcoming-section-head{
+    display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+    margin:0 1px 2px;
+  }
+  .upcoming-section-head strong{
+    font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--text);
+  }
+  .upcoming-section-head span{
+    color:var(--text-dim);font-size:9.5px;text-align:right;
+  }
+  @media(max-width:820px){
+    .upcoming-section-head strong{font-size:15px}
+    .upcoming-section-head span{font-size:10px}
+    .upcoming-section + .upcoming-section{margin-top:16px;padding-top:14px}
+  }
+
 </style>
 </head>
 <body class="mobile-view-agenda">
@@ -552,7 +571,7 @@
 
       <section class="mobile-panel" id="mobileUpcomingPanel">
         <h2>Scadenze imminenti</h2>
-        <div class="panel-sub">Cose da fare nei prossimi 7 giorni. Il flag è lo stesso della giornata originale.</div>
+        <div class="panel-sub">Oggi separato dai prossimi 7 giorni. Il flag è lo stesso della giornata originale.</div>
         <div class="upcoming-list" id="mobileUpcomingList"></div>
       </section>
 
@@ -598,7 +617,7 @@
       <section class="side-card">
         <div class="side-title">
           <h2>Scadenze imminenti</h2>
-          <span>Prossimi 7 giorni</span>
+          <span>Oggi + prossimi 7 giorni</span>
         </div>
         <div class="upcoming-list" id="desktopUpcomingList"></div>
       </section>
@@ -978,7 +997,7 @@ async function saveDay(d){
 function upcomingDates(){
   const start=new Date();
   start.setHours(12,0,0,0);
-  return Array.from({length:7},(_,i)=>addDays(start,i));
+  return Array.from({length:8},(_,i)=>addDays(start,i));
 }
 
 async function collectUpcomingTasks(){
@@ -997,10 +1016,14 @@ async function collectUpcomingTasks(){
 }
 
 function upcomingRowsHTML(rows){
-  if(!rows.length){
-    return '<div class="upcoming-empty">Nessuna cosa da fare nei prossimi 7 giorni.</div>';
-  }
-  return rows.map(({date,key,task})=>`
+  const today=todayKey();
+  const tomorrow=dateKey(addDays(new Date(),1));
+  const lastDay=dateKey(addDays(new Date(),7));
+
+  const todayRows=rows.filter(row=>row.key===today);
+  const nextRows=rows.filter(row=>row.key!==today);
+
+  const itemMarkup=({date,key,task})=>`
     <div class="upcoming-item ${task.done?'done':''}" data-upcoming-date="${escapeHTML(key)}" data-upcoming-task="${escapeHTML(task.id)}">
       <input class="upcoming-check" type="checkbox" ${task.done?'checked':''} aria-label="Completa attività">
       <div class="upcoming-copy">
@@ -1009,8 +1032,37 @@ function upcomingRowsHTML(rows){
         ${task.done ? `<span class="completion-stamp">${task.completedAt ? `Flag messo il ${escapeHTML(italianDateFromKey(task.completedAt))}` : 'Completata'}</span>` : ''}
       </div>
       <button class="upcoming-open" type="button" title="Apri il giorno" aria-label="Apri il giorno">Apri</button>
-    </div>
-  `).join('');
+    </div>`;
+
+  const todayDate=dateFromKey(today);
+  const todayTitle=`Oggi · ${DAY_NAMES[todayDate.getDay()]} ${pad(todayDate.getDate())}/${pad(todayDate.getMonth()+1)}`;
+  const todayBody=todayRows.length
+    ? todayRows.map(itemMarkup).join('')
+    : '<div class="upcoming-empty">Nessuna cosa da fare oggi.</div>';
+
+  const tomorrowDate=dateFromKey(tomorrow);
+  const lastDate=dateFromKey(lastDay);
+  const rangeLabel=`Dal ${pad(tomorrowDate.getDate())}/${pad(tomorrowDate.getMonth()+1)} al ${pad(lastDate.getDate())}/${pad(lastDate.getMonth()+1)}`;
+  const nextBody=nextRows.length
+    ? nextRows.map(itemMarkup).join('')
+    : '<div class="upcoming-empty">Nessuna cosa da fare nei prossimi 7 giorni.</div>';
+
+  return `
+    <section class="upcoming-section">
+      <div class="upcoming-section-head">
+        <strong>${escapeHTML(todayTitle)}</strong>
+        <span>Oggi</span>
+      </div>
+      ${todayBody}
+    </section>
+    <section class="upcoming-section">
+      <div class="upcoming-section-head">
+        <strong>Scadenze prossimi 7 giorni</strong>
+        <span>${escapeHTML(rangeLabel)}</span>
+      </div>
+      ${nextBody}
+    </section>
+  `;
 }
 
 async function renderUpcomingPanels(){

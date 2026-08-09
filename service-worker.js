@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v12-scadenze';
+const CACHE_NAME = 'planner-offline-v13-scadenze-divise';
 
 const APP_SHELL = [
   './',
