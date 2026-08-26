@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v17-note-dinamiche';
+const CACHE_NAME = 'planner-offline-v18-fix-note-buttons';
 
 const APP_SHELL = [
   './',

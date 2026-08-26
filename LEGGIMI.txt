@@ -1,24 +1,16 @@
-PLANNER ALESSANDRO — V17
+PLANNER ALESSANDRO — V18
 
-NOTE E COSE DA ORGANIZZARE
-- All'apertura il riquadro desktop ha almeno la stessa altezza di Domenica.
-- Se scrivi molto, il riquadro può crescere liberamente.
-- Le righe sono numerate 1), 2), 3)... al posto del trattino.
-- In alto a destra c'è "Aggiungi riga".
-- Ogni riga ha la X per eliminare tutta la riga.
-- Invio: passa alla riga successiva.
-- Se sei sull'ultima riga, Invio crea automaticamente una nuova riga.
-- Alt + Invio: va a capo dentro la stessa riga.
-- Le note restano globali: la modifica si vede in tutte le settimane e su tutti i dispositivi.
-
-TELEFONO
-- Le righe orarie dell'Agenda usano più larghezza disponibile.
-- Le aree di testo sono più alte e leggibili.
-- Migliorato il ridimensionamento automatico su più righe per evitare che il testo finisca sotto l'ora successiva.
-- Anche le note in "Note e altro" sono più larghe e hanno Aggiungi riga / X.
+CORREZIONI
+- Aggiungi riga funziona su PC.
+- Aggiungi riga funziona in Note e altro sul telefono.
+- La X elimina davvero la riga su PC e telefono.
+- La numerazione si aggiorna subito.
+- Le modifiche continuano a essere salvate nelle note globali Firebase.
+- Invio = riga successiva.
+- Alt + Invio = a capo nella stessa riga.
 
 GITHUB
-1. Carica tutti i file nella root del repository.
+1. Carica tutti i file nella root.
 2. Sostituisci quelli esistenti.
 3. Commit changes.
-4. Apri https://tesi11alex-cell.github.io/planner/?v=17
+4. Apri https://tesi11alex-cell.github.io/planner/?v=18

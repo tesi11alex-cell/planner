@@ -970,6 +970,13 @@
     }
   }
 
+  /* ===== V18 · feedback comandi note ===== */
+  .organizer-add-row,.organizer-note-delete{
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .organizer-add-row:active{transform:translateY(1px)}
+  .organizer-note-delete:active{transform:scale(.92)}
 </style>
 </head>
 <body class="mobile-view-agenda">
@@ -1826,10 +1833,15 @@ function renderOrganizerNotes(container){
   rows.querySelectorAll('.organizer-note-input').forEach(textarea=>autoGrow(textarea,22));
 }
 
-function renderAllOrganizerNotes(){
+function renderAllOrganizerNotes(force=false){
   document.querySelectorAll('[data-organizer-notes]').forEach(container=>{
     const active=document.activeElement;
-    if(active && container.contains(active)) return;
+    const editingTextarea =
+      active &&
+      active.matches?.('[data-organizer-note-index]') &&
+      container.contains(active);
+
+    if(!force && editingTextarea) return;
     renderOrganizerNotes(container);
   });
   requestAnimationFrame(syncDesktopNotesHeightToSunday);
@@ -1884,7 +1896,7 @@ function addOrganizerRow(afterIndex=null, focusContainer=null){
     : organizerNotes.length;
 
   organizerNotes.splice(insertAt,0,'');
-  renderAllOrganizerNotes();
+  renderAllOrganizerNotes(true);
   saveOrganizerNotesSetting();
   const container = focusContainer || document.querySelector('[data-organizer-notes="desktop"]') || document.querySelector('[data-organizer-notes="mobile"]');
   focusOrganizerRow(container,insertAt);
@@ -1894,7 +1906,7 @@ function deleteOrganizerRow(index,focusContainer=null){
   if(!Number.isInteger(index) || index<0 || index>=organizerNotes.length) return;
   organizerNotes.splice(index,1);
   if(!organizerNotes.length) organizerNotes.push('');
-  renderAllOrganizerNotes();
+  renderAllOrganizerNotes(true);
   saveOrganizerNotesSetting();
 
   const container=focusContainer || document.querySelector('[data-organizer-notes="desktop"]') || document.querySelector('[data-organizer-notes="mobile"]');
@@ -1945,20 +1957,6 @@ function attachOrganizerNotesEvents(container){
     await saveOrganizerNotesSetting();
   });
 
-  container.addEventListener('click',event=>{
-    const addButton=event.target.closest('[data-organizer-add-row]');
-    if(addButton){
-      addOrganizerRow(null,container);
-      return;
-    }
-
-    const deleteButton=event.target.closest('[data-organizer-note-delete]');
-    if(deleteButton){
-      const index=Number(deleteButton.dataset.organizerNoteDelete);
-      deleteOrganizerRow(index,container);
-    }
-  });
-
   container.addEventListener('keydown',event=>{
     const textarea=event.target.closest('[data-organizer-note-index]');
     if(!textarea || event.key!=='Enter') return;
@@ -1985,7 +1983,47 @@ function attachOrganizerNotesEvents(container){
   });
 }
 
+function organizerContainerForControl(control){
+  if(!control) return null;
+
+  const direct=control.closest('[data-organizer-notes]');
+  if(direct) return direct;
+
+  const mobileCard=control.closest('.mobile-more-card');
+  const mobileList=mobileCard?.querySelector('[data-organizer-notes]');
+  if(mobileList) return mobileList;
+
+  return document.querySelector('[data-organizer-notes="desktop"]')
+    || document.querySelector('[data-organizer-notes="mobile"]');
+}
+
+function initOrganizerNotesGlobalControls(){
+  if(document.documentElement.dataset.organizerGlobalControlsBound==='true') return;
+  document.documentElement.dataset.organizerGlobalControlsBound='true';
+
+  document.addEventListener('click',event=>{
+    const addButton=event.target.closest('[data-organizer-add-row]');
+    if(addButton){
+      event.preventDefault();
+      event.stopPropagation();
+      const container=organizerContainerForControl(addButton);
+      addOrganizerRow(null,container);
+      return;
+    }
+
+    const deleteButton=event.target.closest('[data-organizer-note-delete]');
+    if(deleteButton){
+      event.preventDefault();
+      event.stopPropagation();
+      const index=Number(deleteButton.dataset.organizerNoteDelete);
+      const container=organizerContainerForControl(deleteButton);
+      deleteOrganizerRow(index,container);
+    }
+  });
+}
+
 function initOrganizerNotesPanels(){
+  initOrganizerNotesGlobalControls();
   document.querySelectorAll('[data-organizer-notes]').forEach(container=>{
     renderOrganizerNotes(container);
     attachOrganizerNotesEvents(container);
