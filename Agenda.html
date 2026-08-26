@@ -522,6 +522,172 @@
     .upcoming-section + .upcoming-section{margin-top:16px;padding-top:14px}
   }
 
+
+
+  /* ===== PLANNER V14 · GRIGLIA REGOLARE + NOTE SETTIMANALI ===== */
+  @media (min-width:1101px){
+    .week{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+      align-items:start;
+    }
+    .day{
+      width:auto;
+      min-width:0;
+      max-width:none;
+      flex:none;
+    }
+    .week-notes{
+      grid-column:span 2;
+    }
+  }
+
+  @media (min-width:821px) and (max-width:1100px){
+    .week{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      align-items:start;
+    }
+    .day{
+      width:auto;
+      min-width:0;
+      max-width:none;
+      flex:none;
+    }
+    .week-notes{
+      grid-column:1 / -1;
+    }
+  }
+
+  .week-notes{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 14px 16px;
+    position:relative;
+    overflow:hidden;
+    min-height:390px;
+    animation:fadeIn .25s ease;
+  }
+  .week-notes::before{
+    content:"";
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:3px;
+    background:var(--teal);
+  }
+  .week-notes-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:14px;
+    padding:0 2px 10px 6px;
+  }
+  .week-notes-title{
+    font-family:'Fraunces',serif;
+    font-size:16px;
+    font-weight:600;
+  }
+  .week-notes-range{
+    color:var(--text-dim);
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    white-space:nowrap;
+  }
+  .week-notes-rows{
+    border-top:1px solid var(--line);
+  }
+  .week-note-row{
+    display:grid;
+    grid-template-columns:18px minmax(0,1fr);
+    gap:5px;
+    align-items:start;
+    min-height:28px;
+    border-bottom:1px solid var(--line);
+    padding:4px 2px 4px 6px;
+  }
+  .week-note-dash{
+    color:var(--text-dim);
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    line-height:20px;
+    user-select:none;
+  }
+  .week-note-input{
+    width:100%;
+    min-width:0;
+    min-height:20px;
+    border:0;
+    resize:none;
+    overflow:hidden;
+    background:transparent;
+    color:var(--text);
+    padding:1px 3px;
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    line-height:1.4;
+  }
+  .week-note-input:hover,
+  .week-note-input:focus{
+    background:var(--panel-alt);
+    border-radius:4px;
+    outline:none;
+  }
+  .week-notes-help{
+    color:var(--text-dim);
+    font-size:9.5px;
+    line-height:1.35;
+    padding:8px 2px 0 6px;
+  }
+
+  @media(max-width:820px){
+    /* Il pannello note settimanali è pensato per la griglia desktop.
+       Sul telefono resta nascosto per non appesantire la vista di un singolo giorno. */
+    .week-notes{display:none!important}
+
+    /* Fix iPhone/telefono: i date input non possono più uscire dai pannelli Nuova e Altro. */
+    #mobileQuickPanel,
+    #mobileMorePanel,
+    #mobileQuickPanel .quick-task-form,
+    #mobileMorePanel .mobile-more-grid,
+    #mobileMorePanel .mobile-jump,
+    #mobileQuickPanel .quick-task-form > div,
+    #mobileMorePanel .mobile-jump > div{
+      min-width:0;
+      max-width:100%;
+      width:100%;
+    }
+    #mobileMorePanel .mobile-jump{
+      grid-template-columns:minmax(0,1fr) auto;
+    }
+    #mobileQuickPanel input,
+    #mobileMorePanel input,
+    #mobileQuickTaskDate,
+    #mobileJumpDate{
+      display:block;
+      width:100%!important;
+      min-width:0!important;
+      max-width:100%!important;
+      box-sizing:border-box!important;
+      font-size:16px;
+    }
+    #mobileQuickTaskDate,
+    #mobileJumpDate{
+      -webkit-appearance:none;
+      appearance:none;
+    }
+    #mobileQuickTaskDate::-webkit-date-and-time-value,
+    #mobileJumpDate::-webkit-date-and-time-value{
+      min-width:0;
+      text-align:left;
+    }
+    .mobile-panel{
+      overflow:hidden;
+    }
+  }
+
 </style>
 </head>
 <body class="mobile-view-agenda">
@@ -757,7 +923,7 @@ function getMonday(d){
 }
 
 function storageKey(d){return `day:${dateKey(d)}`;}
-function emptyDay(){return {hours:{}, extraHours:[], tasks:[]};}
+function emptyDay(){return {hours:{}, extraHours:[], tasks:[], weekNotes:Array(12).fill('')};}
 
 function normalizeMinutes(value){
   const digits = String(value ?? '00').replace(/\D/g,'').slice(0,2);
@@ -771,6 +937,9 @@ function normalizeDay(value){
   if(!val.hours || typeof val.hours !== 'object') val.hours = {};
   if(!Array.isArray(val.extraHours)) val.extraHours = [];
   if(!Array.isArray(val.tasks)) val.tasks = [];
+  if(!Array.isArray(val.weekNotes)) val.weekNotes = [];
+  val.weekNotes = val.weekNotes.slice(0,12).map(note=>String(note ?? ''));
+  while(val.weekNotes.length < 12) val.weekNotes.push('');
 
   Object.keys(val.hours).forEach(h=>{
     if(typeof val.hours[h] === 'string'){
@@ -801,7 +970,7 @@ function normalizeDay(value){
     completedAt: typeof t.completedAt === 'string' ? t.completedAt : ''
   }));
 
-  return {hours:val.hours, extraHours:val.extraHours, tasks:val.tasks};
+  return {hours:val.hours, extraHours:val.extraHours, tasks:val.tasks, weekNotes:val.weekNotes};
 }
 
 function dayRefFromKey(key){
@@ -858,6 +1027,7 @@ async function storageSetSafe(key, value){
         hours: parsed.hours,
         extraHours: parsed.extraHours,
         tasks: parsed.tasks,
+        weekNotes: parsed.weekNotes,
         updatedAt: serverTimestamp()
       });
       return {key, value};
@@ -907,6 +1077,7 @@ async function migrateLocalDataToCloud(){
             hours: parsed.hours,
             extraHours: parsed.extraHours,
             tasks: parsed.tasks,
+            weekNotes: parsed.weekNotes,
             updatedAt: serverTimestamp()
           });
         }
@@ -1295,6 +1466,81 @@ function populateMonthSelect(){
   });
 }
 
+
+const WEEK_NOTE_ROWS = 12;
+const weekNoteSaveTimers = {};
+
+function weekNotesPanelHTML(weekDates){
+  const sunday = weekDates[6];
+  const monday = weekDates[0];
+  const key = dateKey(sunday);
+  const range = `${pad(monday.getDate())}/${pad(monday.getMonth()+1)} - ${pad(sunday.getDate())}/${pad(sunday.getMonth()+1)}`;
+  return `
+    <section class="week-notes" data-week-notes-key="${escapeHTML(key)}">
+      <div class="week-notes-head">
+        <div class="week-notes-title">Note e cose da organizzare</div>
+        <div class="week-notes-range">${escapeHTML(range)}</div>
+      </div>
+      <div class="week-notes-rows"></div>
+      <div class="week-notes-help">Ogni riga inizia con “-”. Invio va a capo dentro la stessa nota senza creare un nuovo trattino.</div>
+    </section>`;
+}
+
+function renderWeekNotes(panel, val){
+  if(!panel) return;
+  const notes = Array.isArray(val.weekNotes) ? val.weekNotes : Array(WEEK_NOTE_ROWS).fill('');
+  const rows = panel.querySelector('.week-notes-rows');
+  if(!rows) return;
+  rows.innerHTML = Array.from({length:WEEK_NOTE_ROWS},(_,index)=>`
+    <div class="week-note-row">
+      <span class="week-note-dash">-</span>
+      <textarea class="week-note-input" rows="1" data-week-note-index="${index}" placeholder="">${escapeHTML(notes[index] || '')}</textarea>
+    </div>
+  `).join('');
+  rows.querySelectorAll('.week-note-input').forEach(textarea=>autoGrow(textarea,20));
+}
+
+function attachWeekNotesEvents(sunday){
+  const key = dateKey(sunday);
+  const panel = document.querySelector(`.week-notes[data-week-notes-key="${key}"]`);
+  if(!panel || panel.dataset.eventsBound === 'true') return;
+  panel.dataset.eventsBound = 'true';
+
+  panel.addEventListener('input', async event=>{
+    const textarea = event.target.closest('[data-week-note-index]');
+    if(!textarea) return;
+
+    autoGrow(textarea,20);
+    const val = dataCache[key] || await loadDay(sunday);
+    if(!Array.isArray(val.weekNotes)) val.weekNotes = Array(WEEK_NOTE_ROWS).fill('');
+    while(val.weekNotes.length < WEEK_NOTE_ROWS) val.weekNotes.push('');
+
+    const index = Number(textarea.dataset.weekNoteIndex);
+    if(Number.isInteger(index) && index >= 0 && index < WEEK_NOTE_ROWS){
+      val.weekNotes[index] = textarea.value;
+    }
+
+    clearTimeout(weekNoteSaveTimers[key]);
+    weekNoteSaveTimers[key] = setTimeout(()=>saveDay(sunday),350);
+  });
+
+  panel.addEventListener('change', async event=>{
+    const textarea = event.target.closest('[data-week-note-index]');
+    if(!textarea) return;
+    clearTimeout(weekNoteSaveTimers[key]);
+
+    const val = dataCache[key] || await loadDay(sunday);
+    if(!Array.isArray(val.weekNotes)) val.weekNotes = Array(WEEK_NOTE_ROWS).fill('');
+    while(val.weekNotes.length < WEEK_NOTE_ROWS) val.weekNotes.push('');
+
+    const index = Number(textarea.dataset.weekNoteIndex);
+    if(Number.isInteger(index) && index >= 0 && index < WEEK_NOTE_ROWS){
+      val.weekNotes[index] = textarea.value;
+      await saveDay(sunday);
+    }
+  });
+}
+
 function dayCardHTML(d, todayFlag){
   const key = dateKey(d);
   return `
@@ -1639,6 +1885,14 @@ function subscribeToWeek(weekDates){
           ? normalizeDay(snapshot.data())
           : emptyDay();
         refreshDayUI(d);
+        if(d.getDay() === 0){
+          const notesPanel = document.querySelector(`.week-notes[data-week-notes-key="${key}"]`);
+          const active = document.activeElement;
+          const editingNotes = notesPanel && active && notesPanel.contains(active);
+          if(notesPanel && !editingNotes && !snapshot.metadata.hasPendingWrites){
+            renderWeekNotes(notesPanel,dataCache[key]);
+          }
+        }
         scheduleUpcomingRender();
         if(snapshot.metadata.hasPendingWrites){
           setSyncNotice(navigator.onLine
@@ -1689,7 +1943,9 @@ async function render(){
 
   const grid = document.getElementById('weekGrid');
   const now = new Date();
-  grid.innerHTML = weekDates.map(d=>dayCardHTML(d, sameDay(d,now))).join('');
+  grid.innerHTML =
+    weekDates.map(d=>dayCardHTML(d, sameDay(d,now))).join('') +
+    weekNotesPanelHTML(weekDates);
 
   for(const d of weekDates){
     const val = await loadDay(d);
@@ -1700,6 +1956,12 @@ async function render(){
     if(hoursEl) renderHours(hoursEl,d,val);
     if(listEl) renderTodos(listEl,val);
     attachDayEvents(d);
+
+    if(d.getDay() === 0){
+      const notesPanel = document.querySelector(`.week-notes[data-week-notes-key="${key}"]`);
+      renderWeekNotes(notesPanel,val);
+      attachWeekNotesEvents(d);
+    }
   }
 
   applyMobileVisibility(weekDates);
