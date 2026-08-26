@@ -688,6 +688,135 @@
     }
   }
 
+
+
+  /* ===== PLANNER V15 · NOTE GLOBALI + MOBILE RIORDINATO ===== */
+  .mobile-agenda-top{display:none}
+
+  .organizer-notes-rows{
+    border-top:1px solid var(--line);
+  }
+  .organizer-note-row{
+    display:grid;
+    grid-template-columns:18px minmax(0,1fr);
+    gap:5px;
+    align-items:start;
+    min-height:28px;
+    border-bottom:1px solid var(--line);
+    padding:4px 2px 4px 6px;
+  }
+  .organizer-note-dash{
+    color:var(--text-dim);
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    line-height:20px;
+    user-select:none;
+  }
+  .organizer-note-input{
+    width:100%;
+    min-width:0;
+    min-height:20px;
+    border:0;
+    resize:none;
+    overflow:hidden;
+    background:transparent;
+    color:var(--text);
+    padding:1px 3px;
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    line-height:1.4;
+  }
+  .organizer-note-input:hover,
+  .organizer-note-input:focus{
+    background:var(--panel-alt);
+    border-radius:4px;
+    outline:none;
+  }
+
+  .mobile-more-section-title{
+    margin:15px 0 8px;
+    padding-top:13px;
+    border-top:1px solid var(--line);
+    font-family:'Fraunces',serif;
+    font-size:16px;
+    font-weight:600;
+  }
+  .mobile-organizer-notes{
+    margin-top:8px;
+    border:1px solid var(--line);
+    border-radius:9px;
+    overflow:hidden;
+    background:var(--panel-alt);
+  }
+  .mobile-organizer-notes .organizer-notes-rows{
+    border-top:0;
+  }
+  .mobile-organizer-notes .organizer-note-row{
+    padding-left:9px;
+    padding-right:7px;
+  }
+
+  @media(max-width:820px){
+    .mobile-agenda-top{
+      display:none;
+      margin:0 0 8px;
+    }
+    body.mobile-view-agenda .mobile-agenda-top{
+      display:flex;
+      justify-content:flex-start;
+    }
+    .mobile-back-today{
+      background:var(--panel-alt);
+      color:var(--accent);
+      border:1px solid var(--line);
+      padding:7px 11px;
+      border-radius:8px;
+      font-size:11px;
+      font-weight:700;
+    }
+    .mobile-day-nav{
+      margin-top:0;
+    }
+    #mobileMorePanel{
+      overflow:hidden;
+    }
+    #mobileMorePanel .panel-sub{
+      margin-bottom:9px;
+    }
+  }
+
+
+  /* ===== PLANNER V16 · NOTE E ALTRO IN DUE RIQUADRI ===== */
+  .mobile-more-card{
+    background:var(--panel-alt);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px;
+    margin-top:10px;
+    overflow:hidden;
+  }
+  .mobile-more-card:first-of-type{margin-top:8px}
+  .mobile-more-card-title{
+    font-family:'Fraunces',serif;
+    font-size:16px;
+    font-weight:600;
+    margin:0 0 9px;
+    color:var(--text);
+  }
+  .mobile-more-card .mobile-organizer-notes{
+    margin-top:0;
+    border:0;
+    border-radius:0;
+    background:transparent;
+  }
+  .mobile-more-card .organizer-note-row{
+    padding-left:2px;
+    padding-right:2px;
+  }
+  .mobile-more-card .mobile-more-grid{
+    margin-top:0;
+  }
+
 </style>
 </head>
 <body class="mobile-view-agenda">
@@ -708,6 +837,10 @@
       <button class="nav-arrow" id="nextBtn" aria-label="Settimana successiva" title="Settimana successiva">›</button>
     </div>
   </header>
+
+  <div class="mobile-agenda-top">
+    <button id="mobileBackTodayBtn" class="mobile-back-today" type="button">Torna ad oggi</button>
+  </div>
 
   <div class="mobile-day-nav">
     <button id="prevDayMobile" class="nav-arrow" title="Giorno precedente">‹</button>
@@ -742,19 +875,30 @@
       </section>
 
       <section class="mobile-panel" id="mobileMorePanel">
-        <h2>Altro</h2>
-        <div class="panel-sub">Vai rapidamente a una data oppure gestisci l'account Google.</div>
-        <div class="mobile-more-grid">
-          <div class="mobile-jump">
-            <div>
-              <label for="mobileJumpDate">Vai alla data</label>
-              <input id="mobileJumpDate" type="date">
-            </div>
-            <button id="mobileJumpBtn" type="button">Vai</button>
+        <h2>Note e altro</h2>
+        <div class="panel-sub">Note generali e strumenti rapidi.</div>
+
+        <div class="mobile-more-card">
+          <div class="mobile-more-card-title">Note e cose da organizzare</div>
+          <div class="mobile-organizer-notes" data-organizer-notes="mobile">
+            <div class="organizer-notes-rows"></div>
           </div>
-          <div class="mobile-more-actions">
-            <button id="mobileTodayBtn" type="button">Oggi</button>
-            <button id="mobileAuthBtn" type="button">Account Google</button>
+        </div>
+
+        <div class="mobile-more-card">
+          <div class="mobile-more-card-title">Vai alla data</div>
+          <div class="mobile-more-grid">
+            <div class="mobile-jump">
+              <div>
+                <label for="mobileJumpDate">Data</label>
+                <input id="mobileJumpDate" type="date">
+              </div>
+              <button id="mobileJumpBtn" type="button">Vai</button>
+            </div>
+            <div class="mobile-more-actions">
+              <button id="mobileTodayBtn" type="button">Oggi</button>
+              <button id="mobileAuthBtn" type="button">Account Google</button>
+            </div>
           </div>
         </div>
       </section>
@@ -792,9 +936,9 @@
 
   <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navigazione Planner">
     <button type="button" data-mobile-view="agenda"><span class="mobile-nav-icon">▣</span>Agenda</button>
-    <button type="button" data-mobile-view="nuova"><span class="mobile-nav-icon">＋</span>Nuova</button>
     <button type="button" data-mobile-view="scadenze"><span class="mobile-nav-icon">✓</span>Scadenze</button>
-    <button type="button" data-mobile-view="altro"><span class="mobile-nav-icon">•••</span>Altro</button>
+    <button type="button" data-mobile-view="nuova"><span class="mobile-nav-icon">＋</span>Nuova</button>
+    <button type="button" data-mobile-view="altro"><span class="mobile-nav-icon">•••</span>Note e altro</button>
   </nav>
 
   <footer id="syncNotice">Avvio del planner…</footer>
@@ -923,7 +1067,7 @@ function getMonday(d){
 }
 
 function storageKey(d){return `day:${dateKey(d)}`;}
-function emptyDay(){return {hours:{}, extraHours:[], tasks:[], weekNotes:Array(12).fill('')};}
+function emptyDay(){return {hours:{}, extraHours:[], tasks:[]};}
 
 function normalizeMinutes(value){
   const digits = String(value ?? '00').replace(/\D/g,'').slice(0,2);
@@ -937,9 +1081,6 @@ function normalizeDay(value){
   if(!val.hours || typeof val.hours !== 'object') val.hours = {};
   if(!Array.isArray(val.extraHours)) val.extraHours = [];
   if(!Array.isArray(val.tasks)) val.tasks = [];
-  if(!Array.isArray(val.weekNotes)) val.weekNotes = [];
-  val.weekNotes = val.weekNotes.slice(0,12).map(note=>String(note ?? ''));
-  while(val.weekNotes.length < 12) val.weekNotes.push('');
 
   Object.keys(val.hours).forEach(h=>{
     if(typeof val.hours[h] === 'string'){
@@ -970,7 +1111,7 @@ function normalizeDay(value){
     completedAt: typeof t.completedAt === 'string' ? t.completedAt : ''
   }));
 
-  return {hours:val.hours, extraHours:val.extraHours, tasks:val.tasks, weekNotes:val.weekNotes};
+  return {hours:val.hours, extraHours:val.extraHours, tasks:val.tasks};
 }
 
 function dayRefFromKey(key){
@@ -1013,6 +1154,12 @@ async function storageGetSafe(key){
         ? {key, value:String(Boolean(snap.data().hourFlagsVisible))}
         : null;
     }
+    if(key === 'settings:organizerNotes'){
+      const snap = await getDoc(settingsRef());
+      return snap.exists()
+        ? {key, value:JSON.stringify(normalizeOrganizerNotes(snap.data().organizerNotes))}
+        : null;
+    }
     return null;
   }
   const raw = localStorage.getItem(key);
@@ -1027,7 +1174,6 @@ async function storageSetSafe(key, value){
         hours: parsed.hours,
         extraHours: parsed.extraHours,
         tasks: parsed.tasks,
-        weekNotes: parsed.weekNotes,
         updatedAt: serverTimestamp()
       });
       return {key, value};
@@ -1035,6 +1181,14 @@ async function storageSetSafe(key, value){
     if(key === 'settings:hourFlagsVisible'){
       await setDoc(settingsRef(), {
         hourFlagsVisible: value === 'true',
+        updatedAt: serverTimestamp()
+      }, {merge:true});
+      return {key, value};
+    }
+    if(key === 'settings:organizerNotes'){
+      const notes=normalizeOrganizerNotes(JSON.parse(value));
+      await setDoc(settingsRef(), {
+        organizerNotes: notes,
         updatedAt: serverTimestamp()
       }, {merge:true});
       return {key, value};
@@ -1053,7 +1207,7 @@ async function migrateLocalDataToCloud(){
   const keys = [];
   for(let i=0; i<localStorage.length; i++){
     const key = localStorage.key(i);
-    if(key && (key.startsWith('day:') || key === 'settings:hourFlagsVisible')){
+    if(key && (key.startsWith('day:') || key === 'settings:hourFlagsVisible' || key === 'settings:organizerNotes')){
       keys.push(key);
     }
   }
@@ -1077,7 +1231,6 @@ async function migrateLocalDataToCloud(){
             hours: parsed.hours,
             extraHours: parsed.extraHours,
             tasks: parsed.tasks,
-            weekNotes: parsed.weekNotes,
             updatedAt: serverTimestamp()
           });
         }
@@ -1090,6 +1243,17 @@ async function migrateLocalDataToCloud(){
           hourFlagsVisible: localStorage.getItem(key) === 'true',
           updatedAt: serverTimestamp()
         });
+      }
+    }else if(key === 'settings:organizerNotes'){
+      const remoteRef = settingsRef();
+      const raw = localStorage.getItem(key);
+      if(raw){
+        let localNotes=[];
+        try{localNotes=normalizeOrganizerNotes(JSON.parse(raw));}catch(error){}
+        await setDoc(remoteRef, {
+          organizerNotes: localNotes,
+          updatedAt: serverTimestamp()
+        }, {merge:true});
       }
     }
   }
@@ -1467,77 +1631,110 @@ function populateMonthSelect(){
 }
 
 
-const WEEK_NOTE_ROWS = 12;
-const weekNoteSaveTimers = {};
+const ORGANIZER_NOTE_ROWS = 12;
+let organizerNotes = Array(ORGANIZER_NOTE_ROWS).fill('');
+const organizerSaveTimers = {};
 
-function weekNotesPanelHTML(weekDates){
-  const sunday = weekDates[6];
-  const monday = weekDates[0];
-  const key = dateKey(sunday);
-  const range = `${pad(monday.getDate())}/${pad(monday.getMonth()+1)} - ${pad(sunday.getDate())}/${pad(sunday.getMonth()+1)}`;
+function normalizeOrganizerNotes(value){
+  const notes = Array.isArray(value) ? value.slice(0,ORGANIZER_NOTE_ROWS).map(note=>String(note ?? '')) : [];
+  while(notes.length < ORGANIZER_NOTE_ROWS) notes.push('');
+  return notes;
+}
+
+function organizerNotesPanelHTML(){
   return `
-    <section class="week-notes" data-week-notes-key="${escapeHTML(key)}">
+    <section class="week-notes" data-organizer-notes="desktop">
       <div class="week-notes-head">
         <div class="week-notes-title">Note e cose da organizzare</div>
-        <div class="week-notes-range">${escapeHTML(range)}</div>
       </div>
-      <div class="week-notes-rows"></div>
-      <div class="week-notes-help">Ogni riga inizia con “-”. Invio va a capo dentro la stessa nota senza creare un nuovo trattino.</div>
+      <div class="organizer-notes-rows"></div>
     </section>`;
 }
 
-function renderWeekNotes(panel, val){
-  if(!panel) return;
-  const notes = Array.isArray(val.weekNotes) ? val.weekNotes : Array(WEEK_NOTE_ROWS).fill('');
-  const rows = panel.querySelector('.week-notes-rows');
+function renderOrganizerNotes(container){
+  if(!container) return;
+  const rows = container.querySelector('.organizer-notes-rows');
   if(!rows) return;
-  rows.innerHTML = Array.from({length:WEEK_NOTE_ROWS},(_,index)=>`
-    <div class="week-note-row">
-      <span class="week-note-dash">-</span>
-      <textarea class="week-note-input" rows="1" data-week-note-index="${index}" placeholder="">${escapeHTML(notes[index] || '')}</textarea>
+
+  rows.innerHTML = Array.from({length:ORGANIZER_NOTE_ROWS},(_,index)=>`
+    <div class="organizer-note-row">
+      <span class="organizer-note-dash">-</span>
+      <textarea class="organizer-note-input" rows="1" data-organizer-note-index="${index}">${escapeHTML(organizerNotes[index] || '')}</textarea>
     </div>
   `).join('');
-  rows.querySelectorAll('.week-note-input').forEach(textarea=>autoGrow(textarea,20));
+
+  rows.querySelectorAll('.organizer-note-input').forEach(textarea=>autoGrow(textarea,20));
 }
 
-function attachWeekNotesEvents(sunday){
-  const key = dateKey(sunday);
-  const panel = document.querySelector(`.week-notes[data-week-notes-key="${key}"]`);
-  if(!panel || panel.dataset.eventsBound === 'true') return;
-  panel.dataset.eventsBound = 'true';
+function renderAllOrganizerNotes(){
+  document.querySelectorAll('[data-organizer-notes]').forEach(container=>{
+    const active=document.activeElement;
+    if(active && container.contains(active)) return;
+    renderOrganizerNotes(container);
+  });
+}
 
-  panel.addEventListener('input', async event=>{
-    const textarea = event.target.closest('[data-week-note-index]');
+async function loadOrganizerNotesSetting(){
+  try{
+    const res = await storageGetSafe('settings:organizerNotes');
+    organizerNotes = res?.value ? normalizeOrganizerNotes(JSON.parse(res.value)) : Array(ORGANIZER_NOTE_ROWS).fill('');
+  }catch(error){
+    console.warn('Note generali non disponibili',error);
+    organizerNotes = Array(ORGANIZER_NOTE_ROWS).fill('');
+  }
+}
+
+async function saveOrganizerNotesSetting(){
+  try{
+    await storageSetSafe('settings:organizerNotes', JSON.stringify(normalizeOrganizerNotes(organizerNotes)));
+  }catch(error){
+    console.error('Salvataggio note generali non riuscito',error);
+  }
+}
+
+function attachOrganizerNotesEvents(container){
+  if(!container || container.dataset.organizerEventsBound === 'true') return;
+  container.dataset.organizerEventsBound='true';
+
+  container.addEventListener('input',event=>{
+    const textarea=event.target.closest('[data-organizer-note-index]');
     if(!textarea) return;
-
     autoGrow(textarea,20);
-    const val = dataCache[key] || await loadDay(sunday);
-    if(!Array.isArray(val.weekNotes)) val.weekNotes = Array(WEEK_NOTE_ROWS).fill('');
-    while(val.weekNotes.length < WEEK_NOTE_ROWS) val.weekNotes.push('');
 
-    const index = Number(textarea.dataset.weekNoteIndex);
-    if(Number.isInteger(index) && index >= 0 && index < WEEK_NOTE_ROWS){
-      val.weekNotes[index] = textarea.value;
-    }
+    const index=Number(textarea.dataset.organizerNoteIndex);
+    if(!Number.isInteger(index) || index<0 || index>=ORGANIZER_NOTE_ROWS) return;
 
-    clearTimeout(weekNoteSaveTimers[key]);
-    weekNoteSaveTimers[key] = setTimeout(()=>saveDay(sunday),350);
+    organizerNotes[index]=textarea.value;
+
+    /* Aggiorna l'altra vista (desktop/mobile) senza toccare il campo che stai scrivendo. */
+    document.querySelectorAll(`[data-organizer-note-index="${index}"]`).forEach(other=>{
+      if(other!==textarea && document.activeElement!==other){
+        other.value=textarea.value;
+        autoGrow(other,20);
+      }
+    });
+
+    clearTimeout(organizerSaveTimers.main);
+    organizerSaveTimers.main=setTimeout(()=>saveOrganizerNotesSetting(),350);
   });
 
-  panel.addEventListener('change', async event=>{
-    const textarea = event.target.closest('[data-week-note-index]');
+  container.addEventListener('change',async event=>{
+    const textarea=event.target.closest('[data-organizer-note-index]');
     if(!textarea) return;
-    clearTimeout(weekNoteSaveTimers[key]);
 
-    const val = dataCache[key] || await loadDay(sunday);
-    if(!Array.isArray(val.weekNotes)) val.weekNotes = Array(WEEK_NOTE_ROWS).fill('');
-    while(val.weekNotes.length < WEEK_NOTE_ROWS) val.weekNotes.push('');
+    const index=Number(textarea.dataset.organizerNoteIndex);
+    if(!Number.isInteger(index) || index<0 || index>=ORGANIZER_NOTE_ROWS) return;
 
-    const index = Number(textarea.dataset.weekNoteIndex);
-    if(Number.isInteger(index) && index >= 0 && index < WEEK_NOTE_ROWS){
-      val.weekNotes[index] = textarea.value;
-      await saveDay(sunday);
-    }
+    organizerNotes[index]=textarea.value;
+    clearTimeout(organizerSaveTimers.main);
+    await saveOrganizerNotesSetting();
+  });
+}
+
+function initOrganizerNotesPanels(){
+  document.querySelectorAll('[data-organizer-notes]').forEach(container=>{
+    renderOrganizerNotes(container);
+    attachOrganizerNotesEvents(container);
   });
 }
 
@@ -1885,14 +2082,6 @@ function subscribeToWeek(weekDates){
           ? normalizeDay(snapshot.data())
           : emptyDay();
         refreshDayUI(d);
-        if(d.getDay() === 0){
-          const notesPanel = document.querySelector(`.week-notes[data-week-notes-key="${key}"]`);
-          const active = document.activeElement;
-          const editingNotes = notesPanel && active && notesPanel.contains(active);
-          if(notesPanel && !editingNotes && !snapshot.metadata.hasPendingWrites){
-            renderWeekNotes(notesPanel,dataCache[key]);
-          }
-        }
         scheduleUpcomingRender();
         if(snapshot.metadata.hasPendingWrites){
           setSyncNotice(navigator.onLine
@@ -1927,7 +2116,9 @@ function subscribeToSettings(){
     (snapshot)=>{
       if(snapshot.exists()){
         hourFlagsVisible = Boolean(snapshot.data().hourFlagsVisible);
+        organizerNotes = normalizeOrganizerNotes(snapshot.data().organizerNotes);
         applyHourFlagsVisibility(hourFlagsVisible);
+        renderAllOrganizerNotes();
       }
     },
     (error)=>console.error('Errore impostazioni', error)
@@ -1945,7 +2136,7 @@ async function render(){
   const now = new Date();
   grid.innerHTML =
     weekDates.map(d=>dayCardHTML(d, sameDay(d,now))).join('') +
-    weekNotesPanelHTML(weekDates);
+    organizerNotesPanelHTML();
 
   for(const d of weekDates){
     const val = await loadDay(d);
@@ -1957,13 +2148,9 @@ async function render(){
     if(listEl) renderTodos(listEl,val);
     attachDayEvents(d);
 
-    if(d.getDay() === 0){
-      const notesPanel = document.querySelector(`.week-notes[data-week-notes-key="${key}"]`);
-      renderWeekNotes(notesPanel,val);
-      attachWeekNotesEvents(d);
-    }
   }
 
+  initOrganizerNotesPanels();
   applyMobileVisibility(weekDates);
   subscribeToWeek(weekDates);
   await renderUpcomingPanels();
@@ -2078,6 +2265,11 @@ document.getElementById('mobileTodayBtn')?.addEventListener('click',()=>{
   setMobileView('agenda');
   render();
 });
+document.getElementById('mobileBackTodayBtn')?.addEventListener('click',()=>{
+  currentDate=new Date();
+  setMobileView('agenda');
+  render();
+});
 document.getElementById('mobileAuthBtn')?.addEventListener('click',handleAuthClick);
 
 let initialMobileView='agenda';
@@ -2163,6 +2355,7 @@ onAuthStateChanged(auth, async (user)=>{
   }
 
   await loadHourFlagsSetting();
+  await loadOrganizerNotesSetting();
   await render();
 
   if(user){

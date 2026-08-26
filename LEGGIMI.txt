@@ -1,24 +1,21 @@
-PLANNER ALESSANDRO — V14 NOTE SETTIMANALI
+PLANNER ALESSANDRO — V16
 
-MODIFICHE:
-- Desktop: i giorni usano ora una griglia regolare a 3 colonne.
-- Domenica ha esattamente la stessa larghezza di Giovedì e degli altri giorni.
-- Nell'ultima riga, accanto a Domenica, c'è un pannello largo due colonne:
-  "Note e cose da organizzare".
-- Il pannello ha 12 righe senza orario.
-- Ogni riga mostra un trattino "-" fisso all'inizio.
-- Premendo Invio dentro una nota si va a capo nella stessa nota:
-  non compare un secondo trattino.
-- Le note sono legate alla settimana e vengono salvate nel Planner/Firebase.
+MODIFICA:
+- Nella schermata telefono "Note e altro" le due sezioni sono ora separate in due riquadri distinti.
 
-TELEFONO:
-- Sistemato il campo Data nella schermata "Nuova".
-- Sistemato il campo Data nella schermata "Altro".
-- I campi data ora restano sempre dentro il pannello anche su iPhone.
+RIQUADRO 1:
+- Note e cose da organizzare
+- Stesse note globali già presenti nella V15
+
+RIQUADRO 2:
+- Vai alla data
+- Data
+- Pulsante Vai
+- Oggi
+- Account Google
+
+Tutto il resto resta invariato.
 
 GITHUB:
-1. Carica nella ROOT del repository tutti questi file.
-2. Sostituisci quelli esistenti.
-3. Commit changes.
-4. Apri https://tesi11alex-cell.github.io/planner/?v=14
-5. Su PC, se necessario, Ctrl+F5.
+Carica tutti i file nella root del repository e sostituisci quelli esistenti.
+Apri poi: https://tesi11alex-cell.github.io/planner/?v=16
