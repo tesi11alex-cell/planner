@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v16-note-altro-divisi';
+const CACHE_NAME = 'planner-offline-v17-note-dinamiche';
 
 const APP_SHELL = [
   './',

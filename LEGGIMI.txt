@@ -1,21 +1,24 @@
-PLANNER ALESSANDRO — V16
+PLANNER ALESSANDRO — V17
 
-MODIFICA:
-- Nella schermata telefono "Note e altro" le due sezioni sono ora separate in due riquadri distinti.
+NOTE E COSE DA ORGANIZZARE
+- All'apertura il riquadro desktop ha almeno la stessa altezza di Domenica.
+- Se scrivi molto, il riquadro può crescere liberamente.
+- Le righe sono numerate 1), 2), 3)... al posto del trattino.
+- In alto a destra c'è "Aggiungi riga".
+- Ogni riga ha la X per eliminare tutta la riga.
+- Invio: passa alla riga successiva.
+- Se sei sull'ultima riga, Invio crea automaticamente una nuova riga.
+- Alt + Invio: va a capo dentro la stessa riga.
+- Le note restano globali: la modifica si vede in tutte le settimane e su tutti i dispositivi.
 
-RIQUADRO 1:
-- Note e cose da organizzare
-- Stesse note globali già presenti nella V15
+TELEFONO
+- Le righe orarie dell'Agenda usano più larghezza disponibile.
+- Le aree di testo sono più alte e leggibili.
+- Migliorato il ridimensionamento automatico su più righe per evitare che il testo finisca sotto l'ora successiva.
+- Anche le note in "Note e altro" sono più larghe e hanno Aggiungi riga / X.
 
-RIQUADRO 2:
-- Vai alla data
-- Data
-- Pulsante Vai
-- Oggi
-- Account Google
-
-Tutto il resto resta invariato.
-
-GITHUB:
-Carica tutti i file nella root del repository e sostituisci quelli esistenti.
-Apri poi: https://tesi11alex-cell.github.io/planner/?v=16
+GITHUB
+1. Carica tutti i file nella root del repository.
+2. Sostituisci quelli esistenti.
+3. Commit changes.
+4. Apri https://tesi11alex-cell.github.io/planner/?v=17
