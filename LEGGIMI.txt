@@ -1,7 +1,9 @@
-PLANNER ALESSANDRO — V27
+PLANNER ALESSANDRO — V28
+
+MODIFICHE
 
 VISTA STANDARD
-- Mostra sempre: 08:00, 12:00, 16:00, 20:00.
+- Mostra sempre: 08:00, 11:00, 14:00, 17:00, 20:00.
 - Se scrivi qualcosa in un altro orario, quell'orario compare automaticamente.
 - Restano visibili anche eventuali righe con flag.
 - Gli altri orari vuoti restano nascosti.
@@ -9,8 +11,9 @@ VISTA STANDARD
 GIORNO INGRANDITO
 - Cliccando il giorno tornano visibili tutti gli orari.
 - Il giorno viene portato in primo piano.
-- Il pulsante "Vista standard" NON è più sopra "Invia a una data".
-- Compare in alto a sinistra DENTRO il giorno ingrandito.
+- Il pulsante "Vista standard" compare DENTRO il giorno ingrandito,
+  in alto a DESTRA.
+- Il pulsante è di nuovo colorato con il colore principale del Planner.
 
 COSE DA FARE
 - Resta l'eliminazione automatica delle voci lasciate completamente vuote.
@@ -20,12 +23,12 @@ GITHUB
 2. Repository planner > Add file > Upload files.
 3. Carica:
    index.html
-   planner-v27.css
-   planner-v27.js
+   planner-v28.css
+   planner-v28.js
    manifest-v10.webmanifest
    service-worker.js
 4. Commit changes.
 5. NON cancellare Agenda.html.
 6. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=27
+   https://tesi11alex-cell.github.io/planner/?v=28
 7. Ctrl + F5.
