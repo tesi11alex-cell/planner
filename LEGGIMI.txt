@@ -1,45 +1,25 @@
-PLANNER ALESSANDRO — V20 FIX DIRETTO
+PLANNER ALESSANDRO — V21 FIX
 
-Questa versione corregge il problema del precedente pacchetto:
-le modifiche vengono applicate sia a index.html sia ad Agenda.html
-tramite il service worker, quindi funzionano anche se l'app apre direttamente Agenda.html.
+CARICA SOLO QUESTI 4 FILE NEL REPOSITORY "planner":
+- planner-v20.css
+- planner-v20.js
+- manifest-v10.webmanifest
+- service-worker.js
 
-MODIFICHE
-- PC: clic sul titolo/data di un giorno -> il giorno occupa tutte e 3 le colonne.
-- Se clicchi Mercoledì:
-  Lunedì e Martedì restano sopra nei riquadri piccoli;
-  Mercoledì va sotto a tutta larghezza;
-  gli altri giorni restano sotto.
-- Nel giorno grande:
-  50% Orari
-  50% Cose da fare.
-- Sopra "Invia a una data" compare "Vista standard".
-- "Vista standard" riporta immediatamente la griglia alla disposizione normale.
-- Prima lettera automatica maiuscola per:
-  Orari
-  Cose da fare
-  Aggiungi...
-  Invia a una data
-  Note e cose da organizzare.
-- Telefono/iPad: nessun ingrandimento a 3 colonne.
+PASSAGGI:
+1. Estrai questo ZIP.
+2. GitHub > repository planner.
+3. Add file > Upload files.
+4. Trascina insieme i 4 file.
+5. Commit changes.
+6. Attendi circa 1 minuto.
+7. Apri:
+   https://tesi11alex-cell.github.io/planner/?v=21
+8. Sul PC fai Ctrl + F5.
 
-IMPORTANTE
-NON cancellare index.html e Agenda.html esistenti.
-Questo pacchetto aggiunge planner-v20.css e planner-v20.js
-e sostituisce solo manifest-v10.webmanifest e service-worker.js.
+CORREZIONE:
+- sistemato il tag </script> nel service worker;
+- nuova cache V21;
+- manifest aggiornato a ?v=21.
 
-GITHUB
-1. Estrai lo ZIP.
-2. Nel repository planner -> Add file -> Upload files.
-3. Carica insieme:
-   planner-v20.css
-   planner-v20.js
-   manifest-v10.webmanifest
-   service-worker.js
-4. Commit changes.
-5. Attendi circa un minuto.
-6. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=20
-7. Sul PC fai Ctrl+F5.
-8. Se al primo refresh non compare ancora, chiudi la scheda, riaprila e fai di nuovo Ctrl+F5:
-   serve solo a far prendere il nuovo service worker V20.
+Non eliminare index.html o Agenda.html.

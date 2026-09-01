@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v20-giorno-espanso';
+const CACHE_NAME = 'planner-offline-v21-giorno-espanso';
 
 const PATCH_CSS = './planner-v20.css';
 const PATCH_JS = './planner-v20.js';
@@ -27,8 +27,8 @@ function injectPatchText(html){
     return html;
   }
 
-  const cssTag = '<link rel="stylesheet" href="./planner-v20.css?v=20">';
-  const jsTag = '<script src="./planner-v20.js?v=20"><\\/script>';
+  const cssTag = '<link rel="stylesheet" href="./planner-v20.css?v=21">';
+  const jsTag = '<script src="./planner-v20.js?v=21"></script>';
 
   if(html.includes('</head>')){
     html = html.replace('</head>', cssTag + '\n</head>');
