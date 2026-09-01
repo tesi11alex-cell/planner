@@ -1,37 +1,68 @@
-PLANNER ALESSANDRO — V25
+PLANNER ALESSANDRO — V26
 
-VISTA STANDARD
-- Tutto più compatto sul PC.
-- Giorni, orari, Cose da fare, note e barra laterale hanno testi più piccoli.
-- Le Cose da fare NON vengono tagliate quando vanno a capo:
-  la textarea cresce automaticamente e mostra tutto il testo.
-- La vista prova automaticamente a ridursi quanto basta per far stare
-  l'intero planner nella schermata del PC.
+MODIFICHE PRINCIPALI
 
-GIORNO ESPANSO
-- Puoi cliccare qualsiasi parte del giorno: ore, testo, Cose da fare,
-  checkbox, titolo o data.
-- Il giorno si allarga su tutte le 3 colonne.
-- Orari 50% / Cose da fare 50%.
-- Appena si allarga, la pagina scorre automaticamente e mette
-  quel giorno AL CENTRO della schermata.
-- Funziona anche cliccando una data nel mini-calendario del mese.
+1. VISTA STANDARD LEGGIBILE
+- Rimosso il forte rimpicciolimento/zoom della V25.
+- Testi più grandi e leggibili.
+- Le Cose da fare vanno a capo e vengono mostrate per intero.
+- Le righe degli orari sono più basse e compatte.
 
-VISTA STANDARD
-- Il pulsante sopra "Invia a una data" riporta tutto alla vista compatta.
+2. ORARI INTELLIGENTI IN VISTA STANDARD
+Per ogni giorno vengono mostrati:
+- sempre 08:00
+- sempre 22:00
+- tutti gli orari dove hai scritto qualcosa
+- eventuali righe flaggate, anche senza testo
+
+Gli altri orari vuoti vengono nascosti.
+
+Quando ingrandisci il giorno:
+- ricompaiono TUTTI gli orari da 08:00 a 22:00
+- puoi lavorare normalmente sull'agenda completa.
+
+3. COSE DA FARE VUOTE
+Se cancelli completamente il testo di una Cosa da fare
+e poi clicchi/sposti il cursore fuori dalla casella:
+- la voce viene eliminata automaticamente
+- viene eliminata anche dai dati/Firebase
+- non resta una riga vuota.
+
+4. GIORNO INGRANDITO
+Puoi cliccare qualsiasi parte del giorno:
+- titolo/data
+- ore
+- testo degli orari
+- Cose da fare
+- checkbox/pulsanti
+
+Il giorno occupa tutte e 3 le colonne.
+Orari 50% / Cose da fare 50%.
+
+Appena clicchi:
+- la pagina si sposta automaticamente sul giorno
+- il giorno viene centrato nella schermata;
+- se è più alto dello schermo, viene allineato dall'inizio
+  così non devi cercarlo con la rotellina.
+
+5. MINI-CALENDARIO
+Cliccando un giorno nel calendario mensile:
+- apre la settimana corretta
+- ingrandisce quel giorno
+- porta automaticamente la schermata su quel giorno.
 
 GITHUB
 1. Estrai lo ZIP.
 2. Repository planner > Add file > Upload files.
 3. Carica insieme:
    index.html
-   planner-v25.css
-   planner-v25.js
+   planner-v26.css
+   planner-v26.js
    manifest-v10.webmanifest
    service-worker.js
 4. Commit changes.
 5. NON cancellare Agenda.html.
 6. Attendi circa 1 minuto.
 7. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=25
+   https://tesi11alex-cell.github.io/planner/?v=26
 8. Sul PC fai Ctrl + F5.

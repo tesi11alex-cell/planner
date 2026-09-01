@@ -1,13 +1,13 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v25-vista-compatta';
+const CACHE_NAME = 'planner-offline-v26-vista-intelligente';
 
 const APP_SHELL = [
   './',
   './index.html',
   './Agenda.html',
   './manifest-v10.webmanifest',
-  './planner-v25.css',
-  './planner-v25.js',
+  './planner-v26.css',
+  './planner-v26.js',
   './agenda-icon-180-v10.png',
   './agenda-icon-192-v10.png',
   './agenda-icon-512-v10.png'
