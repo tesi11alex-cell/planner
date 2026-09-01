@@ -1,68 +1,31 @@
-PLANNER ALESSANDRO — V26
+PLANNER ALESSANDRO — V27
 
-MODIFICHE PRINCIPALI
+VISTA STANDARD
+- Mostra sempre: 08:00, 12:00, 16:00, 20:00.
+- Se scrivi qualcosa in un altro orario, quell'orario compare automaticamente.
+- Restano visibili anche eventuali righe con flag.
+- Gli altri orari vuoti restano nascosti.
 
-1. VISTA STANDARD LEGGIBILE
-- Rimosso il forte rimpicciolimento/zoom della V25.
-- Testi più grandi e leggibili.
-- Le Cose da fare vanno a capo e vengono mostrate per intero.
-- Le righe degli orari sono più basse e compatte.
+GIORNO INGRANDITO
+- Cliccando il giorno tornano visibili tutti gli orari.
+- Il giorno viene portato in primo piano.
+- Il pulsante "Vista standard" NON è più sopra "Invia a una data".
+- Compare in alto a sinistra DENTRO il giorno ingrandito.
 
-2. ORARI INTELLIGENTI IN VISTA STANDARD
-Per ogni giorno vengono mostrati:
-- sempre 08:00
-- sempre 22:00
-- tutti gli orari dove hai scritto qualcosa
-- eventuali righe flaggate, anche senza testo
-
-Gli altri orari vuoti vengono nascosti.
-
-Quando ingrandisci il giorno:
-- ricompaiono TUTTI gli orari da 08:00 a 22:00
-- puoi lavorare normalmente sull'agenda completa.
-
-3. COSE DA FARE VUOTE
-Se cancelli completamente il testo di una Cosa da fare
-e poi clicchi/sposti il cursore fuori dalla casella:
-- la voce viene eliminata automaticamente
-- viene eliminata anche dai dati/Firebase
-- non resta una riga vuota.
-
-4. GIORNO INGRANDITO
-Puoi cliccare qualsiasi parte del giorno:
-- titolo/data
-- ore
-- testo degli orari
-- Cose da fare
-- checkbox/pulsanti
-
-Il giorno occupa tutte e 3 le colonne.
-Orari 50% / Cose da fare 50%.
-
-Appena clicchi:
-- la pagina si sposta automaticamente sul giorno
-- il giorno viene centrato nella schermata;
-- se è più alto dello schermo, viene allineato dall'inizio
-  così non devi cercarlo con la rotellina.
-
-5. MINI-CALENDARIO
-Cliccando un giorno nel calendario mensile:
-- apre la settimana corretta
-- ingrandisce quel giorno
-- porta automaticamente la schermata su quel giorno.
+COSE DA FARE
+- Resta l'eliminazione automatica delle voci lasciate completamente vuote.
 
 GITHUB
 1. Estrai lo ZIP.
 2. Repository planner > Add file > Upload files.
-3. Carica insieme:
+3. Carica:
    index.html
-   planner-v26.css
-   planner-v26.js
+   planner-v27.css
+   planner-v27.js
    manifest-v10.webmanifest
    service-worker.js
 4. Commit changes.
 5. NON cancellare Agenda.html.
-6. Attendi circa 1 minuto.
-7. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=26
-8. Sul PC fai Ctrl + F5.
+6. Apri:
+   https://tesi11alex-cell.github.io/planner/?v=27
+7. Ctrl + F5.
