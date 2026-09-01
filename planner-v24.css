@@ -1,0 +1,151 @@
+/* ===== PLANNER V24 · CLICK SU TUTTO IL GIORNO + TESTI LEGGIBILI ===== */
+
+.standard-view-btn-v24{
+  width:100%;
+  border:1px solid var(--line);
+  background:var(--panel-alt);
+  color:var(--text);
+  border-radius:9px;
+  padding:10px 12px;
+  font-size:12px;
+  font-weight:700;
+}
+.standard-view-btn-v24:hover,
+.standard-view-btn-v24.active{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:#26221a;
+}
+
+@media (min-width:1101px){
+  /* Vista standard: tre colonne, ma le Cose da fare restano leggibili. */
+  .week .day:not(.v24-expanded){
+    min-width:0 !important;
+    max-width:none !important;
+  }
+
+  .week .day:not(.v24-expanded) .day-body{
+    display:grid !important;
+    grid-template-columns:minmax(0,1.08fr) minmax(145px,.92fr) !important;
+    gap:9px !important;
+    align-items:start !important;
+  }
+
+  .week .day:not(.v24-expanded) .hours{
+    width:100% !important;
+    min-width:0 !important;
+    padding-left:3px;
+  }
+
+  .week .day:not(.v24-expanded) .todo-box{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    padding:9px 8px 10px;
+    overflow:visible;
+  }
+
+  .week .day:not(.v24-expanded) .todo-title{
+    font-size:10px;
+    margin-bottom:7px;
+  }
+
+  .week .day:not(.v24-expanded) .todo-text{
+    width:100%;
+    min-width:0;
+    max-width:none;
+    font-size:11.5px;
+    line-height:1.35;
+    overflow-wrap:anywhere;
+    word-break:normal;
+  }
+
+  .week .day:not(.v24-expanded) .todo-item{
+    gap:5px;
+  }
+
+  .week .day:not(.v24-expanded) .todo-add{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:5px;
+  }
+
+  .week .day:not(.v24-expanded) .todo-add input{
+    width:100%;
+    min-width:0;
+    font-size:11px;
+    padding:6px 6px;
+  }
+
+  .week .day:not(.v24-expanded) .todo-add button{
+    padding:6px 8px;
+  }
+
+  /* Tutto il riquadro del giorno è selezionabile per l'espansione. */
+  .day{
+    cursor:zoom-in;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .day input,
+  .day textarea,
+  .day button{
+    cursor:auto;
+  }
+
+  /* Giorno grande su tutte e tre le colonne. */
+  .week .day.v24-expanded{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    border-color:#574526 !important;
+    box-shadow:0 0 0 1px rgba(227,168,59,.12);
+    cursor:default;
+  }
+
+  .week .day.v24-expanded .day-name{font-size:20px}
+  .week .day.v24-expanded .day-date{font-size:12px}
+
+  .week .day.v24-expanded .day-body{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:24px !important;
+    align-items:start !important;
+  }
+
+  .week .day.v24-expanded .hours{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    padding-left:6px;
+    padding-right:5px;
+  }
+
+  .week .day.v24-expanded .todo-box{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    min-height:100%;
+    padding:14px;
+  }
+
+  .week .day.v24-expanded .todo-title{
+    font-size:12px;
+    margin-bottom:12px;
+  }
+
+  .week .day.v24-expanded .hour-input,
+  .week .day.v24-expanded .todo-text{
+    font-size:13px;
+    line-height:1.4;
+  }
+
+  .week .day.v24-expanded .todo-add input{
+    font-size:13px;
+    padding:8px 9px;
+  }
+}
+
+@media (max-width:1100px){
+  .standard-view-btn-v24{display:none!important}
+}

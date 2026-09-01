@@ -1,35 +1,34 @@
-PLANNER ALESSANDRO — V23
+PLANNER ALESSANDRO — V24
 
-CORREZIONE ESPANSIONE GIORNO
+MODIFICHE
+- Puoi espandere un giorno cliccando QUALSIASI punto del riquadro:
+  titolo/data, orari, testo degli orari, Cose da fare, testo delle Cose da fare,
+  checkbox e pulsanti.
+- Cliccando una data nel mini-calendario mensile:
+  apre quella settimana e ingrandisce automaticamente il giorno scelto.
+- Vista standard:
+  i giorni restano nelle 3 colonne e le Cose da fare hanno più spazio,
+  testo leggibile e nessun taglio laterale.
+- Giorno espanso:
+  occupa tutte le 3 colonne;
+  Orari 50%;
+  Cose da fare 50%.
+- "Vista standard" riporta tutto alla disposizione normale.
+- Prima lettera automaticamente maiuscola.
+- iPhone/iPad mantengono la loro interfaccia mobile.
 
-Adesso l'espansione parte in due modi:
-1. cliccando sul riquadro del giorno nella settimana;
-2. cliccando un giorno nel mini-calendario del mese in alto.
-
-Esempio:
-- clic su Mercoledì;
-- Lunedì e Martedì restano sopra piccoli;
-- Mercoledì occupa tutte e 3 le colonne;
-- dentro Mercoledì: Orari 50% e Cose da fare 50%;
-- gli altri giorni restano sotto.
-
-Il pulsante "Vista standard" riporta tutto alla griglia normale.
-
-Ho aggiunto anche un secondo sistema inline di espansione:
-funziona anche se Chrome conserva momentaneamente un vecchio CSS.
-
-CARICAMENTO GITHUB
+GITHUB
 1. Estrai lo ZIP.
 2. Repository planner > Add file > Upload files.
 3. Carica insieme:
-   - index.html
-   - planner-v23.css
-   - planner-v23.js
-   - manifest-v10.webmanifest
-   - service-worker.js
+   index.html
+   planner-v24.css
+   planner-v24.js
+   manifest-v10.webmanifest
+   service-worker.js
 4. Commit changes.
-5. Non cancellare Agenda.html.
-6. Attendi circa un minuto.
+5. NON cancellare Agenda.html.
+6. Attendi circa 1 minuto.
 7. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=23
-8. Ctrl + F5.
+   https://tesi11alex-cell.github.io/planner/?v=24
+8. Sul PC fai Ctrl + F5.
