@@ -1,32 +1,45 @@
-PLANNER ALESSANDRO — V19 · GIORNO ESPANSO
+PLANNER ALESSANDRO — V20 FIX DIRETTO
 
-COSA CAMBIA
-- PC: clicca sul titolo/data di un giorno per allargarlo su tutte e 3 le colonne.
-- I giorni precedenti restano sopra nei riquadri piccoli.
-  Esempio: clic su Mercoledì -> Lunedì e Martedì sopra, Mercoledì grande, gli altri sotto.
+Questa versione corregge il problema del precedente pacchetto:
+le modifiche vengono applicate sia a index.html sia ad Agenda.html
+tramite il service worker, quindi funzionano anche se l'app apre direttamente Agenda.html.
+
+MODIFICHE
+- PC: clic sul titolo/data di un giorno -> il giorno occupa tutte e 3 le colonne.
+- Se clicchi Mercoledì:
+  Lunedì e Martedì restano sopra nei riquadri piccoli;
+  Mercoledì va sotto a tutta larghezza;
+  gli altri giorni restano sotto.
 - Nel giorno grande:
-  sinistra = orari
-  destra = Cose da fare
-  quindi 50% / 50%.
-- Sopra "Invia a una data" compare "Vista standard" per tornare alla griglia normale.
-- Quando scrivi, la prima lettera parte automaticamente maiuscola.
-  Vale per orari, Cose da fare, invio rapido e note.
-- Telefono/iPad mantengono la vista mobile precedente.
-- Firebase e i dati non vengono modificati.
+  50% Orari
+  50% Cose da fare.
+- Sopra "Invia a una data" compare "Vista standard".
+- "Vista standard" riporta immediatamente la griglia alla disposizione normale.
+- Prima lettera automatica maiuscola per:
+  Orari
+  Cose da fare
+  Aggiungi...
+  Invia a una data
+  Note e cose da organizzare.
+- Telefono/iPad: nessun ingrandimento a 3 colonne.
 
 IMPORTANTE
-Agenda.html V18 deve RESTARE nel repository.
-Il nuovo index.html carica quella versione e applica le funzioni V19.
-Non cancellare Agenda.html.
+NON cancellare index.html e Agenda.html esistenti.
+Questo pacchetto aggiunge planner-v20.css e planner-v20.js
+e sostituisce solo manifest-v10.webmanifest e service-worker.js.
 
 GITHUB
 1. Estrai lo ZIP.
-2. Vai nel repository "planner".
-3. Add file > Upload files.
-4. Carica tutti i file dello ZIP nella root.
-5. Sostituisci quelli esistenti quando GitHub lo propone.
-6. Commit changes.
-7. Attendi circa un minuto.
-8. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=19
-9. Sul PC: Ctrl + F5.
+2. Nel repository planner -> Add file -> Upload files.
+3. Carica insieme:
+   planner-v20.css
+   planner-v20.js
+   manifest-v10.webmanifest
+   service-worker.js
+4. Commit changes.
+5. Attendi circa un minuto.
+6. Apri:
+   https://tesi11alex-cell.github.io/planner/?v=20
+7. Sul PC fai Ctrl+F5.
+8. Se al primo refresh non compare ancora, chiudi la scheda, riaprila e fai di nuovo Ctrl+F5:
+   serve solo a far prendere il nuovo service worker V20.
