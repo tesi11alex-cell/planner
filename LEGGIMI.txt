@@ -1,33 +1,35 @@
-PLANNER ALESSANDRO — V22 FIX DEFINITIVO
+PLANNER ALESSANDRO — V23
 
-PROBLEMA CORRETTO
-Il vecchio index.html era ancora il bootstrap V19 e rimaneva fermo su:
-"Apertura Planner…"
+CORREZIONE ESPANSIONE GIORNO
 
-La V22 sostituisce direttamente index.html con una versione pulita.
-Non usa più il service worker per modificare l'HTML.
+Adesso l'espansione parte in due modi:
+1. cliccando sul riquadro del giorno nella settimana;
+2. cliccando un giorno nel mini-calendario del mese in alto.
 
-CARICA SU GITHUB QUESTI 5 FILE:
-- index.html
-- planner-v22.css
-- planner-v22.js
-- manifest-v10.webmanifest
-- service-worker.js
+Esempio:
+- clic su Mercoledì;
+- Lunedì e Martedì restano sopra piccoli;
+- Mercoledì occupa tutte e 3 le colonne;
+- dentro Mercoledì: Orari 50% e Cose da fare 50%;
+- gli altri giorni restano sotto.
 
-NON CANCELLARE Agenda.html.
-Agenda.html resta la tua agenda completa attuale.
+Il pulsante "Vista standard" riporta tutto alla griglia normale.
 
-DOPO IL COMMIT:
-1. Attendi circa 1 minuto.
-2. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=22
-3. Fai Ctrl + F5.
-4. Se Chrome ha ancora in memoria il vecchio service worker:
-   chiudi tutte le schede del Planner, riapri il link e fai ancora Ctrl + F5.
+Ho aggiunto anche un secondo sistema inline di espansione:
+funziona anche se Chrome conserva momentaneamente un vecchio CSS.
 
-COSA DEVI VEDERE
-- Il Planner si apre normalmente.
-- Sopra "Invia a una data": pulsante "Vista standard".
-- Clic su un giorno: quel giorno si allarga a 3 colonne.
-- Nel giorno grande: Orari 50% / Cose da fare 50%.
-- Prima lettera automatica maiuscola.
+CARICAMENTO GITHUB
+1. Estrai lo ZIP.
+2. Repository planner > Add file > Upload files.
+3. Carica insieme:
+   - index.html
+   - planner-v23.css
+   - planner-v23.js
+   - manifest-v10.webmanifest
+   - service-worker.js
+4. Commit changes.
+5. Non cancellare Agenda.html.
+6. Attendi circa un minuto.
+7. Apri:
+   https://tesi11alex-cell.github.io/planner/?v=23
+8. Ctrl + F5.

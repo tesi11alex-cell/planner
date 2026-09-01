@@ -20,34 +20,26 @@ html,body{margin:0;min-height:100%;background:#0B0B0D;color:#F2F1ED;font-family:
 <script>
 (async function(){
   try{
-    const response = await fetch('./Agenda.html?v=22', {cache:'no-store'});
+    const response = await fetch('./Agenda.html?v=23',{cache:'no-store'});
     if(!response.ok) throw new Error('Agenda.html non disponibile');
 
     let html = await response.text();
 
-    const cssTag = '<link rel="stylesheet" href="./planner-v22.css?v=22">';
+    const cssTag =
+      '<link rel="stylesheet" href="./planner-v23.css?v=23">';
     const scriptTag =
-      '<scr' + 'ipt src="./planner-v22.js?v=22"></scr' + 'ipt>';
+      '<scr' + 'ipt src="./planner-v23.js?v=23"></scr' + 'ipt>';
 
-    if(html.includes('</head>')){
-      html = html.replace('</head>', cssTag + '\n</head>');
-    }else{
-      html = cssTag + '\n' + html;
-    }
-
-    if(html.includes('</body>')){
-      html = html.replace('</body>', scriptTag + '\n</body>');
-    }else{
-      html += '\n' + scriptTag;
-    }
+    html = html.replace('</head>',cssTag + '\n</head>');
+    html = html.replace('</body>',scriptTag + '\n</body>');
 
     document.open();
     document.write(html);
     document.close();
 
   }catch(error){
-    console.error('Errore apertura Planner V22', error);
-    const loader = document.getElementById('loader');
+    console.error('Errore apertura Planner V23',error);
+    const loader=document.getElementById('loader');
     if(loader){
       loader.textContent =
         'Impossibile aprire il Planner. Ricarica la pagina con Internet attivo.';
