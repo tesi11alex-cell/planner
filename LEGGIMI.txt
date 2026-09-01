@@ -1,32 +1,30 @@
-PLANNER ALESSANDRO — V29
+PLANNER ALESSANDRO — V30
 
-MODIFICHE
+MODIFICA PULSANTE "VISTA STANDARD"
 
-VISTA STANDARD
-- Mostra sempre gli orari ogni 2 ore:
-  08:00, 10:00, 12:00, 14:00, 16:00, 18:00, 20:00, 22:00.
-- Se scrivi qualcosa in un altro orario, quell'orario compare comunque.
-- Restano visibili anche eventuali righe con flag.
-- Gli altri orari vuoti restano nascosti.
+Quando il giorno è ingrandito:
+- "Vista standard" NON è più sopra il titolo del giorno;
+- ora è sulla STESSA RIGA del giorno/data;
+- è posizionato all'estrema DESTRA della tabella del giorno;
+- è leggermente più grande della V29;
+- resta colorato con il colore principale del Planner.
 
-GIORNO INGRANDITO
-- Tornano visibili tutti gli orari.
-- Il pulsante "Vista standard" è DENTRO il giorno ingrandito,
-  in alto a DESTRA.
-- Il pulsante è dentro una riga larga al 100% con allineamento forzato a destra.
-- Il pulsante resta colorato con il colore principale del Planner.
+ORARI
+Resta la vista standard della V29:
+08:00, 10:00, 12:00, 14:00, 16:00, 18:00, 20:00, 22:00
++ qualunque altro orario compilato o con flag.
 
 GITHUB
 1. Estrai lo ZIP.
 2. Repository planner > Add file > Upload files.
 3. Carica:
    index.html
-   planner-v29.css
-   planner-v29.js
+   planner-v30.css
+   planner-v30.js
    manifest-v10.webmanifest
    service-worker.js
 4. Commit changes.
 5. NON cancellare Agenda.html.
 6. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=29
+   https://tesi11alex-cell.github.io/planner/?v=30
 7. Ctrl + F5.
