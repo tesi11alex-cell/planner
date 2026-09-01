@@ -1,10 +1,11 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v18-fix-note-buttons';
+const CACHE_NAME = 'planner-offline-v19-giorno-espanso';
 
 const APP_SHELL = [
   './',
   './index.html',
   './Agenda.html',
+  './Planner-V19.html',
   './manifest-v10.webmanifest',
   './agenda-icon-180-v10.png',
   './agenda-icon-192-v10.png',
@@ -55,8 +56,6 @@ async function networkFirstNavigation(request) {
       await cache.match(request, { ignoreSearch: true })
     ) || (
       await cache.match('./index.html')
-    ) || (
-      await cache.match('./Agenda.html')
     ) || (
       await cache.match('./')
     );
