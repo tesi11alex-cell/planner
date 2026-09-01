@@ -1,25 +1,33 @@
-PLANNER ALESSANDRO — V21 FIX
+PLANNER ALESSANDRO — V22 FIX DEFINITIVO
 
-CARICA SOLO QUESTI 4 FILE NEL REPOSITORY "planner":
-- planner-v20.css
-- planner-v20.js
+PROBLEMA CORRETTO
+Il vecchio index.html era ancora il bootstrap V19 e rimaneva fermo su:
+"Apertura Planner…"
+
+La V22 sostituisce direttamente index.html con una versione pulita.
+Non usa più il service worker per modificare l'HTML.
+
+CARICA SU GITHUB QUESTI 5 FILE:
+- index.html
+- planner-v22.css
+- planner-v22.js
 - manifest-v10.webmanifest
 - service-worker.js
 
-PASSAGGI:
-1. Estrai questo ZIP.
-2. GitHub > repository planner.
-3. Add file > Upload files.
-4. Trascina insieme i 4 file.
-5. Commit changes.
-6. Attendi circa 1 minuto.
-7. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=21
-8. Sul PC fai Ctrl + F5.
+NON CANCELLARE Agenda.html.
+Agenda.html resta la tua agenda completa attuale.
 
-CORREZIONE:
-- sistemato il tag </script> nel service worker;
-- nuova cache V21;
-- manifest aggiornato a ?v=21.
+DOPO IL COMMIT:
+1. Attendi circa 1 minuto.
+2. Apri:
+   https://tesi11alex-cell.github.io/planner/?v=22
+3. Fai Ctrl + F5.
+4. Se Chrome ha ancora in memoria il vecchio service worker:
+   chiudi tutte le schede del Planner, riapri il link e fai ancora Ctrl + F5.
 
-Non eliminare index.html o Agenda.html.
+COSA DEVI VEDERE
+- Il Planner si apre normalmente.
+- Sopra "Invia a una data": pulsante "Vista standard".
+- Clic su un giorno: quel giorno si allarga a 3 colonne.
+- Nel giorno grande: Orari 50% / Cose da fare 50%.
+- Prima lettera automatica maiuscola.

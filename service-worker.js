@@ -1,16 +1,13 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v21-giorno-espanso';
-
-const PATCH_CSS = './planner-v20.css';
-const PATCH_JS = './planner-v20.js';
+const CACHE_NAME = 'planner-offline-v22-fix-definitivo';
 
 const APP_SHELL = [
   './',
   './index.html',
   './Agenda.html',
   './manifest-v10.webmanifest',
-  PATCH_CSS,
-  PATCH_JS,
+  './planner-v22.css',
+  './planner-v22.js',
   './agenda-icon-180-v10.png',
   './agenda-icon-192-v10.png',
   './agenda-icon-512-v10.png'
@@ -22,64 +19,10 @@ const FIREBASE_SDK = [
   'https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore-compat.js'
 ];
 
-function injectPatchText(html){
-  if(html.includes('planner-v20.css') || html.includes('planner-v20.js')){
-    return html;
-  }
-
-  const cssTag = '<link rel="stylesheet" href="./planner-v20.css?v=21">';
-  const jsTag = '<script src="./planner-v20.js?v=21"></script>';
-
-  if(html.includes('</head>')){
-    html = html.replace('</head>', cssTag + '\n</head>');
-  }else{
-    html = cssTag + '\n' + html;
-  }
-
-  if(html.includes('</body>')){
-    html = html.replace('</body>', jsTag + '\n</body>');
-  }else{
-    html += '\n' + jsTag;
-  }
-
-  return html;
-}
-
-async function patchResponse(response){
-  const contentType = response.headers.get('content-type') || '';
-  if(!contentType.includes('text/html')) return response;
-
-  const html = injectPatchText(await response.text());
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  headers.delete('content-encoding');
-
-  return new Response(html,{
-    status:response.status,
-    statusText:response.statusText,
-    headers
-  });
-}
-
-async function patchCachedHTML(cache,path){
-  const response = await cache.match(path,{ignoreSearch:true});
-  if(!response) return;
-
-  const patched = await patchResponse(response);
-  await cache.put(path,patched.clone());
-}
-
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-
     await cache.addAll(APP_SHELL);
-
-    await Promise.all([
-      patchCachedHTML(cache,'./index.html'),
-      patchCachedHTML(cache,'./Agenda.html'),
-      patchCachedHTML(cache,'./')
-    ]);
 
     await Promise.allSettled(
       FIREBASE_SDK.map(url =>
@@ -113,12 +56,10 @@ async function networkFirstNavigation(request){
 
   try{
     const response = await fetch(request,{cache:'no-store'});
-    if(!response || !response.ok) return response;
-
-    const patched = await patchResponse(response);
-    await cache.put(request,patched.clone());
-    return patched;
-
+    if(response && response.ok){
+      await cache.put(request,response.clone());
+    }
+    return response;
   }catch(error){
     return (
       await cache.match(request,{ignoreSearch:true})
@@ -134,7 +75,6 @@ async function networkFirstNavigation(request){
 
 async function cacheFirst(request){
   const cache = await caches.open(CACHE_NAME);
-
   const cached = await cache.match(request,{ignoreSearch:true});
   if(cached) return cached;
 
@@ -147,7 +87,6 @@ async function cacheFirst(request){
 
 self.addEventListener('fetch', event => {
   const request = event.request;
-
   if(request.method !== 'GET') return;
 
   if(request.mode === 'navigate'){
@@ -156,14 +95,13 @@ self.addEventListener('fetch', event => {
   }
 
   const url = new URL(request.url);
-
-  const isAppAsset = url.origin === self.location.origin;
-  const isStaticRemote =
+  const sameOrigin = url.origin === self.location.origin;
+  const staticRemote =
     url.hostname === 'www.gstatic.com' ||
     url.hostname === 'fonts.googleapis.com' ||
     url.hostname === 'fonts.gstatic.com';
 
-  if(isAppAsset || isStaticRemote){
+  if(sameOrigin || staticRemote){
     event.respondWith(cacheFirst(request));
   }
 });

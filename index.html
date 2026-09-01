@@ -12,30 +12,46 @@
 <title>Planner</title>
 <style>
 html,body{margin:0;min-height:100%;background:#0B0B0D;color:#F2F1ED;font-family:system-ui,sans-serif}
-.loader{min-height:100vh;display:grid;place-items:center;font-size:13px;color:#8B8B90}
+.loader{min-height:100vh;display:grid;place-items:center;color:#8B8B90;font-size:13px}
 </style>
 </head>
 <body>
-<div class="loader">Apertura Planner…</div>
+<div class="loader" id="loader">Apertura Planner…</div>
 <script>
-(async()=>{
+(async function(){
   try{
-    const response=await fetch('./Agenda.html?v=18',{cache:'no-store'});
-    if(!response.ok) throw new Error('Agenda non disponibile');
-    let html=await response.text();
+    const response = await fetch('./Agenda.html?v=22', {cache:'no-store'});
+    if(!response.ok) throw new Error('Agenda.html non disponibile');
 
-    const css="\n/* ===== PLANNER V19 · GIORNO ESPANSO + MAIUSCOLA AUTOMATICA ===== */\n.standard-view-btn{\n  width:100%;\n  border:1px solid var(--line);\n  background:var(--panel-alt);\n  color:var(--text);\n  padding:10px 12px;\n  border-radius:9px;\n  font-size:12px;\n  font-weight:700;\n}\n.standard-view-btn:hover,\n.standard-view-btn.is-active{\n  border-color:var(--accent);\n  color:var(--accent);\n  background:#26221a;\n}\n\n@media(min-width:1101px){\n  .day-head{cursor:zoom-in}\n  .day-head:hover{\n    background:var(--panel-alt);\n    border-radius:7px;\n  }\n\n  .week .day.v19-day-expanded{\n    grid-column:1 / -1;\n    width:100%;\n    max-width:none;\n    min-width:0;\n    border-color:#4a3a21;\n    box-shadow:0 0 0 1px rgba(227,168,59,.08);\n  }\n  .week .day.v19-day-expanded .day-name{font-size:20px}\n  .week .day.v19-day-expanded .day-date{font-size:12px}\n\n  .week .day.v19-day-expanded .day-body{\n    display:grid;\n    grid-template-columns:minmax(0,1fr) minmax(0,1fr);\n    gap:24px;\n    align-items:start;\n  }\n  .week .day.v19-day-expanded .hours{\n    width:100%;\n    max-width:none;\n    min-width:0;\n    padding-left:6px;\n    padding-right:4px;\n  }\n  .week .day.v19-day-expanded .todo-box{\n    width:100%;\n    max-width:none;\n    min-width:0;\n    min-height:100%;\n    padding:14px;\n  }\n  .week .day.v19-day-expanded .todo-title{\n    font-size:12px;\n    margin-bottom:12px;\n  }\n  .week .day.v19-day-expanded .hour-input,\n  .week .day.v19-day-expanded .todo-text{\n    font-size:13px;\n  }\n  .week .day.v19-day-expanded .todo-add input{\n    font-size:13px;\n    padding:8px 9px;\n  }\n}\n@media(max-width:1100px){\n  .standard-view-btn{display:none!important}\n}\n";
-    const js="\n(function(){\n  'use strict';\n\n  let expandedDayKey = null;\n\n  function isDesktopExpandedMode(){\n    return window.matchMedia('(min-width:1101px)').matches;\n  }\n\n  function capitalizeSentenceStarts(value){\n    const text=String(value ?? '');\n    const chars=Array.from(text);\n    let shouldCap=true;\n\n    for(let i=0;i<chars.length;i++){\n      const ch=chars[i];\n\n      if(/\\p{L}/u.test(ch)){\n        if(shouldCap){\n          chars[i]=ch.toLocaleUpperCase('it-IT');\n          shouldCap=false;\n        }\n        continue;\n      }\n\n      if(ch==='\\n' || ch==='.' || ch==='!' || ch==='?'){\n        shouldCap=true;\n      }else if(!/\\s/u.test(ch) && shouldCap){\n        // Numeri, trattini o simboli iniziali non annullano la maiuscola\n      }\n    }\n    return chars.join('');\n  }\n\n  function markAutocapitalize(root=document){\n    const selector=[\n      '.hour-input',\n      '.todo-text',\n      '[data-add-input]',\n      '#quickTaskText',\n      '#mobileQuickTaskText',\n      '.organizer-note-input'\n    ].join(',');\n\n    const nodes=[];\n    if(root?.matches?.(selector)) nodes.push(root);\n    if(root?.querySelectorAll) nodes.push(...root.querySelectorAll(selector));\n\n    nodes.forEach(el=>{\n      el.setAttribute('autocapitalize','sentences');\n      el.setAttribute('autocomplete','off');\n    });\n  }\n\n  function installStandardButton(){\n    const sidebar=document.querySelector('.desktop-sidebar');\n    if(!sidebar || document.getElementById('standardViewBtn')) return;\n\n    const button=document.createElement('button');\n    button.id='standardViewBtn';\n    button.type='button';\n    button.className='standard-view-btn';\n    button.textContent='↺ Vista standard';\n\n    const firstCard=sidebar.querySelector('.side-card');\n    sidebar.insertBefore(button,firstCard || sidebar.firstChild);\n\n    button.addEventListener('click',()=>{\n      expandedDayKey=null;\n      applyExpandedLayout();\n      document.getElementById('weekGrid')?.scrollIntoView({\n        behavior:'smooth',\n        block:'start'\n      });\n    });\n  }\n\n  function applyExpandedLayout(){\n    const grid=document.getElementById('weekGrid');\n    if(!grid) return;\n\n    const cards=[...grid.querySelectorAll('.day[data-key]')];\n    cards.forEach(card=>card.classList.remove('v19-day-expanded'));\n\n    const button=document.getElementById('standardViewBtn');\n\n    if(!isDesktopExpandedMode() || !expandedDayKey){\n      button?.classList.remove('is-active');\n      return;\n    }\n\n    const selected=cards.find(card=>card.dataset.key===expandedDayKey);\n    if(!selected){\n      expandedDayKey=null;\n      button?.classList.remove('is-active');\n      return;\n    }\n\n    selected.classList.add('v19-day-expanded');\n    button?.classList.add('is-active');\n\n    requestAnimationFrame(()=>{\n      selected.querySelectorAll('textarea').forEach(el=>{\n        if(typeof window.autoGrow==='function'){\n          window.autoGrow(el,el.classList.contains('hour-input')?27:18);\n        }\n      });\n      if(typeof window.syncDesktopNotesHeightToSunday==='function'){\n        window.syncDesktopNotesHeightToSunday();\n      }\n    });\n  }\n\n  function expandDay(card){\n    if(!isDesktopExpandedMode() || !card?.dataset?.key) return;\n    expandedDayKey=card.dataset.key;\n    applyExpandedLayout();\n\n    requestAnimationFrame(()=>{\n      card.scrollIntoView({behavior:'smooth',block:'start'});\n    });\n  }\n\n  // Prima lettera maiuscola mentre si scrive.\n  // Capture=true: il valore viene corretto prima che Firebase/handler del Planner lo leggano.\n  document.addEventListener('input',event=>{\n    const target=event.target;\n    if(!target?.matches?.(\n      '.hour-input, .todo-text, [data-add-input], #quickTaskText, #mobileQuickTaskText, .organizer-note-input'\n    )) return;\n\n    const before=target.value;\n    const after=capitalizeSentenceStarts(before);\n    if(after===before) return;\n\n    const start=target.selectionStart;\n    const end=target.selectionEnd;\n    target.value=after;\n    try{\n      if(start!==null && end!==null) target.setSelectionRange(start,end);\n    }catch(error){}\n  },true);\n\n  // Click sull'intestazione/data del riquadro.\n  document.addEventListener('click',event=>{\n    if(!isDesktopExpandedMode()) return;\n    if(event.target.closest('input,textarea,button,select,a,label')) return;\n\n    const head=event.target.closest('.day-head');\n    if(!head) return;\n\n    const card=head.closest('.day[data-key]');\n    expandDay(card);\n  });\n\n  // Anche Invio/Spazio sull'intestazione se raggiunta da tastiera.\n  document.addEventListener('keydown',event=>{\n    if(!isDesktopExpandedMode()) return;\n    if(event.key!=='Enter' && event.key!==' ') return;\n    const head=event.target.closest?.('.day-head');\n    if(!head) return;\n    event.preventDefault();\n    expandDay(head.closest('.day[data-key]'));\n  });\n\n  function prepareDayHeaders(root=document){\n    const heads=[];\n    if(root?.matches?.('.day-head')) heads.push(root);\n    if(root?.querySelectorAll) heads.push(...root.querySelectorAll('.day-head'));\n    heads.forEach(head=>{\n      head.setAttribute('tabindex','0');\n      head.setAttribute('role','button');\n      head.setAttribute('title','Allarga questo giorno');\n    });\n  }\n\n  function initialize(){\n    installStandardButton();\n    markAutocapitalize(document);\n    prepareDayHeaders(document);\n    applyExpandedLayout();\n\n    const grid=document.getElementById('weekGrid');\n    if(grid){\n      const observer=new MutationObserver(mutations=>{\n        for(const mutation of mutations){\n          mutation.addedNodes.forEach(node=>{\n            if(node.nodeType!==1) return;\n            markAutocapitalize(node);\n            prepareDayHeaders(node);\n          });\n        }\n        applyExpandedLayout();\n      });\n      observer.observe(grid,{childList:true,subtree:true});\n    }\n\n    const bodyObserver=new MutationObserver(mutations=>{\n      for(const mutation of mutations){\n        mutation.addedNodes.forEach(node=>{\n          if(node.nodeType!==1) return;\n          markAutocapitalize(node);\n        });\n      }\n      installStandardButton();\n    });\n    bodyObserver.observe(document.body,{childList:true,subtree:true});\n\n    window.addEventListener('resize',applyExpandedLayout);\n  }\n\n  if(document.readyState==='loading'){\n    document.addEventListener('DOMContentLoaded',initialize,{once:true});\n  }else{\n    initialize();\n  }\n})();\n";
+    let html = await response.text();
 
-    html=html.replace('</style>',css+'\n</style>');
-    html=html.replace('</body>','<script>'+js+'<\\/script>\n</body>');
+    const cssTag = '<link rel="stylesheet" href="./planner-v22.css?v=22">';
+    const scriptTag =
+      '<scr' + 'ipt src="./planner-v22.js?v=22"></scr' + 'ipt>';
+
+    if(html.includes('</head>')){
+      html = html.replace('</head>', cssTag + '\n</head>');
+    }else{
+      html = cssTag + '\n' + html;
+    }
+
+    if(html.includes('</body>')){
+      html = html.replace('</body>', scriptTag + '\n</body>');
+    }else{
+      html += '\n' + scriptTag;
+    }
 
     document.open();
     document.write(html);
     document.close();
+
   }catch(error){
-    console.error(error);
-    document.body.innerHTML='<div class="loader">Impossibile aprire il Planner. Controlla la connessione e ricarica.</div>';
+    console.error('Errore apertura Planner V22', error);
+    const loader = document.getElementById('loader');
+    if(loader){
+      loader.textContent =
+        'Impossibile aprire il Planner. Ricarica la pagina con Internet attivo.';
+    }
   }
 })();
 </script>

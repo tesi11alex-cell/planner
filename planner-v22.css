@@ -1,0 +1,80 @@
+/* ===== PLANNER V22 · GIORNO ESPANSO DESKTOP ===== */
+.standard-view-btn-v22{
+  width:100%;
+  border:1px solid var(--line);
+  background:var(--panel-alt);
+  color:var(--text);
+  border-radius:9px;
+  padding:10px 12px;
+  font-size:12px;
+  font-weight:700;
+}
+.standard-view-btn-v22:hover,
+.standard-view-btn-v22.active{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:#26221a;
+}
+
+@media (min-width:1101px){
+  .day-head{
+    cursor:zoom-in;
+    border-radius:7px;
+    transition:background .15s ease;
+  }
+  .day-head:hover{background:var(--panel-alt)}
+
+  .week .day.v22-expanded{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    border-color:#574526;
+    box-shadow:0 0 0 1px rgba(227,168,59,.10);
+  }
+
+  .week .day.v22-expanded .day-name{font-size:20px}
+  .week .day.v22-expanded .day-date{font-size:12px}
+
+  .week .day.v22-expanded .day-body{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:24px !important;
+    align-items:start;
+  }
+
+  .week .day.v22-expanded .hours{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    padding-left:6px;
+    padding-right:5px;
+  }
+
+  .week .day.v22-expanded .todo-box{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    min-height:100%;
+    padding:14px;
+  }
+
+  .week .day.v22-expanded .todo-title{
+    font-size:12px;
+    margin-bottom:12px;
+  }
+
+  .week .day.v22-expanded .hour-input,
+  .week .day.v22-expanded .todo-text{
+    font-size:13px;
+  }
+
+  .week .day.v22-expanded .todo-add input{
+    font-size:13px;
+    padding:8px 9px;
+  }
+}
+
+@media (max-width:1100px){
+  .standard-view-btn-v22{display:none!important}
+}
