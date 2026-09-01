@@ -1,0 +1,330 @@
+/* ===== PLANNER V25 · VISTA STANDARD COMPATTA + TESTI INTERI ===== */
+
+.standard-view-btn-v25{
+  width:100%;
+  border:1px solid var(--line);
+  background:var(--panel-alt);
+  color:var(--text);
+  border-radius:8px;
+  padding:8px 10px;
+  font-size:11px;
+  font-weight:700;
+}
+.standard-view-btn-v25:hover,
+.standard-view-btn-v25.active{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:#26221a;
+}
+
+@media (min-width:1101px){
+  /* Compattazione generale della vista standard */
+  body:not(.v25-expanded-active) .week{
+    gap:8px !important;
+  }
+
+  body:not(.v25-expanded-active) .day{
+    padding:8px 7px 9px !important;
+    min-width:0 !important;
+    max-width:none !important;
+  }
+
+  body:not(.v25-expanded-active) .day-head{
+    margin-bottom:5px !important;
+    padding-left:3px !important;
+  }
+
+  body:not(.v25-expanded-active) .day-name{
+    font-size:12.5px !important;
+    line-height:1.05 !important;
+  }
+
+  body:not(.v25-expanded-active) .day-date{
+    font-size:8.5px !important;
+    line-height:1.15 !important;
+  }
+
+  body:not(.v25-expanded-active) .day-body{
+    display:grid !important;
+    grid-template-columns:minmax(0,1.04fr) minmax(138px,.96fr) !important;
+    gap:6px !important;
+    align-items:start !important;
+  }
+
+  body:not(.v25-expanded-active) .hours{
+    width:100% !important;
+    min-width:0 !important;
+    padding-left:1px !important;
+  }
+
+  body:not(.v25-expanded-active) .hour-row{
+    gap:3px !important;
+    padding:1px 0 !important;
+    min-height:0 !important;
+  }
+
+  body:not(.v25-expanded-active) .hour-check{
+    width:11px !important;
+    height:11px !important;
+    margin-top:2px !important;
+  }
+
+  body:not(.v25-expanded-active) .hour-label{
+    width:33px !important;
+    min-width:33px !important;
+    margin-top:2px !important;
+    font-size:8.6px !important;
+    line-height:1.15 !important;
+  }
+
+  body:not(.v25-expanded-active) .hour-minute{
+    width:14px !important;
+    min-width:14px !important;
+  }
+
+  body:not(.v25-expanded-active) .hour-input{
+    font-size:9.7px !important;
+    line-height:1.18 !important;
+    min-height:13px !important;
+    padding:0 2px !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    word-break:normal !important;
+    overflow:hidden !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-box{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    padding:6px 6px 7px !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-title{
+    font-size:8.2px !important;
+    margin-bottom:5px !important;
+    letter-spacing:.04em !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-item{
+    gap:4px !important;
+    margin-bottom:3px !important;
+    align-items:flex-start !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-item input[type=checkbox]{
+    width:11px !important;
+    height:11px !important;
+    margin-top:1px !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-main{
+    min-width:0 !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-text{
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    font-size:9.6px !important;
+    line-height:1.2 !important;
+    min-height:12px !important;
+    padding:0 1px !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    word-break:normal !important;
+    overflow:hidden !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-completed{
+    font-size:7px !important;
+    line-height:1.15 !important;
+    padding-top:1px !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-del{
+    font-size:11px !important;
+    padding:0 1px !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-add{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:3px !important;
+    margin-top:5px !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-add input{
+    width:100% !important;
+    min-width:0 !important;
+    font-size:9px !important;
+    padding:4px 5px !important;
+  }
+
+  body:not(.v25-expanded-active) .todo-add button{
+    padding:4px 6px !important;
+    font-size:10px !important;
+  }
+
+  /* Note settimanali compatte per far stare la griglia nella schermata */
+  body:not(.v25-expanded-active) .week-notes{
+    padding:8px 8px 9px !important;
+    min-height:0 !important;
+  }
+
+  body:not(.v25-expanded-active) .week-notes-head{
+    padding:0 1px 5px 3px !important;
+  }
+
+  body:not(.v25-expanded-active) .week-notes-title{
+    font-size:12px !important;
+  }
+
+  body:not(.v25-expanded-active) .organizer-add-row{
+    padding:4px 6px !important;
+    font-size:8px !important;
+  }
+
+  body:not(.v25-expanded-active) .organizer-note-row{
+    grid-template-columns:22px minmax(0,1fr) 18px !important;
+    min-height:20px !important;
+    gap:3px !important;
+    padding:2px 1px 2px 3px !important;
+  }
+
+  body:not(.v25-expanded-active) .organizer-note-dash{
+    font-size:8px !important;
+    line-height:15px !important;
+  }
+
+  body:not(.v25-expanded-active) .organizer-note-input{
+    min-height:15px !important;
+    font-size:9px !important;
+    line-height:1.2 !important;
+    padding:0 2px !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    overflow:hidden !important;
+  }
+
+  body:not(.v25-expanded-active) .organizer-note-delete{
+    font-size:11px !important;
+    padding:1px !important;
+  }
+
+  /* Sidebar più compatta in vista standard */
+  body:not(.v25-expanded-active) .desktop-sidebar{
+    gap:8px !important;
+  }
+
+  body:not(.v25-expanded-active) .side-card{
+    padding:9px !important;
+  }
+
+  body:not(.v25-expanded-active) .side-title{
+    margin-bottom:7px !important;
+  }
+
+  body:not(.v25-expanded-active) .side-title h2{
+    font-size:13px !important;
+  }
+
+  body:not(.v25-expanded-active) .side-title span,
+  body:not(.v25-expanded-active) .quick-help{
+    font-size:8px !important;
+  }
+
+  body:not(.v25-expanded-active) .quick-task-form{
+    gap:5px !important;
+  }
+
+  body:not(.v25-expanded-active) .quick-task-form label{
+    font-size:8px !important;
+    margin-bottom:2px !important;
+  }
+
+  body:not(.v25-expanded-active) .quick-task-form input{
+    padding:6px 7px !important;
+    font-size:10px !important;
+  }
+
+  body:not(.v25-expanded-active) .quick-task-form .quick-send{
+    padding:6px 8px !important;
+    font-size:10px !important;
+  }
+
+  body:not(.v25-expanded-active) .upcoming-item{
+    padding:6px !important;
+    gap:6px !important;
+  }
+
+  body:not(.v25-expanded-active) .upcoming-text{
+    font-size:9px !important;
+    line-height:1.2 !important;
+  }
+
+  body:not(.v25-expanded-active) .upcoming-date,
+  body:not(.v25-expanded-active) .completion-stamp{
+    font-size:7.5px !important;
+  }
+
+  /* Giorno espanso */
+  .week .day.v25-expanded{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    border-color:#574526 !important;
+    box-shadow:0 0 0 1px rgba(227,168,59,.12);
+    cursor:default;
+  }
+
+  .week .day.v25-expanded .day-name{
+    font-size:20px !important;
+  }
+
+  .week .day.v25-expanded .day-date{
+    font-size:12px !important;
+  }
+
+  .week .day.v25-expanded .day-body{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:24px !important;
+    align-items:start !important;
+  }
+
+  .week .day.v25-expanded .hours{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    padding-left:6px !important;
+  }
+
+  .week .day.v25-expanded .todo-box{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    min-height:100%;
+    padding:14px !important;
+  }
+
+  .week .day.v25-expanded .hour-input,
+  .week .day.v25-expanded .todo-text{
+    font-size:13px !important;
+    line-height:1.4 !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    overflow:hidden !important;
+  }
+
+  .week .day.v25-expanded .todo-title{
+    font-size:12px !important;
+    margin-bottom:12px !important;
+  }
+}
+
+@media (max-width:1100px){
+  .standard-view-btn-v25{display:none!important}
+}
