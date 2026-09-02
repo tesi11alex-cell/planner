@@ -1,37 +1,49 @@
-PLANNER ALESSANDRO — V31
+PLANNER ALESSANDRO — V32
+
+MECCANISMO UNICO: GIORNI + NOTE
+
+"Note e cose da organizzare" ora funziona come un giorno della settimana.
+
+- Se clicchi un giorno:
+  il giorno si ingrandisce e le Note tornano piccole.
+- Se clicchi "Note e cose da organizzare":
+  le Note si ingrandiscono e il giorno eventualmente aperto torna piccolo.
+- Può essere ingrandito un solo elemento alla volta:
+  un giorno oppure le Note.
 
 VISTA STANDARD
-- Settimana più grande: sfrutta meglio lo spazio vuoto sotto.
-- Riquadri dei giorni più alti.
-- Testi, orari e Cose da fare leggermente più grandi.
-- "Note e cose da organizzare" più alta e leggibile.
-- Restano gli orari standard ogni 2 ore:
-  08, 10, 12, 14, 16, 18, 20, 22
-  + eventuali altri orari compilati/flag.
+Il pulsante "Vista standard" usa ora la STESSA funzione dappertutto.
 
-NOTE E COSE DA ORGANIZZARE
-- Cliccando il pannello si ingrandisce.
-- Occupa tutte e 3 le colonne.
-- La schermata si sposta automaticamente sul pannello.
-- Quando è grande, nell'intestazione compaiono:
-  [Vista standard] [Aggiungi riga]
-- Vista standard è a SINISTRA di Aggiungi riga.
+Quindi:
+- se lo premi dentro un giorno ingrandito,
+  rimpicciolisce anche "Note e cose da organizzare";
+- se lo premi dentro le Note ingrandite,
+  rimpicciolisce anche tutti i giorni;
+- si torna sempre alla stessa schermata standard completa.
 
-GIORNO INGRANDITO
-- Resta il comportamento della V30:
-  Vista standard sulla stessa riga del giorno, a destra.
+NOTE
+Quando sono ingrandite:
+- occupano tutte e 3 le colonne;
+- la schermata si porta sulle Note;
+- "Vista standard" resta a sinistra di "Aggiungi riga".
+
+GIORNI
+Resta la V31:
+- Vista standard sulla stessa linea del giorno, a destra;
+- orari standard: 08, 10, 12, 14, 16, 18, 20, 22
+  + qualsiasi altro orario compilato o flaggato.
 
 GITHUB
 1. Estrai lo ZIP.
 2. Repository planner > Add file > Upload files.
 3. Carica:
    index.html
-   planner-v31.css
-   planner-v31.js
+   planner-v32.css
+   planner-v32.js
    manifest-v10.webmanifest
    service-worker.js
 4. Commit changes.
 5. NON cancellare Agenda.html.
 6. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=31
+   https://tesi11alex-cell.github.io/planner/?v=32
 7. Ctrl + F5.

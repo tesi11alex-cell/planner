@@ -1,0 +1,502 @@
+/* ===== PLANNER V32 · VISTA STANDARD INTELLIGENTE ===== */
+
+.standard-view-btn-v32{
+  width:100%;
+  border:1px solid var(--line);
+  background:var(--panel-alt);
+  color:var(--text);
+  border-radius:8px;
+  padding:8px 10px;
+  font-size:11.5px;
+  font-weight:700;
+}
+.standard-view-btn-v32:hover,
+.standard-view-btn-v32.active{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:#26221a;
+}
+
+@media (min-width:1101px){
+  /* Niente zoom: la vista standard resta leggibile. */
+  .planner-layout{
+    zoom:1 !important;
+  }
+
+  body:not(.v32-expanded-active) .week{
+    gap:9px !important;
+  }
+
+  body:not(.v32-expanded-active) .day{
+    padding:9px 8px 10px !important;
+    min-width:0 !important;
+    max-width:none !important;
+  }
+
+  body:not(.v32-expanded-active) .day-head{
+    margin-bottom:6px !important;
+    padding-left:4px !important;
+  }
+
+  body:not(.v32-expanded-active) .day-name{
+    font-size:14px !important;
+    line-height:1.1 !important;
+  }
+
+  body:not(.v32-expanded-active) .day-date{
+    font-size:9.5px !important;
+    line-height:1.2 !important;
+  }
+
+  /*
+    In vista standard diamo più larghezza a "Cose da fare".
+    Le ore occupano meno spazio perché mostriamo solo quelle utili.
+  */
+  body:not(.v32-expanded-active) .day-body{
+    display:grid !important;
+    grid-template-columns:minmax(0,.88fr) minmax(155px,1.12fr) !important;
+    gap:7px !important;
+    align-items:start !important;
+  }
+
+  body:not(.v32-expanded-active) .hours{
+    width:100% !important;
+    min-width:0 !important;
+    padding-left:2px !important;
+  }
+
+  body:not(.v32-expanded-active) .hour-row{
+    gap:4px !important;
+    padding:2px 0 !important;
+    min-height:18px !important;
+  }
+
+  body:not(.v32-expanded-active) .hour-check{
+    width:12px !important;
+    height:12px !important;
+    margin-top:2px !important;
+  }
+
+  body:not(.v32-expanded-active) .hour-label{
+    width:36px !important;
+    min-width:36px !important;
+    margin-top:2px !important;
+    font-size:9.5px !important;
+    line-height:1.2 !important;
+  }
+
+  body:not(.v32-expanded-active) .hour-minute{
+    width:15px !important;
+    min-width:15px !important;
+  }
+
+  body:not(.v32-expanded-active) .hour-input{
+    font-size:11px !important;
+    line-height:1.25 !important;
+    min-height:14px !important;
+    padding:1px 2px !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    word-break:normal !important;
+    overflow:hidden !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-box{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    padding:7px 7px 8px !important;
+    overflow:visible !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-title{
+    font-size:9px !important;
+    margin-bottom:6px !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-item{
+    gap:5px !important;
+    margin-bottom:4px !important;
+    align-items:flex-start !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-item input[type=checkbox]{
+    width:12px !important;
+    height:12px !important;
+    margin-top:2px !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-main{
+    min-width:0 !important;
+    width:100% !important;
+  }
+
+  /*
+    Il testo va sempre a capo e la textarea viene alzata via JS:
+    nessuna voce deve sparire alla seconda riga.
+  */
+  body:not(.v32-expanded-active) .todo-text{
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    font-size:11.2px !important;
+    line-height:1.3 !important;
+    min-height:15px !important;
+    padding:1px 2px !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    word-break:normal !important;
+    overflow:hidden !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-completed{
+    font-size:8px !important;
+    line-height:1.2 !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-del{
+    font-size:12px !important;
+    padding:0 1px !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-add{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:4px !important;
+    margin-top:6px !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-add input{
+    width:100% !important;
+    min-width:0 !important;
+    font-size:10.5px !important;
+    padding:5px 6px !important;
+  }
+
+  body:not(.v32-expanded-active) .todo-add button{
+    padding:5px 7px !important;
+    font-size:11px !important;
+  }
+
+  /* Note globali leggermente più compatte, ma ancora leggibili. */
+  body:not(.v32-expanded-active) .week-notes{
+    padding:10px !important;
+    min-height:0 !important;
+  }
+
+  body:not(.v32-expanded-active) .week-notes-head{
+    padding-bottom:6px !important;
+  }
+
+  body:not(.v32-expanded-active) .week-notes-title{
+    font-size:13px !important;
+  }
+
+  body:not(.v32-expanded-active) .organizer-note-row{
+    min-height:23px !important;
+    padding:3px 2px 3px 4px !important;
+  }
+
+  body:not(.v32-expanded-active) .organizer-note-input{
+    min-height:17px !important;
+    font-size:10.5px !important;
+    line-height:1.25 !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    overflow:hidden !important;
+  }
+
+  /* Giorno ingrandito: torna completo, 08:00-22:00. */
+  .week .day.v32-expanded{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    border-color:#574526 !important;
+    box-shadow:0 0 0 1px rgba(227,168,59,.12);
+  }
+
+  .week .day.v32-expanded .day-name{
+    font-size:20px !important;
+  }
+
+  .week .day.v32-expanded .day-date{
+    font-size:12px !important;
+  }
+
+  .week .day.v32-expanded .day-body{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:24px !important;
+    align-items:start !important;
+  }
+
+  .week .day.v32-expanded .hours{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    padding-left:6px !important;
+  }
+
+  .week .day.v32-expanded .todo-box{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    padding:14px !important;
+  }
+
+  .week .day.v32-expanded .hour-input,
+  .week .day.v32-expanded .todo-text{
+    font-size:13px !important;
+    line-height:1.4 !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    overflow:hidden !important;
+  }
+}
+
+@media (max-width:1100px){
+  .standard-view-btn-v32{display:none!important}
+}
+
+/* ===== V32 · VISTA STANDARD DENTRO IL GIORNO ESPANSO ===== */
+@media (min-width:1101px){
+  .v32-standard-inside{
+    display:none;
+  }
+
+  .day.v32-expanded .v32-standard-inside{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 4px 8px auto;
+    padding:7px 11px;
+    border:1px solid var(--accent);
+    border-radius:8px;
+    background:var(--accent);
+    color:#1a1200;
+    font-size:10.5px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .day.v32-expanded .v32-standard-inside:hover{
+    background:#f0b750;
+    border-color:#f0b750;
+    color:#1a1200;
+  }
+}
+
+
+/* ===== V32 OVERRIDE · VISTA STANDARD A DESTRA ===== */
+@media (min-width:1101px){
+  .v32-standard-row{
+    display:none;
+  }
+
+  .day.v32-expanded .v32-standard-row{
+    display:flex !important;
+    width:100% !important;
+    justify-content:flex-end !important;
+    align-items:center !important;
+    margin:0 0 8px 0 !important;
+    padding:0 4px !important;
+  }
+
+  .day.v32-expanded .v32-standard-inside{
+    display:inline-flex !important;
+    width:auto !important;
+    margin:0 !important;
+    padding:7px 11px !important;
+    border:1px solid var(--accent) !important;
+    border-radius:8px !important;
+    background:var(--accent) !important;
+    color:#1a1200 !important;
+    font-size:10.5px !important;
+    font-weight:700 !important;
+  }
+
+  .day.v32-expanded .v32-standard-inside:hover{
+    background:#f0b750 !important;
+    border-color:#f0b750 !important;
+    color:#1a1200 !important;
+  }
+}
+
+
+/* ===== V32 · VISTA STANDARD SULLA STESSA RIGA DEL GIORNO ===== */
+@media (min-width:1101px){
+  .day.v32-expanded .day-head{
+    display:flex !important;
+    align-items:center !important;
+    gap:8px !important;
+    width:100% !important;
+  }
+
+  .day.v32-expanded .v32-standard-row{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    margin-left:auto !important;
+    width:auto !important;
+    padding:0 !important;
+  }
+
+  .day.v32-expanded .v32-standard-inside{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:auto !important;
+    margin:0 !important;
+    padding:9px 14px !important;
+    border:1px solid var(--accent) !important;
+    border-radius:9px !important;
+    background:var(--accent) !important;
+    color:#1a1200 !important;
+    font-size:12px !important;
+    line-height:1 !important;
+    font-weight:750 !important;
+    white-space:nowrap !important;
+    cursor:pointer !important;
+  }
+
+  .day.v32-expanded .v32-standard-inside:hover{
+    background:#f0b750 !important;
+    border-color:#f0b750 !important;
+    color:#1a1200 !important;
+  }
+}
+
+
+/* ===== V32 · VISTA STANDARD PIÙ GRANDE + NOTE ESPANDIBILI ===== */
+@media (min-width:1101px){
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .week{
+    gap:11px !important;
+    align-items:stretch !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .day{
+    min-height:clamp(205px, calc((100vh - 190px) / 3), 275px) !important;
+    padding:11px 10px 12px !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .day-name{
+    font-size:15px !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .day-date{
+    font-size:10px !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .hour-label{
+    font-size:10.3px !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .hour-input{
+    font-size:11.7px !important;
+    line-height:1.3 !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .todo-title{
+    font-size:9.6px !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .todo-text{
+    font-size:11.8px !important;
+    line-height:1.35 !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .week-notes{
+    min-height:clamp(205px, calc((100vh - 190px) / 3), 275px) !important;
+    padding:12px !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .week-notes-title{
+    font-size:14px !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .organizer-note-row{
+    min-height:27px !important;
+  }
+
+  body:not(.v32-expanded-active):not(.v32-notes-expanded-active) .organizer-note-input{
+    min-height:20px !important;
+    font-size:11.3px !important;
+    line-height:1.3 !important;
+  }
+
+  .week-notes.v32-notes-expanded{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    min-height:58vh !important;
+    padding:16px !important;
+    border-color:#574526 !important;
+    box-shadow:0 0 0 1px rgba(227,168,59,.12);
+  }
+
+  .week-notes.v32-notes-expanded .week-notes-title{
+    font-size:18px !important;
+  }
+
+  .week-notes.v32-notes-expanded .organizer-note-row{
+    min-height:34px !important;
+  }
+
+  .week-notes.v32-notes-expanded .organizer-note-input{
+    min-height:26px !important;
+    font-size:13px !important;
+    line-height:1.4 !important;
+  }
+
+  .week-notes-head{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:10px !important;
+  }
+
+  .v32-notes-actions{
+    display:flex !important;
+    align-items:center !important;
+    gap:8px !important;
+    margin-left:auto !important;
+  }
+
+  .v32-notes-standard{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:8px 12px;
+    border:1px solid var(--accent);
+    border-radius:9px;
+    background:var(--accent);
+    color:#1a1200;
+    font-size:11.5px;
+    line-height:1;
+    font-weight:750;
+    white-space:nowrap;
+    cursor:pointer;
+  }
+
+  .week-notes.v32-notes-expanded .v32-notes-standard{
+    display:inline-flex !important;
+  }
+
+  .week-notes.v32-notes-expanded .v32-notes-standard:hover{
+    background:#f0b750;
+    border-color:#f0b750;
+  }
+}
+
+
+/* ===== V32 · GIORNI E NOTE USANO LO STESSO MECCANISMO ===== */
+@media (min-width:1101px){
+  .day.v32-expanded,
+  .week-notes.v32-notes-expanded{
+    position:relative;
+    z-index:1;
+  }
+}
