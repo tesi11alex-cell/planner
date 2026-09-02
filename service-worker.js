@@ -1,13 +1,13 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v34-note-dinamiche';
+const CACHE_NAME = 'planner-offline-v35-note-dinamiche-fix';
 
 const APP_SHELL = [
   './',
   './index.html',
   './Agenda.html',
   './manifest-v10.webmanifest',
-  './planner-v34.css',
-  './planner-v34.js',
+  './planner-v35.css',
+  './planner-v35.js',
   './agenda-icon-180-v10.png',
   './agenda-icon-192-v10.png',
   './agenda-icon-512-v10.png'

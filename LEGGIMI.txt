@@ -1,47 +1,32 @@
-PLANNER ALESSANDRO — V34
+PLANNER ALESSANDRO — V35
 
-NOTE E COSE DA ORGANIZZARE: LARGHEZZA DINAMICA
+CORREZIONE NOTE DINAMICHE
 
-VISTA STANDARD
-- Normalmente "Note e cose da organizzare" occupa 2 colonne.
-- Se nella riga restano già due giorni piccoli affiancati
-  (per esempio Sabato e Domenica), le Note diventano automaticamente
-  da 1 colonna e si mettono nel terzo spazio libero.
-- Quando torna disponibile più spazio, le Note tornano automaticamente
-  a 2 colonne.
+Problema corretto:
+nella V34, quando aprivi alcuni giorni (per esempio Mercoledì o Sabato),
+una vecchia regola CSS forzava "Note e cose da organizzare" a 1 colonna.
 
-GIORNO INGRANDITO
-- Se clicchi un giorno, le Note tornano piccole.
-- La loro larghezza viene ricalcolata come se fossero un altro elemento
-  della settimana: 2 colonne se c'è spazio, 1 se devono completare
-  una riga dove ci sono già due giorni.
+Ora:
 
-NOTE INGRANDITE
-- Se clicchi sulle Note, occupano sempre tutte e 3 le colonne.
-- L'eventuale giorno aperto torna piccolo.
-
-TESTI LUNGHI
-- Titolo delle Note, righe e testi possono andare a capo.
-- Le textarea crescono in altezza.
-- Il testo non viene tagliato o nascosto quando le Note diventano
-  temporaneamente da una sola colonna.
-
-Resta tutto il resto della V33:
-- un solo pannello grande alla volta;
-- Vista standard unica;
-- orari 08,10,12,14,16,18,20,22 + orari compilati/flag.
+- Note standard = 2 colonne di default.
+- Restano 2 colonne anche quando apri Mercoledì.
+- Restano 2 colonne anche quando apri Sabato.
+- Diventano 1 colonna SOLO nel caso in cui devono completare
+  una riga dove ci sono già due giorni piccoli affiancati.
+- Quando le Note vengono aperte, occupano sempre tutte e 3 le colonne.
+- I testi lunghi continuano ad andare a capo senza essere tagliati.
 
 GITHUB
 1. Estrai lo ZIP.
 2. Repository planner > Add file > Upload files.
 3. Carica:
    index.html
-   planner-v34.css
-   planner-v34.js
+   planner-v35.css
+   planner-v35.js
    manifest-v10.webmanifest
    service-worker.js
 4. Commit changes.
 5. NON cancellare Agenda.html.
 6. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=34
+   https://tesi11alex-cell.github.io/planner/?v=35
 7. Ctrl + F5.
