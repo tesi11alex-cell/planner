@@ -1,13 +1,13 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v32-meccanismo-unico';
+const CACHE_NAME = 'planner-offline-v33-note-come-giorno';
 
 const APP_SHELL = [
   './',
   './index.html',
   './Agenda.html',
   './manifest-v10.webmanifest',
-  './planner-v32.css',
-  './planner-v32.js',
+  './planner-v33.css',
+  './planner-v33.js',
   './agenda-icon-180-v10.png',
   './agenda-icon-192-v10.png',
   './agenda-icon-512-v10.png'

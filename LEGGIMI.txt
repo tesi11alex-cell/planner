@@ -1,49 +1,49 @@
-PLANNER ALESSANDRO — V32
+PLANNER ALESSANDRO — V33
 
-MECCANISMO UNICO: GIORNI + NOTE
+CORREZIONE PRINCIPALE
+"Note e cose da organizzare" adesso viene trattato davvero
+come un altro elemento della settimana.
 
-"Note e cose da organizzare" ora funziona come un giorno della settimana.
+MECCANISMO ESCLUSIVO
+Può essere grande SOLO una cosa alla volta:
 
-- Se clicchi un giorno:
-  il giorno si ingrandisce e le Note tornano piccole.
-- Se clicchi "Note e cose da organizzare":
-  le Note si ingrandiscono e il giorno eventualmente aperto torna piccolo.
-- Può essere ingrandito un solo elemento alla volta:
-  un giorno oppure le Note.
+- clic su un giorno:
+  le Note diventano subito piccole;
+  il giorno si ingrandisce.
 
-VISTA STANDARD
-Il pulsante "Vista standard" usa ora la STESSA funzione dappertutto.
+- clic sulle Note:
+  qualsiasi giorno aperto diventa subito piccolo;
+  le Note si ingrandiscono.
 
-Quindi:
-- se lo premi dentro un giorno ingrandito,
-  rimpicciolisce anche "Note e cose da organizzare";
-- se lo premi dentro le Note ingrandite,
-  rimpicciolisce anche tutti i giorni;
-- si torna sempre alla stessa schermata standard completa.
+- Vista standard:
+  rimpicciolisce sempre tutto.
 
-NOTE
-Quando sono ingrandite:
-- occupano tutte e 3 le colonne;
-- la schermata si porta sulle Note;
-- "Vista standard" resta a sinistra di "Aggiungi riga".
+POSIZIONE NOTE QUANDO SONO PICCOLE
+In vista standard e quando è aperto un giorno:
+- le Note occupano UNA sola colonna, come un giorno;
+- vengono dopo Domenica nella griglia;
+- quindi si posizionano accanto alla Domenica nello spazio disponibile.
+
+NOTE GRANDI
+- quando vengono cliccate occupano tutte e 3 le colonne;
+- Vista standard resta a sinistra di Aggiungi riga.
 
 GIORNI
-Resta la V31:
-- Vista standard sulla stessa linea del giorno, a destra;
-- orari standard: 08, 10, 12, 14, 16, 18, 20, 22
-  + qualsiasi altro orario compilato o flaggato.
+- resta il sistema degli orari della V32:
+  08, 10, 12, 14, 16, 18, 20, 22
+  + qualunque altro orario compilato o flaggato.
 
 GITHUB
 1. Estrai lo ZIP.
 2. Repository planner > Add file > Upload files.
 3. Carica:
    index.html
-   planner-v32.css
-   planner-v32.js
+   planner-v33.css
+   planner-v33.js
    manifest-v10.webmanifest
    service-worker.js
 4. Commit changes.
 5. NON cancellare Agenda.html.
 6. Apri:
-   https://tesi11alex-cell.github.io/planner/?v=32
+   https://tesi11alex-cell.github.io/planner/?v=33
 7. Ctrl + F5.

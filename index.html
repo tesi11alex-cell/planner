@@ -20,15 +20,15 @@ html,body{margin:0;min-height:100%;background:#0B0B0D;color:#F2F1ED;font-family:
 <script>
 (async function(){
   try{
-    const response = await fetch('./Agenda.html?v=32',{cache:'no-store'});
+    const response = await fetch('./Agenda.html?v=33',{cache:'no-store'});
     if(!response.ok) throw new Error('Agenda.html non disponibile');
 
     let html = await response.text();
 
     const cssTag =
-      '<link rel="stylesheet" href="./planner-v32.css?v=32">';
+      '<link rel="stylesheet" href="./planner-v33.css?v=33">';
     const scriptTag =
-      '<scr' + 'ipt src="./planner-v32.js?v=32"></scr' + 'ipt>';
+      '<scr' + 'ipt src="./planner-v33.js?v=33"></scr' + 'ipt>';
 
     html = html.replace('</head>',cssTag + '\n</head>');
     html = html.replace('</body>',scriptTag + '\n</body>');
@@ -38,7 +38,7 @@ html,body{margin:0;min-height:100%;background:#0B0B0D;color:#F2F1ED;font-family:
     document.close();
 
   }catch(error){
-    console.error('Errore apertura Planner V32',error);
+    console.error('Errore apertura Planner V33',error);
     const loader=document.getElementById('loader');
     if(loader){
       loader.textContent =
