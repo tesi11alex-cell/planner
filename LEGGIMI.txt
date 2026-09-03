@@ -1,28 +1,37 @@
-PLANNER ALESSANDRO — V37
+PLANNER ALESSANDRO — V38
 
-MODIFICHE PC
-- "Vista grande" è ora GIALLA, con lo stesso colore principale del Planner.
-- Davanti alla scritta compare l'icona: ⛶
-- Quindi il pulsante appare come: ⛶ Vista grande
-- Il comportamento resta invariato: solo il pulsante apre la vista grande.
-- "Vista standard" torna completamente all'estrema DESTRA.
-- Anche nelle Note, quando sono aperte, Vista standard è l'ultimo pulsante a destra.
+CORREZIONE APERTURA VISTA GRANDE
+
+PC
+- Cliccare su un giorno NON può più ingrandirlo.
+- Cliccare dentro orari, cose da fare, checkbox o testo NON lo ingrandisce.
+- Cliccare dentro Note e cose da organizzare NON le ingrandisce.
+- La vista grande può essere aperta SOLO premendo il pulsante "⛶ Vista grande".
+- È stato aggiunto un blocco interno: anche se rimane qualche vecchio listener,
+  expandDay/expandNotes ignorano qualsiasi apertura che non arrivi dal pulsante.
+
+STILE "VISTA GRANDE"
+- Sfondo grigio/scuro come "Aggiungi riga".
+- Bordo grigio.
+- Scritta gialla.
+- Resta l'icona ⛶.
+
+VISTA STANDARD
+- Resta all'estrema destra come nella V37.
 
 iPAD / TELEFONO
-- Nessuna modifica al comportamento V36.
-- iPad orizzontale: nessun Vista grande/Vista standard, Domenica e Note affiancate.
-- iPad verticale/telefono: Note dentro "Note e altro".
+- Nessuna modifica rispetto alla V37.
 
 GITHUB
 Carica:
 index.html
-planner-v37.css
-planner-v37.js
+planner-v38.css
+planner-v38.js
 manifest-v10.webmanifest
 service-worker.js
 
 NON cancellare Agenda.html.
 
 Apri:
-https://tesi11alex-cell.github.io/planner/?v=37
+https://tesi11alex-cell.github.io/planner/?v=38
 e fai Ctrl+F5.
