@@ -1,35 +1,28 @@
-PLANNER ALESSANDRO — V36
+PLANNER ALESSANDRO — V37
 
-PC
-- Il click sul giorno o sulle Note NON ingrandisce più.
-- Ogni giorno ha "Vista grande".
-- Anche Note e cose da organizzare ha "Vista grande".
-- Solo il pulsante apre la vista grande.
-- In vista grande resta "Vista standard".
-- Un solo pannello grande alla volta.
+MODIFICHE PC
+- "Vista grande" è ora GIALLA, con lo stesso colore principale del Planner.
+- Davanti alla scritta compare l'icona: ⛶
+- Quindi il pulsante appare come: ⛶ Vista grande
+- Il comportamento resta invariato: solo il pulsante apre la vista grande.
+- "Vista standard" torna completamente all'estrema DESTRA.
+- Anche nelle Note, quando sono aperte, Vista standard è l'ultimo pulsante a destra.
 
-iPAD ORIZZONTALE (821–1100 px)
-- Nessun pulsante Vista grande / Vista standard.
-- Dimensioni tablet invariate.
-- Note e cose da organizzare visibile accanto alla Domenica:
-  Lun-Mar / Mer-Gio / Ven-Sab / Dom-Note.
-- Fix campi data che uscivano fuori.
+iPAD / TELEFONO
+- Nessuna modifica al comportamento V36.
+- iPad orizzontale: nessun Vista grande/Vista standard, Domenica e Note affiancate.
+- iPad verticale/telefono: Note dentro "Note e altro".
 
-iPAD VERTICALE / TELEFONO (<=820 px)
-- Nessun pulsante Vista grande / Vista standard.
-- Le Note desktop restano nascoste.
-- Note e cose da organizzare si usa dentro "Note e altro".
-- Fix campi data iOS/iPadOS rafforzato.
-
-Carica su GitHub:
+GITHUB
+Carica:
 index.html
-planner-v36.css
-planner-v36.js
+planner-v37.css
+planner-v37.js
 manifest-v10.webmanifest
 service-worker.js
 
 NON cancellare Agenda.html.
 
 Apri:
-https://tesi11alex-cell.github.io/planner/?v=36
+https://tesi11alex-cell.github.io/planner/?v=37
 e fai Ctrl+F5.
