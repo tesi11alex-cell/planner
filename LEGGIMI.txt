@@ -1,37 +1,32 @@
-PLANNER ALESSANDRO — V38
+PLANNER ALESSANDRO — V39
 
-CORREZIONE APERTURA VISTA GRANDE
+NUOVO: CTRL + Z
 
-PC
-- Cliccare su un giorno NON può più ingrandirlo.
-- Cliccare dentro orari, cose da fare, checkbox o testo NON lo ingrandisce.
-- Cliccare dentro Note e cose da organizzare NON le ingrandisce.
-- La vista grande può essere aperta SOLO premendo il pulsante "⛶ Vista grande".
-- È stato aggiunto un blocco interno: anche se rimane qualche vecchio listener,
-  expandDay/expandNotes ignorano qualsiasi apertura che non arrivi dal pulsante.
+Premendo Ctrl + Z il Planner annulla l'ultima modifica effettuata.
 
-STILE "VISTA GRANDE"
-- Sfondo grigio/scuro come "Aggiungi riga".
-- Bordo grigio.
-- Scritta gialla.
-- Resta l'icona ⛶.
+ESEMPI
+- elimini una riga da Note e cose da organizzare -> Ctrl+Z la rimette;
+- elimini una Cosa da fare -> Ctrl+Z la rimette;
+- modifichi un testo -> Ctrl+Z ripristina il testo precedente;
+- cambi un flag -> Ctrl+Z ripristina il flag;
+- elimini una riga oraria -> Ctrl+Z la ripristina;
+- aggiungi una riga -> Ctrl+Z annulla l'aggiunta.
 
-VISTA STANDARD
-- Resta all'estrema destra come nella V37.
+Fino a 50 passaggi di annullamento durante la sessione.
+Il ripristino viene anche risalvato nei dati/Firebase.
 
-iPAD / TELEFONO
-- Nessuna modifica rispetto alla V37.
+Resta tutto il comportamento della V38.
 
 GITHUB
 Carica:
 index.html
-planner-v38.css
-planner-v38.js
+planner-v39.css
+planner-v39.js
 manifest-v10.webmanifest
 service-worker.js
 
 NON cancellare Agenda.html.
 
 Apri:
-https://tesi11alex-cell.github.io/planner/?v=38
+https://tesi11alex-cell.github.io/planner/?v=39
 e fai Ctrl+F5.
