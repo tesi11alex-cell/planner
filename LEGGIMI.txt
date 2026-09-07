@@ -1,32 +1,33 @@
-PLANNER ALESSANDRO — V39
+PLANNER ALESSANDRO — V40
 
-NUOVO: CTRL + Z
+NOTE E COSE DA ORGANIZZARE
 
-Premendo Ctrl + Z il Planner annulla l'ultima modifica effettuata.
+Invio crea SEMPRE una nuova riga immediatamente sotto quella corrente.
+Le righe già presenti sotto vengono spostate di una posizione.
 
-ESEMPI
-- elimini una riga da Note e cose da organizzare -> Ctrl+Z la rimette;
-- elimini una Cosa da fare -> Ctrl+Z la rimette;
-- modifichi un testo -> Ctrl+Z ripristina il testo precedente;
-- cambi un flag -> Ctrl+Z ripristina il flag;
-- elimini una riga oraria -> Ctrl+Z la ripristina;
-- aggiungi una riga -> Ctrl+Z annulla l'aggiunta.
+Esempio:
+1) Testo A
+2) Testo B
 
-Fino a 50 passaggi di annullamento durante la sessione.
-Il ripristino viene anche risalvato nei dati/Firebase.
+Premi Invio sulla riga 1:
+1) Testo A
+2) [nuova riga vuota]
+3) Testo B
 
-Resta tutto il comportamento della V38.
+Il cursore passa automaticamente nella nuova riga.
 
-GITHUB
-Carica:
+Alt + Invio = va a capo nella stessa nota.
+Ctrl + Z = annulla anche l'inserimento della nuova riga.
+
+Carica su GitHub:
 index.html
-planner-v39.css
-planner-v39.js
+planner-v40.css
+planner-v40.js
 manifest-v10.webmanifest
 service-worker.js
 
 NON cancellare Agenda.html.
 
 Apri:
-https://tesi11alex-cell.github.io/planner/?v=39
+https://tesi11alex-cell.github.io/planner/?v=40
 e fai Ctrl+F5.
