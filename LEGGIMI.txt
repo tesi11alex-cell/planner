@@ -1,33 +1,55 @@
-PLANNER ALESSANDRO — V40
+PLANNER ALESSANDRO — V41
 
-NOTE E COSE DA ORGANIZZARE
+NUOVO PULSANTE NELLE "COSE DA FARE"
 
-Invio crea SEMPRE una nuova riga immediatamente sotto quella corrente.
-Le righe già presenti sotto vengono spostate di una posizione.
+Sotto la riga "Aggiungi" di ogni giorno compare:
 
-Esempio:
-1) Testo A
-2) Testo B
+↪ Porta non fatti a domani
 
-Premi Invio sulla riga 1:
-1) Testo A
-2) [nuova riga vuota]
-3) Testo B
+COME FUNZIONA
+- Premi il pulsante.
+- Il Planner prende tutte le "Cose da fare" SENZA flag del giorno corrente.
+- Le rimuove dal giorno corrente.
+- Le aggiunge automaticamente al giorno successivo.
+- Le attività già flaggate/completate restano nel giorno originale.
+- Se il giorno successivo contiene già attività, quelle spostate vengono aggiunte sotto senza cancellare nulla.
 
-Il cursore passa automaticamente nella nuova riga.
+ESEMPIO
+Lunedì:
+✓ Chiamare cliente
+□ Inviare documento
+□ Pagare bollettino
 
-Alt + Invio = va a capo nella stessa nota.
-Ctrl + Z = annulla anche l'inserimento della nuova riga.
+Dopo il pulsante:
 
-Carica su GitHub:
+Lunedì:
+✓ Chiamare cliente
+
+Martedì:
+...eventuali attività già presenti...
+□ Inviare documento
+□ Pagare bollettino
+
+CTRL + Z
+- Lo spostamento è compatibile con Ctrl+Z.
+- Un solo Ctrl+Z ripristina contemporaneamente entrambi i giorni:
+  rimette le attività nel giorno originale e le toglie dal giorno successivo.
+
+Il pulsante funziona anche se il giorno successivo non è visibile
+nella settimana corrente: i dati vengono comunque salvati correttamente.
+
+Tutto il resto resta come nella V40.
+
+GITHUB
+Carica:
 index.html
-planner-v40.css
-planner-v40.js
+planner-v41.css
+planner-v41.js
 manifest-v10.webmanifest
 service-worker.js
 
 NON cancellare Agenda.html.
 
 Apri:
-https://tesi11alex-cell.github.io/planner/?v=40
+https://tesi11alex-cell.github.io/planner/?v=41
 e fai Ctrl+F5.
