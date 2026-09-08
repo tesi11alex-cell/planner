@@ -1,55 +1,40 @@
-PLANNER ALESSANDRO — V41
+PLANNER ALESSANDRO — V42
 
-NUOVO PULSANTE NELLE "COSE DA FARE"
+MODIFICA AL PULSANTE PER SPOSTARE LE COSE NON FATTE
 
-Sotto la riga "Aggiungi" di ogni giorno compare:
+- Il pulsante è più piccolo.
+- È allineato a DESTRA sotto "Aggiungi".
+- La scritta è più corta: "↪ A domani".
+- Il funzionamento resta identico: sposta solo le Cose da fare senza flag.
 
-↪ Porta non fatti a domani
+VISIBILITÀ
+Il pulsante compare SOLO:
+1. nel giorno corrente;
+2. nel giorno successivo.
 
-COME FUNZIONA
-- Premi il pulsante.
-- Il Planner prende tutte le "Cose da fare" SENZA flag del giorno corrente.
-- Le rimuove dal giorno corrente.
-- Le aggiunge automaticamente al giorno successivo.
-- Le attività già flaggate/completate restano nel giorno originale.
-- Se il giorno successivo contiene già attività, quelle spostate vengono aggiunte sotto senza cancellare nulla.
+Non compare negli altri giorni della settimana.
 
 ESEMPIO
-Lunedì:
-✓ Chiamare cliente
-□ Inviare documento
-□ Pagare bollettino
-
-Dopo il pulsante:
-
-Lunedì:
-✓ Chiamare cliente
-
-Martedì:
-...eventuali attività già presenti...
-□ Inviare documento
-□ Pagare bollettino
+Se oggi è Martedì:
+- Martedì: pulsante visibile
+- Mercoledì: pulsante visibile
+- Lunedì, Giovedì, Venerdì, Sabato, Domenica: pulsante nascosto
 
 CTRL + Z
-- Lo spostamento è compatibile con Ctrl+Z.
-- Un solo Ctrl+Z ripristina contemporaneamente entrambi i giorni:
-  rimette le attività nel giorno originale e le toglie dal giorno successivo.
+Continua a ripristinare entrambi i giorni in caso di spostamento effettuato per errore.
 
-Il pulsante funziona anche se il giorno successivo non è visibile
-nella settimana corrente: i dati vengono comunque salvati correttamente.
-
-Tutto il resto resta come nella V40.
+Tutto il resto resta invariato rispetto alla V41.
 
 GITHUB
 Carica:
 index.html
-planner-v41.css
-planner-v41.js
+planner-v42.css
+planner-v42.js
 manifest-v10.webmanifest
 service-worker.js
 
 NON cancellare Agenda.html.
 
 Apri:
-https://tesi11alex-cell.github.io/planner/?v=41
+https://tesi11alex-cell.github.io/planner/?v=42
 e fai Ctrl+F5.
