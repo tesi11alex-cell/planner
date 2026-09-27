@@ -1,0 +1,64 @@
+
+/* Planner V44 - "Invia a una data" richiudibile */
+.v44-quick-toggle{
+  width:100%;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  text-align:left;
+}
+.v44-quick-toggle:hover{
+  background:transparent;
+}
+.v44-quick-toggle .v44-toggle-copy{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  width:100%;
+}
+.v44-quick-toggle h2{
+  margin:0;
+  font-family:'Fraunces',serif;
+  font-size:16px;
+  font-weight:600;
+}
+.v44-quick-toggle .v44-toggle-right{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--text-dim);
+  font-size:10px;
+  line-height:1.35;
+  text-align:right;
+}
+.v44-quick-chevron{
+  color:var(--text-dim);
+  font-size:15px;
+  line-height:1;
+  transition:transform .16s ease;
+}
+.v44-quick-card.is-open .v44-quick-chevron{
+  transform:rotate(180deg);
+}
+.v44-quick-body{
+  display:grid;
+  grid-template-rows:0fr;
+  opacity:0;
+  transition:grid-template-rows .18s ease, opacity .15s ease, margin-top .18s ease;
+  margin-top:0;
+}
+.v44-quick-body > div{
+  min-height:0;
+  overflow:hidden;
+}
+.v44-quick-card.is-open .v44-quick-body{
+  grid-template-rows:1fr;
+  opacity:1;
+  margin-top:11px;
+}

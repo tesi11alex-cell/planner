@@ -1,0 +1,14 @@
+PLANNER V44 - TENDINA "INVIA A UNA DATA"
+
+Carica nella ROOT del repository GitHub tutti i file contenuti nello ZIP,
+sostituendo index.html e service-worker.js quando richiesto.
+
+Novità V44:
+- "Invia a una data" parte chiuso a tendina;
+- da chiuso mostra solo "Invia a una data" e "Cose da fare";
+- clic sulla testata apre/chiude i campi già esistenti;
+- rimossa la frase "Non devi più cercare manualmente...";
+- calendario mensile V43 invariato.
+
+IMPORTANTE:
+non eliminare planner-v42.* e planner-v43.* già presenti nel repository.
