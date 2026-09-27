@@ -167,3 +167,60 @@
     init();
   }
 })();
+
+
+/* V44 FIX - tendina "Invia a una data", senza modificare il loader */
+(() => {
+  'use strict';
+
+  function initV44QuickTaskAccordion(){
+    const quickInput = document.getElementById('quickTaskText');
+    const card = quickInput?.closest('.side-card');
+    if(!card || card.dataset.v44Ready === '1') return;
+
+    const oldTitle = card.querySelector('.side-title');
+    const form = card.querySelector('.quick-task-form');
+    const help = card.querySelector('.quick-help');
+    if(!oldTitle || !form) return;
+
+    card.dataset.v44Ready = '1';
+    card.classList.add('v44-quick-card');
+
+    // Elimina definitivamente la frase sotto il modulo.
+    if(help) help.remove();
+
+    // Sostituisce solo la testata, lasciando intatti input e relativi listener.
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'v44-quick-toggle';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.innerHTML = `
+      <span class="v44-quick-title">Invia a una data</span>
+      <span class="v44-quick-right">
+        <span>Cose da fare</span>
+        <span class="v44-chevron" aria-hidden="true">⌄</span>
+      </span>
+    `;
+    oldTitle.replaceWith(toggle);
+
+    // Nasconde/mostra direttamente il form già esistente.
+    form.classList.add('v44-quick-form');
+    form.hidden = true;
+
+    function setOpen(open){
+      card.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      form.hidden = !open;
+    }
+
+    toggle.addEventListener('click', () => {
+      setOpen(!card.classList.contains('is-open'));
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initV44QuickTaskAccordion, {once:true});
+  }else{
+    initV44QuickTaskAccordion();
+  }
+})();

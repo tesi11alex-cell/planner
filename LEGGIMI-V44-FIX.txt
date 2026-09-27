@@ -1,0 +1,18 @@
+PLANNER V44 FIX
+
+Questa versione parte dalla V43 funzionante e NON aggiunge nuovi file JS/CSS al loader.
+
+Carica nella ROOT del repository GitHub questi 4 file e sostituisci quelli esistenti:
+- index.html
+- planner-v43.css
+- planner-v43.js
+- service-worker.js
+
+Risultato:
+- calendario mensile V43 invariato;
+- "Invia a una data" chiuso di default;
+- da chiuso mostra solo "Invia a una data" + "Cose da fare";
+- clic sulla testata apre/chiude il modulo esistente;
+- eliminata la frase "Non devi più cercare manualmente...".
+
+NON eliminare Agenda.html, planner-v42.js, planner-v42.css, manifest e icone.
