@@ -1,0 +1,19 @@
+PLANNER V43 - CALENDARIO MENSILE
+
+Carica nella ROOT del repository GitHub i 4 file contenuti in questo ZIP,
+sostituendo index.html e service-worker.js quando richiesto.
+
+File:
+- index.html
+- planner-v43.css
+- planner-v43.js
+- service-worker.js
+
+Non eliminare i file V42 già presenti: V43 è una patch aggiuntiva.
+
+Novità:
+- calendario mensile sempre visibile sopra "Invia a una data";
+- frecce per mese precedente/successivo;
+- click su un giorno porta alla settimana relativa;
+- il giorno corrente e quello selezionato sono evidenziati;
+- clic sul titolo del mese richiama la scelta mese già presente nel Planner.

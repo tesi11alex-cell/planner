@@ -1,0 +1,118 @@
+/* Planner V43 - calendario mensile fisso nella sidebar */
+.v43-calendar-card{
+  padding:12px 14px 14px !important;
+}
+
+.v43-calendar-head{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) 34px;
+  align-items:center;
+  gap:7px;
+  margin-bottom:10px;
+}
+
+.v43-month-title{
+  min-width:0;
+  padding:6px 5px;
+  border:0;
+  background:transparent;
+  color:var(--text);
+  font-family:'Fraunces',serif;
+  font-size:16px;
+  font-weight:600;
+  text-align:center;
+  white-space:nowrap;
+}
+
+.v43-month-title:hover{
+  background:var(--panel-alt);
+  color:var(--accent);
+}
+
+.v43-month-arrow{
+  width:34px;
+  height:32px;
+  padding:0;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--panel-alt);
+  color:var(--text);
+  font-size:18px;
+  line-height:1;
+}
+
+.v43-month-arrow:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+.v43-weekdays,
+.v43-days{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:4px;
+}
+
+.v43-weekdays{
+  margin-bottom:4px;
+}
+
+.v43-weekdays span{
+  display:grid;
+  place-items:center;
+  min-height:20px;
+  color:var(--text-dim);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;
+  font-weight:600;
+}
+
+.v43-day,
+.v43-empty{
+  min-width:0;
+  height:30px;
+}
+
+.v43-day{
+  width:100%;
+  padding:0;
+  display:grid;
+  place-items:center;
+  border:1px solid transparent;
+  border-radius:7px;
+  background:transparent;
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  font-weight:500;
+}
+
+.v43-day:hover{
+  background:var(--panel-alt);
+  border-color:var(--line);
+  color:var(--accent);
+}
+
+.v43-day.today{
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+.v43-day.selected{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#1a1200;
+  font-weight:700;
+}
+
+.v43-day.selected:hover{
+  background:#f0b750;
+  color:#1a1200;
+}
+
+/* La sidebar non cambia struttura: il calendario è semplicemente la prima scheda. */
+@media(max-width:1100px){
+  .v43-calendar-card{display:none !important;}
+}
