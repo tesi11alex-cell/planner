@@ -1,0 +1,20 @@
+PLANNER V45
+
+Carica nella ROOT del repository GitHub questi file e sostituisci quelli esistenti:
+- index.html
+- planner-v43.css
+- planner-v43.js
+- service-worker.js
+
+RISULTATO
+1. Il calendario mensile fisso sopra "Invia a una data" rimane.
+2. Le frecce del calendario fisso rimangono.
+3. Cliccando un giorno si va alla settimana relativa.
+4. "Invia a una data" è una tendina:
+   - chiusa: mostra solo "Invia a una data" + "Cose da fare";
+   - aperta: mostra i campi e il pulsante già esistenti.
+5. Rimossa la frase "Non devi più cercare manualmente...".
+6. Cliccando "Settembre 09-2026" resta la normale select mesi/anni.
+7. Il vecchio calendario popup sotto il selettore mese non compare più.
+
+NON eliminare Agenda.html, planner-v42.js, planner-v42.css, manifest e icone.

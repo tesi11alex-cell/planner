@@ -118,8 +118,13 @@
 }
 
 
-/* V44 FIX - "Invia a una data" richiudibile */
-.v44-quick-toggle{
+/* V45 - il vecchio mini-calendario popup del selettore mese è disattivato */
+#miniCalendar{
+  display:none !important;
+}
+
+/* V45 - tendina "Invia a una data" */
+.v45-quick-toggle{
   width:100%;
   display:flex;
   align-items:center;
@@ -132,15 +137,13 @@
   text-align:left;
   cursor:pointer;
 }
-.v44-quick-toggle:hover{
-  background:transparent;
-}
-.v44-quick-title{
+.v45-quick-toggle:hover{background:transparent;}
+.v45-quick-title{
   font-family:'Fraunces',serif;
   font-size:16px;
   font-weight:600;
 }
-.v44-quick-right{
+.v45-quick-right{
   display:flex;
   align-items:center;
   gap:8px;
@@ -149,18 +152,18 @@
   line-height:1.35;
   text-align:right;
 }
-.v44-chevron{
+.v45-chevron{
   display:inline-block;
   font-size:15px;
   line-height:1;
   transition:transform .15s ease;
 }
-.v44-quick-card.is-open .v44-chevron{
+.v45-quick-card.is-open .v45-chevron{
   transform:rotate(180deg);
 }
-.v44-quick-form{
+.v45-quick-form{
   margin-top:11px;
 }
-.v44-quick-form[hidden]{
+.v45-quick-form[hidden]{
   display:none !important;
 }

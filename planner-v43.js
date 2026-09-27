@@ -169,58 +169,102 @@
 })();
 
 
-/* V44 FIX - tendina "Invia a una data", senza modificare il loader */
+/* V45 - tendina Invia a una data + disattivazione calendario popup del selettore mese */
 (() => {
   'use strict';
 
-  function initV44QuickTaskAccordion(){
-    const quickInput = document.getElementById('quickTaskText');
-    const card = quickInput?.closest('.side-card');
-    if(!card || card.dataset.v44Ready === '1') return;
+  function disableOldMonthPopup(){
+    const select = document.getElementById('monthSelect');
+    const popup = document.getElementById('miniCalendar');
+
+    // Il popup calendario non deve mai comparire.
+    if(popup){
+      popup.hidden = true;
+      popup.style.display = 'none';
+      popup.setAttribute('aria-hidden','true');
+    }
+
+    if(!select || select.dataset.v45MonthReady === '1') return;
+    select.dataset.v45MonthReady = '1';
+
+    // Blocca i listener click/change precedenti solo per il popup,
+    // mantenendo il normale comportamento nativo della select.
+    select.addEventListener('click', () => {
+      if(popup){
+        popup.hidden = true;
+        popup.style.display = 'none';
+      }
+    }, true);
+
+    select.addEventListener('change', () => {
+      if(popup){
+        popup.hidden = true;
+        popup.style.display = 'none';
+      }
+    }, true);
+
+    // Se qualche vecchio listener prova a riaprirlo, lo richiudiamo subito.
+    if(popup){
+      new MutationObserver(() => {
+        if(!popup.hidden || popup.style.display !== 'none'){
+          popup.hidden = true;
+          popup.style.display = 'none';
+        }
+      }).observe(popup,{attributes:true,attributeFilter:['hidden','style']});
+    }
+  }
+
+  function initQuickTaskDropdown(){
+    const input = document.getElementById('quickTaskText');
+    const card = input?.closest('.side-card');
+    if(!card || card.dataset.v45QuickReady === '1') return;
 
     const oldTitle = card.querySelector('.side-title');
     const form = card.querySelector('.quick-task-form');
     const help = card.querySelector('.quick-help');
     if(!oldTitle || !form) return;
 
-    card.dataset.v44Ready = '1';
-    card.classList.add('v44-quick-card');
+    card.dataset.v45QuickReady = '1';
+    card.classList.add('v45-quick-card');
 
-    // Elimina definitivamente la frase sotto il modulo.
-    if(help) help.remove();
+    // Rimuove la frase di aiuto sotto.
+    help?.remove();
 
-    // Sostituisce solo la testata, lasciando intatti input e relativi listener.
+    // Testata cliccabile.
     const toggle = document.createElement('button');
     toggle.type = 'button';
-    toggle.className = 'v44-quick-toggle';
-    toggle.setAttribute('aria-expanded', 'false');
+    toggle.className = 'v45-quick-toggle';
+    toggle.setAttribute('aria-expanded','false');
     toggle.innerHTML = `
-      <span class="v44-quick-title">Invia a una data</span>
-      <span class="v44-quick-right">
+      <span class="v45-quick-title">Invia a una data</span>
+      <span class="v45-quick-right">
         <span>Cose da fare</span>
-        <span class="v44-chevron" aria-hidden="true">⌄</span>
+        <span class="v45-chevron" aria-hidden="true">⌄</span>
       </span>
     `;
     oldTitle.replaceWith(toggle);
 
-    // Nasconde/mostra direttamente il form già esistente.
-    form.classList.add('v44-quick-form');
+    form.classList.add('v45-quick-form');
     form.hidden = true;
 
-    function setOpen(open){
+    const setOpen = open => {
       card.classList.toggle('is-open', open);
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       form.hidden = !open;
-    }
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
 
-    toggle.addEventListener('click', () => {
-      setOpen(!card.classList.contains('is-open'));
-    });
+    setOpen(false);
+    toggle.addEventListener('click', () => setOpen(!card.classList.contains('is-open')));
+  }
+
+  function initV45(){
+    disableOldMonthPopup();
+    initQuickTaskDropdown();
   }
 
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initV44QuickTaskAccordion, {once:true});
+    document.addEventListener('DOMContentLoaded', initV45, {once:true});
   }else{
-    initV44QuickTaskAccordion();
+    initV45();
   }
 })();

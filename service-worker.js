@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v44-fix';
+const CACHE_NAME = 'planner-offline-v45';
 
 const APP_SHELL = [
   './',
