@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'planner-offline-';
-const CACHE_NAME = 'planner-offline-v45';
+const CACHE_NAME = 'planner-offline-v46';
 
 const APP_SHELL = [
   './',
@@ -66,6 +66,20 @@ async function cacheFirst(request){
   return response;
 }
 
+// I file dell'app arrivano sempre aggiornati; la copia locale serve solo offline.
+async function networkFirstAsset(request){
+  const cache = await caches.open(CACHE_NAME);
+  try{
+    const response = await fetch(request,{cache:'no-store'});
+    if(response && response.ok) await cache.put(request,response.clone());
+    return response;
+  }catch(error){
+    const cached = await cache.match(request,{ignoreSearch:true});
+    if(cached) return cached;
+    throw error;
+  }
+}
+
 self.addEventListener('fetch', event => {
   const request = event.request;
   if(request.method !== 'GET') return;
@@ -79,5 +93,6 @@ self.addEventListener('fetch', event => {
     url.hostname === 'www.gstatic.com' ||
     url.hostname === 'fonts.googleapis.com' ||
     url.hostname === 'fonts.gstatic.com';
-  if(sameOrigin || staticRemote) event.respondWith(cacheFirst(request));
+  if(sameOrigin) event.respondWith(networkFirstAsset(request));
+  else if(staticRemote) event.respondWith(cacheFirst(request));
 });

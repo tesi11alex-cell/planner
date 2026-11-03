@@ -268,3 +268,171 @@
     initV45();
   }
 })();
+
+/* =====================================================================
+   PLANNER V46 - SINCRONIZZAZIONE CALENDARIO
+   1. Ore e Cose da fare si salvano mentre scrivi, come le Note.
+   2. Tornando sull'app rilegge la settimana direttamente dal server.
+   3. Recupera i giorni scritti senza accesso e li unisce a quelli online.
+   ===================================================================== */
+(() => {
+  'use strict';
+
+  const SAVE_DELAY = 600;
+  const FIELDS = '[data-hour-input], [data-task-text]';
+  const timers = new Map();
+  let resyncTimer = null;
+  let resyncRunning = false;
+
+  function commitField(field){
+    clearTimeout(timers.get(field));
+    timers.delete(field);
+    if(field.isConnected) field.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+
+  function flushFields(){
+    Array.from(timers.keys()).forEach(commitField);
+    const active = document.activeElement;
+    if(active?.matches?.('[data-hour-input], [data-task-text], [data-hour-minute]')){
+      active.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+  }
+
+  function dayHasPendingText(key){
+    return Array.from(timers.keys()).some(field =>
+      field.closest('.day[data-key]')?.dataset.key === key
+    );
+  }
+
+  document.addEventListener('input', event => {
+    const field = event.target;
+    if(!field?.matches?.(FIELDS)) return;
+    clearTimeout(timers.get(field));
+    timers.set(field, setTimeout(() => commitField(field), SAVE_DELAY));
+  });
+
+  async function resyncWeek(){
+    if(resyncRunning || !currentUser || !navigator.onLine) return;
+    resyncRunning = true;
+    try{
+      flushFields();
+      const results = await Promise.all(currentWeekDates().map(async date => ({
+        date,
+        snap: await dayRefFromKey(dateKey(date)).get({source:'server'})
+      })));
+
+      results.forEach(({date,snap}) => {
+        const key = dateKey(date);
+        if(dayHasPendingText(key)) return;
+        dataCache[key] = snap.exists ? normalizeDay(snap.data()) : emptyDay();
+        refreshDayUI(date);
+      });
+
+      await renderUpcomingPanels();
+      const time = new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+      setSyncNotice(`Agenda sincronizzata con ${currentUser.email || 'il tuo account Google'} · controllo ore ${time}.`);
+    }catch(error){
+      console.error('Rilettura dal server non riuscita', error);
+      setSyncNotice('Attenzione: non riesco a leggere i dati dal server. Quello che vedi potrebbe non essere aggiornato.');
+    }finally{
+      resyncRunning = false;
+    }
+  }
+
+  function scheduleResync(){
+    clearTimeout(resyncTimer);
+    resyncTimer = setTimeout(resyncWeek, 400);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'hidden') flushFields();
+    else scheduleResync();
+  });
+  window.addEventListener('pagehide', flushFields);
+  window.addEventListener('pageshow', scheduleResync);
+  window.addEventListener('focus', scheduleResync);
+  window.addEventListener('online', scheduleResync);
+
+  function mergeLocalIntoRemote(remote, local){
+    let added = 0;
+    const sameText = (a,b) => String(a||'').trim() === String(b||'').trim();
+
+    Object.entries(local.hours).forEach(([hour,entry]) => {
+      if(!String(entry.text||'').trim()) return;
+      const current = remote.hours[hour];
+      if(!String(current?.text||'').trim()){
+        remote.hours[hour] = entry;
+        added++;
+      }else if(!sameText(current.text,entry.text) &&
+               !remote.extraHours.some(row => sameText(row.text,entry.text))){
+        remote.extraHours.push({
+          id:`${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          baseHour:hour, text:entry.text, done:entry.done, minutes:entry.minutes
+        });
+        added++;
+      }
+    });
+
+    local.extraHours.forEach(row => {
+      if(!String(row.text||'').trim()) return;
+      if(remote.extraHours.some(item => String(item.id) === String(row.id) || sameText(item.text,row.text))) return;
+      remote.extraHours.push(row);
+      added++;
+    });
+
+    local.tasks.forEach(task => {
+      if(!String(task.text||'').trim()) return;
+      if(remote.tasks.some(item => String(item.id) === String(task.id) || sameText(item.text,task.text))) return;
+      remote.tasks.push(task);
+      added++;
+    });
+
+    return added;
+  }
+
+  async function recoverLocalDays(){
+    const keys = [];
+    for(let i=0; i<localStorage.length; i++){
+      const key = localStorage.key(i);
+      if(key && /^day:\d{4}-\d{2}-\d{2}$/.test(key)) keys.push(key);
+    }
+
+    let recovered = 0;
+    for(const key of keys){
+      try{
+        const day = key.slice(4);
+        const local = normalizeDay(JSON.parse(localStorage.getItem(key)));
+        const ref = dayRefFromKey(day);
+        const snap = await ref.get({source:'server'});
+        const remote = snap.exists ? normalizeDay(snap.data()) : emptyDay();
+        if(mergeLocalIntoRemote(remote,local) > 0){
+          await ref.set({
+            hours:remote.hours, extraHours:remote.extraHours, tasks:remote.tasks,
+            updatedAt:serverTimestamp()
+          });
+          recovered++;
+        }
+        delete dataCache[day];
+        localStorage.removeItem(key);
+      }catch(error){
+        // In caso di errore il giorno resta sul dispositivo e si ritenta al prossimo avvio.
+        console.warn('Recupero giorno locale non riuscito', key, error);
+      }
+    }
+    return recovered;
+  }
+
+  auth.onAuthStateChanged(user => {
+    if(!user) return;
+    let attempts = 0;
+    const start = async () => {
+      if(!currentUser){
+        if(++attempts < 40) setTimeout(start,250);
+        return;
+      }
+      await recoverLocalDays();
+      await resyncWeek();
+    };
+    setTimeout(start,500);
+  });
+})();

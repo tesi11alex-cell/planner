@@ -1,0 +1,18 @@
+PLANNER V46 - SINCRONIZZAZIONE CALENDARIO
+
+Carica nella ROOT del repository GitHub questi 3 file e sostituisci quelli esistenti:
+- index.html
+- planner-v43.js
+- service-worker.js
+
+NON eliminare Agenda.html, planner-v42.js, planner-v42.css, planner-v43.css, manifest e icone.
+
+RISULTATO
+1. Ore e Cose da fare si salvano mentre scrivi, come le Note.
+2. Tornando sull'app, la settimana viene riletta dal server.
+3. In fondo compare l'ora dell'ultimo controllo riuscito, oppure un avviso se fallisce.
+4. I giorni scritti senza accesso vengono recuperati e uniti a quelli online.
+5. L'app arriva aggiornata senza restare ferma a una copia vecchia.
+
+DOPO IL CARICAMENTO
+Attendi qualche minuto, poi su PC e telefono apri il Planner, chiudilo del tutto e riaprilo.
