@@ -198,7 +198,11 @@ function ensureStandardButton(){
       ].join('-');
     };
 
-    return new Set([keyOf(today), keyOf(tomorrow)]);
+    /* V47: "A domani" anche sul giorno prima. */
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    return new Set([keyOf(yesterday), keyOf(today), keyOf(tomorrow)]);
   }
 
 function ensureMoveTomorrowButton(card){
@@ -206,7 +210,7 @@ function ensureMoveTomorrowButton(card){
 
     const allowedKeys = moveTomorrowAllowedKeys();
 
-    /* V42: il pulsante esiste solo sul giorno corrente e su quello successivo. */
+    /* V47: il pulsante esiste sul giorno prima, su quello corrente e su quello successivo. */
     if(!allowedKeys.has(card.dataset.key)){
       card.querySelector('.v42-move-tomorrow')?.remove();
       return;
@@ -1100,6 +1104,11 @@ function applyNotesLayout(){
       if(!plannerUndoStack.length) return;
       event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
       restorePlannerUndo(plannerUndoStack.pop());
+      return;
+    }
+    /* V47: Ctrl+4 sulle Note si annulla con Ctrl+Z come le altre modifiche. */
+    if(event.ctrlKey && (event.code === 'Digit4' || event.code === 'Numpad4' || event.key === '4')){
+      if(target?.matches?.('.organizer-note-input')) snapshotOrganizerUndo('Evidenziazione ripristinata');
       return;
     }
     if(event.ctrlKey && event.key === '1'){

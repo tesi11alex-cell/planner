@@ -34,11 +34,11 @@
     card.innerHTML = `
       <div class="v43-calendar-head">
         <button type="button" class="v43-month-arrow" id="v43PrevMonth"
-          aria-label="Mese precedente" title="Mese precedente">‹</button>
+          aria-label="Mese precedente" title="Mese precedente"></button>
         <button type="button" class="v43-month-title" id="v43MonthTitle"
           title="Apri la scelta del mese"></button>
         <button type="button" class="v43-month-arrow" id="v43NextMonth"
-          aria-label="Mese successivo" title="Mese successivo">›</button>
+          aria-label="Mese successivo" title="Mese successivo"></button>
       </div>
       <div class="v43-weekdays" aria-hidden="true"></div>
       <div class="v43-days" id="v43CalendarDays"></div>
@@ -107,11 +107,31 @@
     const days = card.querySelector('#v43CalendarDays');
     title.textContent = `${MONTHS[viewMonth]} ${viewYear}`;
 
+    // V47: le frecce mostrano il mese dove portano.
+    const prevName = MONTHS[(viewMonth + 11) % 12];
+    const nextName = MONTHS[(viewMonth + 1) % 12];
+    const prevBtn = card.querySelector('#v43PrevMonth');
+    const nextBtn = card.querySelector('#v43NextMonth');
+    prevBtn.textContent = `‹ ${prevName.slice(0,3)}`;
+    nextBtn.textContent = `${nextName.slice(0,3)} ›`;
+    prevBtn.setAttribute('aria-label',`Vai a ${prevName}`);
+    nextBtn.setAttribute('aria-label',`Vai a ${nextName}`);
+    prevBtn.title = `Vai a ${prevName}`;
+    nextBtn.title = `Vai a ${nextName}`;
+
     const first = new Date(viewYear, viewMonth, 1);
     const count = new Date(viewYear, viewMonth + 1, 0).getDate();
     const today = new Date();
     const selected = (typeof currentDate !== 'undefined' && currentDate instanceof Date)
       ? currentDate : null;
+
+    // V47: lunedì e domenica della settimana aperta, per illuminarla.
+    let weekStart = null;
+    let weekEnd = null;
+    if(selected){
+      weekStart = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate() - mondayIndex(selected));
+      weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
+    }
 
     let html = '';
     for(let i=0; i<mondayIndex(first); i++){
@@ -121,10 +141,14 @@
     for(let day=1; day<=count; day++){
       const date = new Date(viewYear, viewMonth, day);
       const iso = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const inWeek = weekStart && date >= weekStart && date <= weekEnd;
       const cls = [
         'v43-day',
         sameDate(date,today) ? 'today' : '',
-        sameDate(date,selected) ? 'selected' : ''
+        sameDate(date,selected) ? 'selected' : '',
+        inWeek ? 'in-week' : '',
+        inWeek && (day === 1 || mondayIndex(date) === 0) ? 'week-first' : '',
+        inWeek && (day === count || mondayIndex(date) === 6) ? 'week-last' : ''
       ].filter(Boolean).join(' ');
 
       html += `<button type="button" class="${cls}" data-v43-date="${iso}"

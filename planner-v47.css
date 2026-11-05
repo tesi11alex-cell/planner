@@ -1,0 +1,100 @@
+/* ===== PLANNER V47 ===== */
+
+/* --- Calendario: frecce con il mese --- */
+.v43-calendar-head{grid-template-columns:auto minmax(0,1fr) auto}
+.v43-month-arrow{
+  width:auto;min-width:46px;padding:0 8px;
+  font-size:12px;font-weight:600;white-space:nowrap;
+}
+
+/* --- Settimana illuminata nel calendario, oggi piu luminoso --- */
+.v43-days{column-gap:0;row-gap:4px}
+.v43-day.in-week{
+  background:rgba(227,168,59,.22);
+  font-weight:600;
+  border-radius:0;
+}
+.v43-day.week-first{border-radius:7px 0 0 7px}
+.v43-day.week-last{border-radius:0 7px 7px 0}
+.v43-day.week-first.week-last{border-radius:7px}
+.v43-day.selected,
+.v43-day.selected:hover{
+  background:rgba(227,168,59,.48);
+  border-color:transparent;
+  color:var(--text);
+}
+.v43-day.today,
+.v43-day.today:hover,
+.v43-day.today.selected,
+.v43-day.today.selected:hover{
+  position:relative;
+  z-index:1;
+  background:#FFC24D;
+  border-color:#FFC24D;
+  border-radius:7px;
+  color:#1a1200;
+  font-weight:700;
+  box-shadow:0 0 0 2px rgba(255,194,77,.35),0 0 14px rgba(255,194,77,.6);
+}
+
+/* --- Ctrl+4 nelle Note --- */
+.organizer-note-row.v47-lit{box-shadow:inset 3px 0 0 #FFD84D}
+.organizer-note-row.v47-lit .organizer-note-input{
+  color:#FFD84D !important;
+  font-weight:700;
+}
+.organizer-note-row.v47-lit .organizer-note-dash{color:#FFD84D !important}
+
+/* --- PC: tutto lo schermo --- */
+@media (min-width:1101px){
+  .app{max-width:none !important;padding:14px 18px 28px !important}
+  header{padding-bottom:12px !important;margin-bottom:14px !important}
+  .planner-layout{
+    grid-template-columns:minmax(0,1fr) var(--v47-side,330px) !important;
+    gap:14px !important;
+  }
+}
+
+/* 14" e vista ingrandita: ore e Cose da fare a meta, cosi il testo non si stringe */
+@media (min-width:1101px) and (max-width:1599px){
+  :root{--v47-side:290px}
+  html body:not(.v42-expanded-active):not(.v47a) .day:not(.v47b) .day-body{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  }
+}
+
+/* Poco spazio: due giorni per riga */
+@media (min-width:1101px) and (max-width:1239px){
+  html body .week.week:not(.v47a){grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  html body:not(.v47a) .week .week-notes:not(.v42-notes-expanded):not(.v47b){grid-column:span 1 !important}
+}
+
+/* iPad orizzontale: due giorni per riga e testo piu grande */
+@media (pointer:coarse) and (min-width:1101px){
+  html body .week.week:not(.v47a){grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  html body:not(.v47a) .week .week-notes:not(.v42-notes-expanded):not(.v47b){grid-column:span 1 !important}
+  html body:not(.v47a):not(.v47b):not(.v47c) .hour-input,
+  html body:not(.v47a):not(.v47b):not(.v47c) .todo-text,
+  html body:not(.v47a):not(.v47b):not(.v47c) .organizer-note-input,
+  html body:not(.v47a):not(.v47b):not(.v47c) .todo-add input{
+    font-size:14px !important;
+    line-height:1.35 !important;
+  }
+}
+
+/* Monitor e 27" con vista ingrandita: tutto un po' piu grande */
+@media (pointer:fine) and (min-width:1800px) and (max-width:2299px){
+  .app{zoom:1.12}
+  body .week-notes.week-notes{min-height:0 !important}
+}
+
+/* 27" pieno: 4 giorni per riga, Note incluse, senza scorrere */
+@media (pointer:fine) and (min-width:2300px){
+  .app{zoom:1.3}
+  html body .week.week:not(.v47a){grid-template-columns:repeat(4,minmax(0,1fr)) !important}
+  html body:not(.v47a) .week .week-notes:not(.v42-notes-expanded):not(.v47b){grid-column:span 1 !important}
+  body .week-notes.week-notes{min-height:0 !important}
+  body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .week .day:not(.v47a){
+    min-height:calc((100vh - 130px) / 2.8) !important;
+  }
+}

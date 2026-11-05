@@ -1,0 +1,29 @@
+PLANNER V47
+
+Carica nella ROOT del repository GitHub questi 7 file.
+Sostituisci quelli esistenti quando GitHub lo chiede:
+- index.html
+- service-worker.js
+- planner-v42.js
+- planner-v43.js
+
+File nuovi:
+- planner-v47.css
+- planner-v47.js
+- LEGGIMI-V47.txt
+
+NON eliminare Agenda.html, planner-v42.css, planner-v43.css, manifest e icone.
+
+RISULTATO
+1. Calendario: le frecce mostrano il mese dove portano (es. Ott / Dic).
+2. Calendario: la settimana aperta si illumina e oggi e' il punto piu luminoso.
+3. Note e cose da organizzare: Ctrl+4 mette e toglie il testo giallo con barretta.
+   Ctrl+Z annulla. Il giallo si sincronizza su tutti i dispositivi.
+4. "A domani" compare anche sul giorno prima.
+5. PC 14 pollici e monitor 27 pollici: l'agenda usa tutto lo schermo.
+6. Vista grande: i testi degli altri giorni non restano piu tagliati.
+7. iPad orizzontale: due giorni per riga, testo piu grande, campo sopra la tastiera.
+
+DOPO IL CARICAMENTO
+Attendi qualche minuto, poi su PC, iPhone e iPad apri il Planner,
+chiudilo del tutto e riaprilo.

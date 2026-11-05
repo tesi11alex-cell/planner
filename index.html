@@ -20,17 +20,19 @@ html,body{margin:0;min-height:100%;background:#0B0B0D;color:#F2F1ED;font-family:
 <script>
 (async function(){
   try{
-    const response = await fetch('./Agenda.html?v=46',{cache:'no-store'});
+    const response = await fetch('./Agenda.html?v=47',{cache:'no-store'});
     if(!response.ok) throw new Error('Agenda.html non disponibile');
 
     let html = await response.text();
 
     const cssTag =
-      '<link rel="stylesheet" href="./planner-v42.css?v=46">\n' +
-      '<link rel="stylesheet" href="./planner-v43.css?v=46">';
+      '<link rel="stylesheet" href="./planner-v42.css?v=47">\n' +
+      '<link rel="stylesheet" href="./planner-v43.css?v=47">\n' +
+      '<link rel="stylesheet" href="./planner-v47.css?v=47">';
     const scriptTag =
-      '<scr' + 'ipt src="./planner-v42.js?v=46"></scr' + 'ipt>\n' +
-      '<scr' + 'ipt src="./planner-v43.js?v=46"></scr' + 'ipt>';
+      '<scr' + 'ipt src="./planner-v42.js?v=47"></scr' + 'ipt>\n' +
+      '<scr' + 'ipt src="./planner-v43.js?v=47"></scr' + 'ipt>\n' +
+      '<scr' + 'ipt src="./planner-v47.js?v=47"></scr' + 'ipt>';
 
     html = html.replace('</head>',cssTag + '\n</head>');
     html = html.replace('</body>',scriptTag + '\n</body>');
@@ -40,7 +42,7 @@ html,body{margin:0;min-height:100%;background:#0B0B0D;color:#F2F1ED;font-family:
     document.close();
 
   }catch(error){
-    console.error('Errore apertura Planner V46',error);
+    console.error('Errore apertura Planner V47',error);
     const loader=document.getElementById('loader');
     if(loader){
       loader.textContent =
