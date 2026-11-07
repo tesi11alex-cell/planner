@@ -1,0 +1,44 @@
+PLANNER V48
+
+Carica nella ROOT del repository GitHub (sostituisci quando richiesto):
+- index.html
+- service-worker.js
+
+File nuovi:
+- planner-v48.css
+- planner-v48.js
+- LEGGIMI-V48.txt
+
+NON eliminare Agenda.html, planner-v42/43/47 (css e js), manifest e icone.
+La V48 si aggiunge sopra ai file che hai: telefono, iPad, Vista grande (tutte le ore),
+Invio sugli orari, Ctrl+Z, Ctrl+4, A domani, flag grigio, sincronizzazione restano com'erano.
+
+COSA CAMBIA
+1. Colonna di destra (calendario, Invia a una data, scadenze) a 240 px.
+2. Clic su un giorno del calendario (o dentro un giorno): il giorno ha un contorno
+   giallo tenue e il nome giallo. Diverso da oggi, che resta con la barra laterale.
+   Cliccando oggi non cambia nulla.
+3. Testo lungo: oltre due righe sfuma in modo tenue; toccando la casella si legge tutto.
+4. Giallo del calendario (oggi, giorno scelto, settimana) piu tenue.
+5. Due finestre affiancate (finestra stretta, 821-1100 px, oppure piu alta che larga):
+   si vede solo il giorno attuale, come sul telefono.
+6. Griglia come prima: 3 giorni + 3 giorni + 1 giorno con Note e cose da organizzare a due spazi.
+7. Frecce in alto: "‹ Sett" e "Sett ›".
+8. Oltre due righe il testo sfuma. Le tre file di giorni riempiono l'altezza della pagina
+   (14" e 27"); la lista Note scorre dentro la sua scheda.
+9. Pagina senza scorrimento: la settimana intera (domenica e Note comprese) sta sempre nella finestra.
+   Scorrono solo Note e cose da organizzare, Scadenze imminenti e la Vista grande.
+10. Orari: il carattere resta sempre lo stesso. Se un impegno ha bisogno di piu righe, le fasce vuote
+    vicine (prima o dopo) spariscono per fargli spazio, cosi l'agenda non si allunga.
+    Nulla viene cancellato: le fasce vuote si rivedono in Vista grande o cancellando il testo lungo.
+11. Vista grande: il giorno non supera la finestra (si scorre dentro il giorno) e l'ora corrente
+    illuminata resta visibile, anche quando scatta una nuova ora.
+12. Invia a una data: un + apre una finestra sopra la pagina per inviare una cosa da fare a una data.
+13. Nessun limite di larghezza con il mouse: l'agenda usa tutto lo schermo.
+14. Barre di scorrimento sottili, sul lato e nello stile scuro del Planner; niente barra orizzontale.
+
+SINCRONIZZAZIONE: la V48 non salva e non modifica dati. Tutto passa dal salvataggio del tuo Planner
+(Firebase), quindi resta sincronizzato su PC, iPhone e iPad.
+
+DOPO IL CARICAMENTO
+Attendi qualche minuto, poi apri il Planner, chiudilo del tutto e riaprilo.

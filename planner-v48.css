@@ -1,0 +1,207 @@
+/* ===== PLANNER V48 ===== */
+
+/* --- Colonna di destra (calendario, Invia a una data, scadenze): 240 px --- */
+@media (min-width:1101px){
+  :root,:root:root{--v47-side:240px}
+  .desktop-sidebar{min-width:0;gap:10px}
+  .app{padding:10px 14px 20px !important}
+  header{padding-bottom:8px !important;margin-bottom:10px !important}
+  .planner-layout{gap:12px !important}
+  .desktop-sidebar .side-card{padding:10px !important}
+  .v43-calendar-head{gap:4px}
+  .v43-month-arrow{min-width:38px !important;padding:0 4px !important;font-size:11px !important}
+  .v43-month-title{font-size:12.5px !important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+
+/* --- Calendario piu tenue (settimana, giorno scelto, oggi) --- */
+.v43-day.in-week{background:rgba(227,168,59,.13)}
+.v43-day.selected,.v43-day.selected:hover{background:rgba(227,168,59,.30)}
+.v43-day.today,.v43-day.today:hover,
+.v43-day.today.selected,.v43-day.today.selected:hover{
+  background:#E3B25A;border-color:#E3B25A;color:#1a1200;
+  box-shadow:0 0 0 1px rgba(227,178,90,.28),0 0 8px rgba(227,178,90,.28);
+}
+
+/* --- Giorno scelto (calendario o clic nel giorno) ---
+   Diverso da oggi: oggi ha la barra gialla laterale e il fondo illuminato;
+   il giorno scelto ha solo un contorno tenue tutto intorno e il nome in giallo. */
+.day.v48-focus:not(.today){
+  border-color:rgba(227,178,90,.75) !important;
+  border-style:solid !important;
+  box-shadow:0 0 0 2px rgba(227,178,90,.22) !important;
+  background-image:none !important;
+}
+.day.v48-focus:not(.today) .day-head h3,
+.day.v48-focus:not(.today) .day-head .day-name{color:#E3B25A}
+
+/* --- Testo lungo: oltre due righe sfuma in modo tenue, tocca per leggere tutto --- */
+body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .hour-input,
+body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .todo-text,
+body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .organizer-note-input{
+  line-height:1.35;
+}
+body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .hour-input:not(:focus),
+body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .todo-text:not(:focus),
+body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .organizer-note-input:not(:focus){
+  max-height:calc(2.7em + 6px);
+  overflow:hidden;
+}
+body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .v48-more:not(:focus){
+  -webkit-mask-image:linear-gradient(#000 52%,rgba(0,0,0,.08));
+          mask-image:linear-gradient(#000 52%,rgba(0,0,0,.08));
+}
+
+/* --- Due schermate affiancate (finestre affiancate): solo il giorno attuale, come sul telefono --- */
+body.v48-solo-on .week.week{grid-template-columns:1fr !important}
+body.v48-solo-on .week .day:not(.v48-solo-day){display:none !important}
+body.v48-solo-on .week .day.v48-solo-day{grid-column:1 / -1 !important}
+body.v48-solo-on .week .day.v48-solo-day .day-body{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;gap:20px !important;
+}
+body.v48-solo-on .week .day.v48-solo-day .hour-input,
+body.v48-solo-on .week .day.v48-solo-day .todo-text{font-size:15px !important}
+body.v48-solo-on .week .week-notes{grid-column:1 / -1 !important}
+body.v48-solo-on .week .day.v48-solo-day .hour-input:not(:focus),
+body.v48-solo-on .week .day.v48-solo-day .todo-text:not(:focus){max-height:none}
+
+
+
+/* --- Pieno schermo: nessun limite di larghezza, anche in finestra stretta con mouse --- */
+html,body{width:100%}
+@media (pointer:fine){
+  .app{max-width:none !important;width:100% !important;margin:0 !important}
+}
+
+
+/* --- Frecce Sett / Sett --- */
+.nav-arrow .v48-lbl{font-size:12px;font-weight:600}
+@media (max-width:820px){.nav-arrow .v48-lbl{display:none}}
+
+/* --- Griglia come prima: 3 giorni + 3 giorni + 1 giorno con Note e cose da organizzare (2 spazi) ---
+   Le tre file riempiono l'altezza della pagina; le righe delle ore restano normali. */
+@media (min-width:1101px){
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on) .week .day.day,
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on) .week .week-notes.week-notes{
+    min-height:var(--v48-row-h,205px) !important;
+  }
+  /* Note: la lista scorre dentro la scheda, cosi la pagina resta intera */
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on) .week .week-notes.week-notes:not(.v42-notes-expanded){
+    max-height:var(--v48-row-h,205px);display:flex;flex-direction:column;overflow:hidden !important;
+  }
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on) .week .week-notes .organizer-notes-rows{
+    overflow-y:auto;min-height:0;flex:1 1 auto;
+  }
+}
+
+/* 27": stessa griglia del 14" (3 + 3 + 1 con Note a due spazi), non 4 colonne */
+@media (pointer:fine) and (min-width:2300px){
+  html body .week.week.week:not(.v47a):not(.v47b){grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+  html body .week .week-notes.week-notes.week-notes:not(.v42-notes-expanded):not(.v42-notes-one-col){grid-column:span 2 !important}
+}
+
+
+/* --- Orari: carattere sempre uguale, righe compatte; la fascia cresce con il testo --- */
+@media (min-width:1101px){
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .week .hour-row.hour-row{
+    min-height:0 !important;padding:1px 0 !important;
+  }
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .week .hour-input.hour-input{
+    font-size:12px !important;
+    line-height:1.18 !important;
+    padding:0 2px !important;
+    min-height:0 !important;
+    max-height:none !important;
+    -webkit-mask-image:none !important;mask-image:none !important;
+  }
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on) .week .day.day .hours{
+    max-height:calc(var(--v48-row-h) - 46px);overflow-y:auto;overflow-x:hidden;
+  }
+}
+
+/* --- Niente scorrimento della pagina: tutta la settimana sta nella finestra --- */
+@media (min-width:1101px){
+  html:has(body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on)),
+  html:has(body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on)) body{
+    overflow:hidden !important;
+  }
+  /* giorni piu bassi: nome e data sulla stessa riga */
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .week .day.day .day-head{
+    grid-template-columns:auto minmax(0,1fr) auto !important;
+    margin-bottom:4px !important;
+  }
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .week .day.day .day-name{grid-column:1 !important;grid-row:1 !important}
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .week .day.day .day-date{grid-column:2 !important;grid-row:1 !important;align-self:end}
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active) .week .day.day .v42-large-day{grid-column:3 !important;grid-row:1 !important}
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on) .week .day.day{
+    height:var(--v48-row-h);max-height:var(--v48-row-h);overflow:hidden;
+  }
+  html body:not(.v42-expanded-active):not(.v42-notes-expanded-active):not(.v48-solo-on) .week .day.day .todo-box.todo-box{
+    max-height:calc(var(--v48-row-h) - 46px);overflow-y:auto !important;overflow-x:hidden !important;
+  }
+  /* colonna destra: calendario e Invia a una data fissi, Scadenze imminenti scorre */
+  .desktop-sidebar{
+    max-height:var(--v48-avail,100vh);
+    grid-template-rows:auto auto minmax(0,1fr);
+    overflow:hidden;
+  }
+  .desktop-sidebar .side-card:last-child{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .desktop-sidebar .side-card:last-child .upcoming-list{max-height:none !important;flex:1 1 auto;min-height:0;overflow-y:auto}
+}
+
+/* --- Invia a una data: + e finestra --- */
+.v45-chevron.v48-plus{
+  display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;
+  border:1px solid var(--accent,#E3B25A);color:var(--accent,#E3B25A);
+  font-size:16px;line-height:1;transform:none !important;
+}
+.v45-quick-toggle:hover .v48-plus{background:var(--accent,#E3B25A);color:#1a1200}
+.v48-modal{
+  position:fixed;inset:0;z-index:10000;display:grid;place-items:center;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(2px);
+}
+.v48-modal-box{
+  width:min(400px,calc(100vw - 32px));padding:16px;border-radius:14px;
+  background:var(--panel,#141417);border:1px solid var(--line,#26262b);
+  box-shadow:0 24px 60px rgba(0,0,0,.5);
+}
+.v48-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-family:'Fraunces',serif;font-size:17px}
+.v48-modal-x{background:none;border:0;color:var(--text-dim,#8B8B90);font-size:22px;line-height:1;cursor:pointer;padding:0 4px}
+.v48-modal-x:hover{color:var(--text,#F2F1ED)}
+.v48-modal .v45-quick-form{margin-top:0}
+.v48-toast{
+  position:fixed;left:50%;bottom:22px;transform:translate(-50%,16px);z-index:10001;
+  background:var(--panel-alt,#1b1b20);border:1px solid var(--line,#26262b);color:var(--text,#F2F1ED);
+  padding:9px 14px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;
+}
+.v48-toast.show{opacity:1;transform:translate(-50%,0)}
+
+
+/* --- Vista grande: il giorno non supera la finestra, se serve si scorre dentro il giorno --- */
+@media (min-width:1101px){
+  html body.v42-expanded-active .week .day.v42-expanded{
+    max-height:var(--v48-avail,100vh);
+    overflow-y:auto !important;
+    scroll-behavior:smooth;
+    scrollbar-width:thin;
+  }
+}
+
+
+/* --- Barre di scorrimento: sottili, sul lato, nello stile scuro del Planner (mai orizzontali) --- */
+.week .day .hours,.week .day .todo-box,.week .week-notes .organizer-notes-rows,
+.desktop-sidebar .upcoming-list,.week .day.v42-expanded{
+  overflow-x:hidden !important;
+  scrollbar-width:thin;
+  scrollbar-color:#3a3a40 transparent;
+}
+.week .day .hours::-webkit-scrollbar,.week .day .todo-box::-webkit-scrollbar,
+.week .week-notes .organizer-notes-rows::-webkit-scrollbar,
+.desktop-sidebar .upcoming-list::-webkit-scrollbar,.week .day.v42-expanded::-webkit-scrollbar{width:6px;height:0}
+.week .day .hours::-webkit-scrollbar-track,.week .day .todo-box::-webkit-scrollbar-track,
+.week .week-notes .organizer-notes-rows::-webkit-scrollbar-track,
+.desktop-sidebar .upcoming-list::-webkit-scrollbar-track,.week .day.v42-expanded::-webkit-scrollbar-track{background:transparent}
+.week .day .hours::-webkit-scrollbar-thumb,.week .day .todo-box::-webkit-scrollbar-thumb,
+.week .week-notes .organizer-notes-rows::-webkit-scrollbar-thumb,
+.desktop-sidebar .upcoming-list::-webkit-scrollbar-thumb,.week .day.v42-expanded::-webkit-scrollbar-thumb{background:#3a3a40;border-radius:6px}
+.week .day .hours::-webkit-scrollbar-thumb:hover,.week .week-notes .organizer-notes-rows::-webkit-scrollbar-thumb:hover,
+.desktop-sidebar .upcoming-list::-webkit-scrollbar-thumb:hover{background:#574526}
