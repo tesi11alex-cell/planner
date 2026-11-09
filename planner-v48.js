@@ -115,6 +115,17 @@
     wasOpen = open;
   }
 
+  /* Pagina bloccata: se qualcosa la sposta (es. il clic sul calendario), torna subito in alto,
+     cosi la riga del mese non resta mai coperta. */
+  function locked(){
+    return desktop.matches && !solo.matches &&
+      !document.body.classList.contains('v42-expanded-active') &&
+      !document.body.classList.contains('v42-notes-expanded-active');
+  }
+  window.addEventListener('scroll', () => {
+    if(locked() && (window.scrollY > 0 || document.documentElement.scrollTop > 0)) window.scrollTo(0,0);
+  }, {passive:true});
+
   /* Frecce in alto: "‹ Sett" e "Sett ›". */
   function labelArrows(){
     const prev = document.getElementById('prevBtn');
