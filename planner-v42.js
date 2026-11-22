@@ -171,47 +171,44 @@ function ensureStandardButton(){
   }
 
   
-  function moveTomorrowAllowedKeys(){
+  /* V48: "A domani" compare su ogni giorno fino a oggi (ieri, oggi e tutti i giorni passati)
+     e manda le cose non fatte SEMPRE al giorno dopo OGGI, non al giorno dopo quello della scheda. */
+  function plannerTodayDate(){
     let today;
-
     if(typeof dateFromKey === 'function' && typeof todayKey === 'function'){
       today = dateFromKey(todayKey());
     }
-
     if(!(today instanceof Date) || Number.isNaN(today.getTime())){
       today = new Date();
       today.setHours(0,0,0,0);
     }
+    return today;
+  }
 
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+  function plannerKeyOf(date){
+    if(typeof dateKey === 'function'){
+      try{return dateKey(date);}catch(error){}
+    }
+    return [
+      date.getFullYear(),
+      String(date.getMonth()+1).padStart(2,'0'),
+      String(date.getDate()).padStart(2,'0')
+    ].join('-');
+  }
 
-    const keyOf = date => {
-      if(typeof dateKey === 'function'){
-        try{return dateKey(date);}catch(error){}
-      }
+  function moveTomorrowAllowed(key){
+    return String(key) <= plannerKeyOf(plannerTodayDate());
+  }
 
-      return [
-        date.getFullYear(),
-        String(date.getMonth()+1).padStart(2,'0'),
-        String(date.getDate()).padStart(2,'0')
-      ].join('-');
-    };
-
-    /* V47: "A domani" anche sul giorno prima. */
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    return new Set([keyOf(yesterday), keyOf(today), keyOf(tomorrow)]);
+  function moveTomorrowTarget(){
+    return nextPlannerDay(plannerTodayDate());
   }
 
 function ensureMoveTomorrowButton(card){
     if(!card?.dataset?.key) return;
 
-    const allowedKeys = moveTomorrowAllowedKeys();
-
-    /* V47: il pulsante esiste sul giorno prima, su quello corrente e su quello successivo. */
-    if(!allowedKeys.has(card.dataset.key)){
+    /* V48: il pulsante esiste su tutti i giorni passati e su oggi. */
+    if(!moveTomorrowAllowed(card.dataset.key)){
       card.querySelector('.v42-move-tomorrow')?.remove();
       return;
     }
@@ -224,7 +221,9 @@ function ensureMoveTomorrowButton(card){
     button.type = 'button';
     button.className = 'v42-move-tomorrow';
     button.innerHTML = '<span aria-hidden="true">↪</span><span>A domani</span>';
-    button.title = 'Sposta al giorno successivo tutte le cose da fare senza flag';
+    const targetDate = moveTomorrowTarget();
+    button.title = 'Sposta a domani (' + String(targetDate.getDate()).padStart(2,'0') + '/' +
+      String(targetDate.getMonth()+1).padStart(2,'0') + ') tutte le cose da fare senza flag';
 
     addRow.insertAdjacentElement('afterend',button);
 
@@ -250,7 +249,7 @@ function ensureMoveTomorrowButton(card){
         const date = dateFromKey(key);
         if(!date) throw new Error('Data non valida');
 
-        const nextDate = nextPlannerDay(date);
+        const nextDate = moveTomorrowTarget();
         const nextKey =
           typeof dateKey === 'function'
             ? dateKey(nextDate)

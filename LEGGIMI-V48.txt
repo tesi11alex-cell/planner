@@ -42,3 +42,14 @@ SINCRONIZZAZIONE: la V48 non salva e non modifica dati. Tutto passa dal salvatag
 
 DOPO IL CARICAMENTO
 Attendi qualche minuto, poi apri il Planner, chiudilo del tutto e riaprilo.
+
+
+AGGIUNTA - "A domani" su tutti i giorni passati
+-----------------------------------------------
+- Il vecchio pulsante "A domani" e' ora disponibile su OGNI giorno passato e su oggi (non sui giorni futuri), con lo stesso stile di prima.
+- Sposta le cose da fare NON fatte (senza flag) a DOMANI RISPETTO A OGGI, non al giorno dopo la scheda.
+  Esempio: task del 01/01, oggi 01/02 -> vanno al 02/02.
+- Le cose con flag restano nel giorno originale. Ctrl+Z ripristina entrambi i giorni.
+- Per questo va SOSTITUITO su GitHub anche il file planner-v42.js (incluso nello zip), oltre ai file V48.
+  Basato sul planner-v42.js della V47 che mi hai inviato: se l'hai modificato dopo, dimmelo.
+- I dati e la sincronizzazione non cambiano.
